@@ -27,33 +27,6 @@ export const IntroducingScene: React.FC<IntroducingSceneProps> = ({ scrollProgre
   const particlesRef = useRef<FlyoverParticle[]>([]);
   const animationFrameId = useRef<number | null>(null);
 
-  // Timestamps for when text arrives to produce the crisp-then-dilute effect
-  const introLockTimeRef = useRef<number>(0);
-  const aromaxLockTimeRef = useRef<number>(0);
-
-  // Stored typography details for razor-sharp vector text rendering during dilution
-  const typographyRef = useRef<{
-    introText: string;
-    introFont: string;
-    introLetterSpacing: number;
-    introY: number;
-    aromaxText: string;
-    aromaxFont: string;
-    aromaxLetterSpacing: number;
-    aromaxY: number;
-    centerX: number;
-  }>({
-    introText: 'INTRODUCING',
-    introFont: '600 32px "Plus Jakarta Sans"',
-    introLetterSpacing: 8,
-    introY: 0,
-    aromaxText: 'Aromax AI',
-    aromaxFont: '600 26px "Plus Jakarta Sans"',
-    aromaxLetterSpacing: 6,
-    aromaxY: 0,
-    centerX: 0,
-  });
-
   const mouseRef = useRef<{
     x: number;
     y: number;
@@ -74,7 +47,8 @@ export const IntroducingScene: React.FC<IntroducingSceneProps> = ({ scrollProgre
     isHovering: false,
   });
 
-  const drawTrackedText = (
+  // Helper used solely on the OFFSCREEN blueprint canvas to sample particle coordinates
+  const drawTrackedBlueprint = (
     ctx: CanvasRenderingContext2D,
     text: string,
     centerX: number,
@@ -119,7 +93,7 @@ export const IntroducingScene: React.FC<IntroducingSceneProps> = ({ scrollProgre
 
     const centerX = width / 2;
 
-    // Substantially bigger typography on both mobile and desktop
+    // Generous, bold typography sizes
     let introFontSize = isMobile
       ? Math.min(Math.max(width / 12, 28), 42)
       : Math.min(Math.max(width / 20, 30), 52);
@@ -137,18 +111,6 @@ export const IntroducingScene: React.FC<IntroducingSceneProps> = ({ scrollProgre
 
     const introLetterSpacing = introFontSize * (isMobile ? 0.20 : 0.26);
     const aromaxLetterSpacing = aromaxFontSize * (isMobile ? 0.18 : 0.22);
-
-    typographyRef.current = {
-      introText: 'INTRODUCING',
-      introFont: introFontString,
-      introLetterSpacing,
-      introY,
-      aromaxText: 'Aromax AI',
-      aromaxFont: aromaxFontString,
-      aromaxLetterSpacing,
-      aromaxY,
-      centerX,
-    };
 
     const particles: FlyoverParticle[] = [];
 
@@ -180,7 +142,7 @@ export const IntroducingScene: React.FC<IntroducingSceneProps> = ({ scrollProgre
       return { startX, startY, arcOffset, mass, stagger };
     };
 
-    // 1. Offscreen canvas for "INTRODUCING"
+    // 1. Offscreen blueprint for "INTRODUCING" (used ONLY for sampling particle positions)
     const offscreenIntro = document.createElement('canvas');
     offscreenIntro.width = width;
     offscreenIntro.height = height;
@@ -192,13 +154,14 @@ export const IntroducingScene: React.FC<IntroducingSceneProps> = ({ scrollProgre
       octxIntro.font = introFontString;
       octxIntro.fillStyle = '#ffffff';
 
-      drawTrackedText(octxIntro, 'INTRODUCING', centerX, introY, introLetterSpacing);
+      drawTrackedBlueprint(octxIntro, 'INTRODUCING', centerX, introY, introLetterSpacing);
 
       const imgDataIntro = octxIntro.getImageData(0, 0, width, height);
       const dataIntro = imgDataIntro.data;
       const imgW = imgDataIntro.width;
       const imgH = imgDataIntro.height;
-      const step = isMobile ? 1.25 : 1.1;
+      // High-density sampling so particles alone form solid, continuous letters
+      const step = isMobile ? 1.15 : 1.05;
 
       for (let y = 0; y < imgH; y += step) {
         const py = Math.floor(y);
@@ -218,7 +181,7 @@ export const IntroducingScene: React.FC<IntroducingSceneProps> = ({ scrollProgre
               startY: fly.startY,
               vx: 0,
               vy: 0,
-              size: isMobile ? 1.4 : 1.25,
+              size: isMobile ? 1.4 : 1.35,
               arcOffset: fly.arcOffset,
               mass: fly.mass,
               group: 'introducing',
@@ -229,7 +192,7 @@ export const IntroducingScene: React.FC<IntroducingSceneProps> = ({ scrollProgre
       }
     }
 
-    // 2. Offscreen canvas for "Aromax AI"
+    // 2. Offscreen blueprint for "Aromax AI" (used ONLY for sampling particle positions)
     const offscreenAromax = document.createElement('canvas');
     offscreenAromax.width = width;
     offscreenAromax.height = height;
@@ -241,13 +204,13 @@ export const IntroducingScene: React.FC<IntroducingSceneProps> = ({ scrollProgre
       octxAromax.font = aromaxFontString;
       octxAromax.fillStyle = '#ffffff';
 
-      drawTrackedText(octxAromax, 'Aromax AI', centerX, aromaxY, aromaxLetterSpacing);
+      drawTrackedBlueprint(octxAromax, 'Aromax AI', centerX, aromaxY, aromaxLetterSpacing);
 
       const imgDataAromax = octxAromax.getImageData(0, 0, width, height);
       const dataAromax = imgDataAromax.data;
       const imgW = imgDataAromax.width;
       const imgH = imgDataAromax.height;
-      const step = isMobile ? 1.25 : 1.1;
+      const step = isMobile ? 1.15 : 1.05;
 
       for (let y = 0; y < imgH; y += step) {
         const py = Math.floor(y);
@@ -267,7 +230,7 @@ export const IntroducingScene: React.FC<IntroducingSceneProps> = ({ scrollProgre
               startY: fly.startY,
               vx: 0,
               vy: 0,
-              size: isMobile ? 1.4 : 1.25,
+              size: isMobile ? 1.4 : 1.35,
               arcOffset: fly.arcOffset,
               mass: fly.mass,
               group: 'aromax',
@@ -313,6 +276,7 @@ export const IntroducingScene: React.FC<IntroducingSceneProps> = ({ scrollProgre
     };
   }, [initParticles]);
 
+  // Main animation render loop: 100% PURE PARTICLES ONLY (No fake pre-rendered text)
   useEffect(() => {
     let active = true;
 
@@ -331,16 +295,13 @@ export const IntroducingScene: React.FC<IntroducingSceneProps> = ({ scrollProgre
 
       ctx.clearRect(0, 0, width, height);
 
-      // On mobile, start earlier and complete in a shorter scroll range
       const minTrigger = isMobile ? 0.14 : 0.20;
       if (scrollProgress < minTrigger) {
-        introLockTimeRef.current = 0;
-        aromaxLockTimeRef.current = 0;
         animationFrameId.current = requestAnimationFrame(render);
         return;
       }
 
-      // Snappy, accelerated flyover sequence on mobile
+      // Flyover progress timing
       const rawProgressIntro = isMobile
         ? Math.min(Math.max((scrollProgress - 0.16) / 0.22, 0), 1)
         : Math.min(Math.max((scrollProgress - 0.26) / 0.36, 0), 1);
@@ -353,43 +314,7 @@ export const IntroducingScene: React.FC<IntroducingSceneProps> = ({ scrollProgre
       const particles = particlesRef.current;
       const now = Date.now();
 
-      // Track sharp arrival lock times for each text
-      if (rawProgressIntro >= 0.96 && !introLockTimeRef.current) {
-        introLockTimeRef.current = now;
-      } else if (rawProgressIntro < 0.96) {
-        introLockTimeRef.current = 0;
-      }
-
-      if (rawProgressAromax >= 0.96 && !aromaxLockTimeRef.current) {
-        aromaxLockTimeRef.current = now;
-      } else if (rawProgressAromax < 0.96) {
-        aromaxLockTimeRef.current = 0;
-      }
-
-      // Calculate dilution factor for INTRODUCING (crisp first frame -> dissolves into particles)
-      let introDilute = 0;
-      if (introLockTimeRef.current > 0) {
-        const elapsed = now - introLockTimeRef.current;
-        if (elapsed < 300) {
-          introDilute = 1.0;
-        } else if (elapsed < 1000) {
-          introDilute = Math.max(0, 1.0 - Math.pow((elapsed - 300) / 700, 1.3));
-        }
-      }
-      if (mouse.isHovering) introDilute = 0;
-
-      // Calculate dilution factor for Aromax AI (crisp first frame -> dissolves into particles)
-      let aromaxDilute = 0;
-      if (aromaxLockTimeRef.current > 0) {
-        const elapsed = now - aromaxLockTimeRef.current;
-        if (elapsed < 300) {
-          aromaxDilute = 1.0;
-        } else if (elapsed < 1000) {
-          aromaxDilute = Math.max(0, 1.0 - Math.pow((elapsed - 300) / 700, 1.3));
-        }
-      }
-      if (mouse.isHovering) aromaxDilute = 0;
-
+      // Pure glowing starlight white particles make 100% of the text
       ctx.fillStyle = '#ffffff';
       ctx.beginPath();
 
@@ -428,6 +353,7 @@ export const IntroducingScene: React.FC<IntroducingSceneProps> = ({ scrollProgre
           p.vx = 0;
           p.vy = 0;
         } else {
+          // Particles have arrived: they form the solid letterforms and react elastically to the cursor
           let targetX = p.originX;
           let targetY = p.originY;
 
@@ -471,31 +397,8 @@ export const IntroducingScene: React.FC<IntroducingSceneProps> = ({ scrollProgre
         ctx.rect(p.x, p.y, p.size, p.size);
       }
 
+      // Single GPU fill renders all particles simultaneously: the particles ONLY make the text!
       ctx.fill();
-
-      // Sharp First-Frame Dilution Layers for INTRODUCING & Aromax AI
-      const typo = typographyRef.current;
-      if (introDilute > 0.005) {
-        ctx.save();
-        ctx.font = typo.introFont;
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillStyle = '#ffffff';
-        ctx.globalAlpha = introDilute;
-        drawTrackedText(ctx, typo.introText, typo.centerX, typo.introY, typo.introLetterSpacing);
-        ctx.restore();
-      }
-
-      if (aromaxDilute > 0.005) {
-        ctx.save();
-        ctx.font = typo.aromaxFont;
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillStyle = '#ffffff';
-        ctx.globalAlpha = aromaxDilute;
-        drawTrackedText(ctx, typo.aromaxText, typo.centerX, typo.aromaxY, typo.aromaxLetterSpacing);
-        ctx.restore();
-      }
 
       animationFrameId.current = requestAnimationFrame(render);
     };
