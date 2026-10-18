@@ -7,6 +7,16 @@ export default function App() {
   const [scrollProgress, setScrollProgress] = useState(0);
   const targetScrollRef = useRef(0);
   const touchStartY = useRef(0);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   useEffect(() => {
     // 1. Native Window Scroll Listener
@@ -14,7 +24,7 @@ export default function App() {
       const scrollY = window.scrollY || document.documentElement.scrollTop;
       const maxScroll = Math.max(
         document.documentElement.scrollHeight - window.innerHeight,
-        600
+        400
       );
       const progress = Math.min(Math.max(scrollY / maxScroll, 0), 1);
       setScrollProgress(progress);
@@ -25,7 +35,7 @@ export default function App() {
     const handleWheel = (e: WheelEvent) => {
       const maxScroll = Math.max(
         document.documentElement.scrollHeight - window.innerHeight,
-        600
+        400
       );
       const currentScroll = window.scrollY || targetScrollRef.current;
       const newScroll = Math.min(Math.max(currentScroll + e.deltaY * 0.85, 0), maxScroll);
@@ -35,7 +45,7 @@ export default function App() {
       setScrollProgress(newScroll / maxScroll);
     };
 
-    // 3. Touch Drag Event for Mobile
+    // 3. Touch Drag Event for Mobile: Faster, snappier drag so scattering doesn't drag on
     const handleTouchStart = (e: TouchEvent) => {
       touchStartY.current = e.touches[0].clientY;
     };
@@ -47,10 +57,11 @@ export default function App() {
 
       const maxScroll = Math.max(
         document.documentElement.scrollHeight - window.innerHeight,
-        600
+        400
       );
       const currentScroll = window.scrollY || targetScrollRef.current;
-      const newScroll = Math.min(Math.max(currentScroll + deltaY * 1.5, 0), maxScroll);
+      // Snappier touch velocity on mobile so scattering takes less time
+      const newScroll = Math.min(Math.max(currentScroll + deltaY * 2.3, 0), maxScroll);
       targetScrollRef.current = newScroll;
 
       window.scrollTo({ top: newScroll, behavior: 'instant' as ScrollBehavior });
@@ -61,7 +72,7 @@ export default function App() {
     const handleKeyDown = (e: KeyboardEvent) => {
       const maxScroll = Math.max(
         document.documentElement.scrollHeight - window.innerHeight,
-        600
+        400
       );
       const currentScroll = window.scrollY || targetScrollRef.current;
 
@@ -91,11 +102,19 @@ export default function App() {
     };
   }, []);
 
-  // Map global scroll [0, 1] to Scene 1 bloom/evaporation
-  const scene1Bloom = Math.min(Math.max((scrollProgress - 0.06) / 0.32, 0), 1);
+  // Map global scroll [0, 1] to Scene 1 bloom/evaporation:
+  // On mobile, effect duration is reduced so it scatters fully with much less swipe time
+  const scene1Bloom = isMobile
+    ? Math.min(Math.max((scrollProgress - 0.02) / 0.18, 0), 1)
+    : Math.min(Math.max((scrollProgress - 0.06) / 0.32, 0), 1);
+
+  // Faster transition out on mobile
+  const scene1FadeOut = isMobile
+    ? Math.max(0, 1 - Math.max(0, scrollProgress - 0.12) * 7)
+    : Math.max(0, 1 - Math.max(0, scrollProgress - 0.20) * 5);
 
   return (
-    <div className="relative min-h-[260vh] w-full">
+    <div className={`relative w-full ${isMobile ? 'min-h-[190vh]' : 'min-h-[260vh]'}`}>
       {/* Pinned Fullscreen Viewport: Pure Minimalist Center Text Experience */}
       <div className="fixed inset-0 w-full h-full overflow-hidden flex items-center justify-center">
         {/* Background blobs that transition smoothly from white into pure black on scroll */}
@@ -105,8 +124,8 @@ export default function App() {
         <div
           className="absolute inset-0 flex items-center justify-center transition-opacity duration-150"
           style={{
-            opacity: Math.max(0, 1 - Math.max(0, scrollProgress - 0.20) * 5),
-            pointerEvents: scrollProgress > 0.30 ? 'none' : 'auto',
+            opacity: scene1FadeOut,
+            pointerEvents: scrollProgress > (isMobile ? 0.20 : 0.30) ? 'none' : 'auto',
           }}
         >
           <ParticleCanvas scrollProgress={scene1Bloom} />

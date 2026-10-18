@@ -7,9 +7,13 @@ interface BlueberryBlobsProps {
 export const BlueberryBlobs: React.FC<BlueberryBlobsProps> = ({ scrollProgress = 0 }) => {
   const p = Math.min(Math.max(scrollProgress, 0), 1);
 
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+
   // Transition from pristine gallery white (#fbfcfd) to pure black (#000000)
-  // Reaches deep black smoothly around p = 0.40
-  const darkRatio = Math.min(Math.max((p - 0.05) / 0.35, 0), 1);
+  // Reaches deep black faster on mobile to match the accelerated scatter duration
+  const darkRatio = isMobile
+    ? Math.min(Math.max((p - 0.02) / 0.22, 0), 1)
+    : Math.min(Math.max((p - 0.05) / 0.35, 0), 1);
   const bgR = Math.round(251 - darkRatio * 251);
   const bgG = Math.round(252 - darkRatio * 252);
   const bgB = Math.round(253 - darkRatio * 253);
