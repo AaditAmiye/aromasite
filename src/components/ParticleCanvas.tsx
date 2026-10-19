@@ -241,10 +241,10 @@ export const ParticleCanvas: React.FC<ParticleCanvasProps> = ({
     const imgW = imgData.width;
     const imgH = imgData.height;
 
-    // Sub-pixel sampling step: Preserves full particle density (25,000+ particles)
-    const step = isMobile ? 1.2 : 1.1;
+    // Ultra-dense sub-pixel sampling: 60,000+ micro-particles for ultra-crisp, flawless typography
+    const step = isMobile ? 0.85 : 0.72;
     const buckets: Particle[][] = Array.from({ length: NUM_BUCKETS }, () => []);
-    const baseParticleSize = isMobile ? 1.3 : 1.4;
+    const baseParticleSize = isMobile ? 1.05 : 1.15;
 
     const lineMidpointY = (line1Y + line2Y) / 2;
     const line1Top = line1Y - fontSize1 * 0.52;
@@ -261,7 +261,7 @@ export const ParticleCanvas: React.FC<ParticleCanvasProps> = ({
         const index = rowOffset + px * 4;
         const alpha = data[index + 3];
 
-        if (alpha > 28) {
+        if (alpha > 20) {
           const screenX = px / sampleScale;
           const screenY = py / sampleScale;
           const normA = alpha / 255;
