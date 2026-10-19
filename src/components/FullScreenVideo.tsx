@@ -67,7 +67,6 @@ export const FullScreenVideo: React.FC<FullScreenVideoProps> = ({
         muted
         loop
         preload="auto"
-        poster="/video_frame.jpg"
         controls={false}
         disablePictureInPicture
         controlsList="nodownload nofullscreen noremoteplayback"
