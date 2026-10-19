@@ -6,64 +6,46 @@ import { ChevronDown } from 'lucide-react';
 
 export default function App() {
   const [scrollProgress, setScrollProgress] = useState(0);
-  const targetScrollRef = useRef<number>(0);
-  const currentScrollRef = useRef<number>(0);
-  const touchStartY = useRef<number>(0);
+  const targetScrollRef = useRef(0);
+  const touchStartY = useRef(0);
   const explodeRef = useRef<(() => void) | null>(null);
 
-  // Silky smooth inertia-based scroll engine
+  // Silky smooth scroll listener supporting native window scroll, trackpad wheel, and touch
   useEffect(() => {
     let rafId: number | null = null;
-    let isRunning = true;
 
-    const maxScrollHeight = () =>
-      Math.max(document.documentElement.scrollHeight - window.innerHeight, 500);
-
-    const updateLoop = () => {
-      if (!isRunning) return;
-
-      const maxScroll = maxScrollHeight();
-      const target = Math.min(Math.max(targetScrollRef.current, 0), maxScroll);
-      const current = currentScrollRef.current;
-      const diff = target - current;
-
-      if (Math.abs(diff) > 0.3) {
-        currentScrollRef.current += diff * 0.095;
-      } else {
-        currentScrollRef.current = target;
-      }
-
-      const progress = Math.min(Math.max(currentScrollRef.current / maxScroll, 0), 1);
-      setScrollProgress(progress);
-
-      // Keep native scroll in sync quietly
-      window.scrollTo({ top: currentScrollRef.current, behavior: 'instant' as ScrollBehavior });
-
-      rafId = requestAnimationFrame(updateLoop);
+    const scheduleProgressUpdate = (progress: number) => {
+      if (rafId !== null) cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(() => {
+        setScrollProgress(progress);
+        rafId = null;
+      });
     };
 
-    rafId = requestAnimationFrame(updateLoop);
-
-    // Track native window scroll events (e.g. dragging scrollbar)
-    const handleNativeScroll = () => {
+    const handleScroll = () => {
       const scrollY = window.scrollY || document.documentElement.scrollTop;
-      // Only sync if user dragged the native scrollbar directly
-      if (Math.abs(scrollY - currentScrollRef.current) > 30) {
-        targetScrollRef.current = scrollY;
-        currentScrollRef.current = scrollY;
-      }
-    };
-
-    // Trackpad and mouse wheel smoothing
-    const handleWheel = (e: WheelEvent) => {
-      const maxScroll = maxScrollHeight();
-      targetScrollRef.current = Math.min(
-        Math.max(targetScrollRef.current + e.deltaY * 0.9, 0),
-        maxScroll
+      const maxScroll = Math.max(
+        document.documentElement.scrollHeight - window.innerHeight,
+        400
       );
+      const progress = Math.min(Math.max(scrollY / maxScroll, 0), 1);
+      scheduleProgressUpdate(progress);
+      targetScrollRef.current = scrollY;
     };
 
-    // Mobile touch gestures
+    const handleWheel = (e: WheelEvent) => {
+      const maxScroll = Math.max(
+        document.documentElement.scrollHeight - window.innerHeight,
+        400
+      );
+      const currentScroll = window.scrollY || targetScrollRef.current;
+      const newScroll = Math.min(Math.max(currentScroll + e.deltaY * 0.95, 0), maxScroll);
+      targetScrollRef.current = newScroll;
+
+      window.scrollTo({ top: newScroll, behavior: 'instant' as ScrollBehavior });
+      scheduleProgressUpdate(newScroll / maxScroll);
+    };
+
     const handleTouchStart = (e: TouchEvent) => {
       touchStartY.current = e.touches[0].clientY;
     };
@@ -73,23 +55,33 @@ export default function App() {
       const deltaY = touchStartY.current - touchY;
       touchStartY.current = touchY;
 
-      const maxScroll = maxScrollHeight();
-      targetScrollRef.current = Math.min(
-        Math.max(targetScrollRef.current + deltaY * 1.85, 0),
-        maxScroll
+      const maxScroll = Math.max(
+        document.documentElement.scrollHeight - window.innerHeight,
+        400
       );
+      const currentScroll = window.scrollY || targetScrollRef.current;
+      const newScroll = Math.min(Math.max(currentScroll + deltaY * 2.2, 0), maxScroll);
+      targetScrollRef.current = newScroll;
+
+      window.scrollTo({ top: newScroll, behavior: 'instant' as ScrollBehavior });
+      scheduleProgressUpdate(newScroll / maxScroll);
     };
 
-    // Keyboard navigation
     const handleKeyDown = (e: KeyboardEvent) => {
-      const maxScroll = maxScrollHeight();
+      const maxScroll = Math.max(
+        document.documentElement.scrollHeight - window.innerHeight,
+        400
+      );
+      const currentScroll = window.scrollY || targetScrollRef.current;
 
       if (e.key === 'ArrowDown' || e.key === 'PageDown') {
         e.preventDefault();
-        targetScrollRef.current = Math.min(targetScrollRef.current + 250, maxScroll);
+        const newScroll = Math.min(currentScroll + 240, maxScroll);
+        window.scrollTo({ top: newScroll, behavior: 'smooth' });
       } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
         e.preventDefault();
-        targetScrollRef.current = Math.max(targetScrollRef.current - 250, 0);
+        const newScroll = Math.max(currentScroll - 240, 0);
+        window.scrollTo({ top: newScroll, behavior: 'smooth' });
       } else if (e.code === 'Space' && scrollProgress < 0.25) {
         e.preventDefault();
         if (explodeRef.current) {
@@ -98,16 +90,15 @@ export default function App() {
       }
     };
 
-    window.addEventListener('scroll', handleNativeScroll, { passive: true });
+    window.addEventListener('scroll', handleScroll, { passive: true });
     window.addEventListener('wheel', handleWheel, { passive: true });
     window.addEventListener('touchstart', handleTouchStart, { passive: true });
     window.addEventListener('touchmove', handleTouchMove, { passive: true });
     window.addEventListener('keydown', handleKeyDown);
 
     return () => {
-      isRunning = false;
       if (rafId !== null) cancelAnimationFrame(rafId);
-      window.removeEventListener('scroll', handleNativeScroll);
+      window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('wheel', handleWheel);
       window.removeEventListener('touchstart', handleTouchStart);
       window.removeEventListener('touchmove', handleTouchMove);
@@ -118,25 +109,25 @@ export default function App() {
   const handleScrollToBottom = useCallback(() => {
     const maxScroll = Math.max(
       document.documentElement.scrollHeight - window.innerHeight,
-      500
+      400
     );
-    targetScrollRef.current = maxScroll;
+    window.scrollTo({ top: maxScroll, behavior: 'smooth' });
   }, []);
 
-  // Screen fades through pure black between 0.28 and 0.65
+  // Screen fades through pure black between 0.30 and 0.65
   const blackFadeOpacity = Math.min(
     Math.max((scrollProgress - 0.25) / 0.35, 0),
     1
   );
 
   return (
-    <div className="relative w-full bg-black select-none text-slate-100 min-h-[240vh]">
+    <div className="relative w-full bg-black select-none text-slate-100 min-h-[220vh]">
       {/* Pinned Fullscreen Stage */}
       <div className="fixed inset-0 w-full h-full overflow-hidden flex items-center justify-center bg-black">
         {/* 1. Pure Black Backdrop with Warm Amber Glow (fades smoothly on scroll) */}
         <AmbientBackdrop scrollProgress={scrollProgress} />
 
-        {/* 2. Pure Particle Typography Centerpiece (reduces particles during scroll, crystallizes at rest) */}
+        {/* 2. Pure Particle Typography Centerpiece (blooms & scatters smoothly on scroll) */}
         <div
           className="absolute inset-0 flex items-center justify-center pointer-events-auto transition-opacity duration-150"
           style={{
@@ -157,7 +148,7 @@ export default function App() {
           }}
         />
 
-        {/* 4. Fullscreen Video Player (always restarts from 0 and autoplays when entered) */}
+        {/* 4. Fullscreen Video Player (fades in and autoplays when scrolled down, completely uninterrupted) */}
         <FullScreenVideo scrollProgress={scrollProgress} />
 
         {/* 5. Minimalist Scroll Prompt (visible only at the top) */}
