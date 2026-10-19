@@ -8,6 +8,7 @@ export const FullScreenVideo: React.FC<FullScreenVideoProps> = ({
   scrollProgress,
 }) => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const wasPlayingRef = useRef<boolean>(false);
 
   // Fade in starts at 0.55 and reaches 1.0 at 0.85
   const videoOpacity = Math.min(
@@ -22,6 +23,16 @@ export const FullScreenVideo: React.FC<FullScreenVideoProps> = ({
     if (!video) return;
 
     if (shouldPlay) {
+      // If entering video view from above, reset currentTime to 0 so it plays from the beginning every time
+      if (!wasPlayingRef.current) {
+        try {
+          video.currentTime = 0;
+        } catch {
+          // ignore
+        }
+        wasPlayingRef.current = true;
+      }
+
       const playPromise = video.play();
       if (playPromise !== undefined) {
         playPromise.catch(() => {
@@ -29,7 +40,15 @@ export const FullScreenVideo: React.FC<FullScreenVideoProps> = ({
         });
       }
     } else {
-      video.pause();
+      if (wasPlayingRef.current) {
+        video.pause();
+        try {
+          video.currentTime = 0;
+        } catch {
+          // ignore
+        }
+        wasPlayingRef.current = false;
+      }
     }
   }, [shouldPlay]);
 

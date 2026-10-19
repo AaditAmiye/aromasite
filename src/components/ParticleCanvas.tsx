@@ -15,6 +15,7 @@ interface Particle {
   bloomSin: number;
   curlVx: number;
   curlVy: number;
+  isPrimary: boolean;
 }
 
 // Ambient floating aroma wisps and embers
@@ -44,14 +45,20 @@ export const ParticleCanvas: React.FC<ParticleCanvasProps> = ({
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
 
-  // Group particles into 32 pre-sorted color buckets for ultra-fast GPU batch rendering (zero GC pressure)
-  const bucketsRef = useRef<Particle[][]>(Array.from({ length: NUM_BUCKETS }, () => []));
+  // Offscreen canvas storing razor-sharp vector rasterization for the final crystallization lock
+  const crispTextCanvasRef = useRef<HTMLCanvasElement | null>(null);
+
+  // Group particles into 32 pre-sorted color buckets
+  const primaryBucketsRef = useRef<Particle[][]>(Array.from({ length: NUM_BUCKETS }, () => []));
+  const crystalBucketsRef = useRef<Particle[][]>(Array.from({ length: NUM_BUCKETS }, () => []));
   const bucketColorsRef = useRef<string[]>([]);
   const motesRef = useRef<AromaMote[]>([]);
+
   const animationFrameId = useRef<number | null>(null);
   const isExplodedRef = useRef<boolean>(false);
   const scrollProgressRef = useRef<number>(scrollProgress);
   const currentScrollBloomRef = useRef<number>(0);
+  const settleProgressRef = useRef<number>(1);
   const lastTimeRef = useRef<number>(0);
 
   useEffect(() => {
@@ -232,15 +239,19 @@ export const ParticleCanvas: React.FC<ParticleCanvasProps> = ({
     octx.letterSpacing = '-0.02em';
     octx.fillText(line2, centerX, line2Y);
 
+    // Cache crisp text canvas for the final zero-blur crystallization lock
+    crispTextCanvasRef.current = offscreen;
+
     // Read pixel data
     const imgData = octx.getImageData(0, 0, offscreen.width, offscreen.height);
     const data = imgData.data;
     const imgW = imgData.width;
     const imgH = imgData.height;
 
-    // High density sampling step: preserved particle count (25,000+ particles)
-    const step = isMobile ? 1.25 : 1.15;
-    const buckets: Particle[][] = Array.from({ length: NUM_BUCKETS }, () => []);
+    // Ultra-fine sub-pixel sampling step: 1.0 (over 32,000+ dense micro-particles)
+    const step = isMobile ? 1.15 : 1.0;
+    const primaryBuckets: Particle[][] = Array.from({ length: NUM_BUCKETS }, () => []);
+    const crystalBuckets: Particle[][] = Array.from({ length: NUM_BUCKETS }, () => []);
     const baseParticleSize = isMobile ? 1.25 : 1.35;
 
     const lineMidpointY = (line1Y + line2Y) / 2;
@@ -248,6 +259,8 @@ export const ParticleCanvas: React.FC<ParticleCanvasProps> = ({
     const line1Height = fontSize1 * 1.04;
     const line2Top = line2Y - fontSize2 * 0.52;
     const line2Height = fontSize2 * 1.04;
+
+    let particleCount = 0;
 
     for (let y = 0; y < imgH; y += step) {
       const py = Math.floor(y);
@@ -259,6 +272,7 @@ export const ParticleCanvas: React.FC<ParticleCanvasProps> = ({
         const alpha = data[index + 3];
 
         if (alpha > 28) {
+          particleCount++;
           const screenX = px / sampleScale;
           const screenY = py / sampleScale;
           const normA = alpha / 255;
@@ -281,7 +295,12 @@ export const ParticleCanvas: React.FC<ParticleCanvasProps> = ({
             bucketIndex = 16 + Math.min(15, Math.floor(frac * 16));
           }
 
-          buckets[bucketIndex].push({
+          // DUAL-PHASE PARTITIONING:
+          // 40% are Primary Motion Particles (active during flight/scroll)
+          // 60% are Crystallization Particles (smoothly added as text forms so text never looks blurry/pixelated)
+          const isPrimary = (particleCount % 5 < 2);
+
+          const p: Particle = {
             x: screenX,
             y: screenY,
             originX: screenX,
@@ -296,12 +315,20 @@ export const ParticleCanvas: React.FC<ParticleCanvasProps> = ({
             bloomSin: Math.sin(bloomAngle),
             curlVx: -Math.sin(bloomAngle) * (Math.random() * 0.8 + 0.6) * swirlSense,
             curlVy: Math.cos(bloomAngle) * (Math.random() * 0.8 + 0.6) * swirlSense,
-          });
+            isPrimary,
+          };
+
+          if (isPrimary) {
+            primaryBuckets[bucketIndex].push(p);
+          } else {
+            crystalBuckets[bucketIndex].push(p);
+          }
         }
       }
     }
 
-    bucketsRef.current = buckets;
+    primaryBucketsRef.current = primaryBuckets;
+    crystalBucketsRef.current = crystalBuckets;
 
     // Ambient floating aroma motes
     const motes: AromaMote[] = [];
@@ -330,9 +357,7 @@ export const ParticleCanvas: React.FC<ParticleCanvasProps> = ({
     const originX = clickX !== undefined ? clickX : width / 2;
     const originY = clickY !== undefined ? clickY : height * 0.5;
 
-    const buckets = bucketsRef.current;
-    for (let b = 0; b < NUM_BUCKETS; b++) {
-      const list = buckets[b];
+    const applyBlast = (list: Particle[]) => {
       const len = list.length;
       for (let i = 0; i < len; i++) {
         const p = list[i];
@@ -347,6 +372,11 @@ export const ParticleCanvas: React.FC<ParticleCanvasProps> = ({
         p.vx += Math.cos(angle) * speed + p.curlVx * (Math.random() * 5);
         p.vy += Math.sin(angle) * speed - (Math.random() * 5 + 1.5);
       }
+    };
+
+    for (let b = 0; b < NUM_BUCKETS; b++) {
+      applyBlast(primaryBucketsRef.current[b]);
+      applyBlast(crystalBucketsRef.current[b]);
     }
 
     // Gracefully reassemble automatically after 0.85s
@@ -379,7 +409,7 @@ export const ParticleCanvas: React.FC<ParticleCanvasProps> = ({
     };
   }, [initParticles]);
 
-  // Silky smooth 60/120fps continuous physics loop with zero GC allocations
+  // Silky smooth 60/120fps continuous physics loop with dynamic particle density
   useEffect(() => {
     let active = true;
 
@@ -400,7 +430,8 @@ export const ParticleCanvas: React.FC<ParticleCanvasProps> = ({
       lastTimeRef.current = time;
 
       const mouse = mouseRef.current;
-      const buckets = bucketsRef.current;
+      const primaryBuckets = primaryBucketsRef.current;
+      const crystalBuckets = crystalBucketsRef.current;
       const bucketColors = bucketColorsRef.current;
       const motes = motesRef.current;
       const targetScroll = scrollProgressRef.current;
@@ -409,6 +440,14 @@ export const ParticleCanvas: React.FC<ParticleCanvasProps> = ({
       const lerpSpeed = 1 - Math.exp(-14 * dt);
       currentScrollBloomRef.current += (targetScroll - currentScrollBloomRef.current) * lerpSpeed;
       const bloom = currentScrollBloomRef.current;
+
+      // Dynamic density calculation:
+      // When scrolling, bloom > 0.05 -> reduce active particles for blazing 120 FPS
+      // When text is forming (bloom < 0.15) -> smoothly increase particle count to crystallize typography
+      const isMotion = bloom > 0.04 || mouse.isHovering || isExplodedRef.current;
+      const targetSettle = isMotion ? 0 : 1;
+      settleProgressRef.current += (targetSettle - settleProgressRef.current) * (1 - Math.exp(-9 * dt));
+      const settle = settleProgressRef.current;
 
       // Vanish factor on scroll
       const vanishFactor = Math.max(0, 1 - Math.pow(bloom * 1.6, 1.25));
@@ -426,7 +465,7 @@ export const ParticleCanvas: React.FC<ParticleCanvasProps> = ({
       const springK = isExplodedRef.current ? 0.025 : 0.16;
       const friction = isExplodedRef.current ? 0.93 : 0.78;
 
-      // 1. Ambient Aroma Embers (fast single-path render)
+      // 1. Ambient Aroma Embers
       if (vanishFactor > 0.05) {
         ctx.fillStyle = `rgba(255, 140, 36, ${0.35 * vanishFactor})`;
         ctx.beginPath();
@@ -461,7 +500,7 @@ export const ParticleCanvas: React.FC<ParticleCanvasProps> = ({
         ctx.fill();
       }
 
-      // 2. High-Performance Batched Particle Physics & Draw (32 batched paths per frame)
+      // 2. High-Performance Batched Particle Physics & Draw
       if (vanishFactor > 0.005) {
         ctx.globalAlpha = vanishFactor;
 
@@ -469,15 +508,8 @@ export const ParticleCanvas: React.FC<ParticleCanvasProps> = ({
         const vaporLiftBase = -bloom * 340;
         const curlBase = 45 * bloom;
 
-        for (let b = 0; b < NUM_BUCKETS; b++) {
-          const list = buckets[b];
+        const updateAndDrawList = (list: Particle[]) => {
           const len = list.length;
-          if (len === 0) continue;
-
-          // Set fillStyle ONCE per bucket (32 times total, not 25,000 times)
-          ctx.fillStyle = bucketColors[b] || '#ffffff';
-          ctx.beginPath();
-
           for (let i = 0; i < len; i++) {
             const p = list[i];
 
@@ -491,7 +523,7 @@ export const ParticleCanvas: React.FC<ParticleCanvasProps> = ({
               targetY += p.bloomSin * dist + vaporLiftBase * p.bloomLift + p.curlVy * curlBase;
             }
 
-            // High-speed bounding-box rejection for mouse hover (eliminates 95% of math)
+            // High-speed bounding-box rejection for mouse hover
             if (mouseHover) {
               const dx = p.x - mouseX;
               if (dx > -repelRadius && dx < repelRadius) {
@@ -522,7 +554,7 @@ export const ParticleCanvas: React.FC<ParticleCanvasProps> = ({
             p.x += p.vx;
             p.y += p.vy;
 
-            // Micro-snapping when at rest to eliminate microscopic sub-pixel float jitter
+            // Micro-snapping when at rest to eliminate microscopic jitter
             if (
               !mouseHover &&
               bloom <= 0.001 &&
@@ -540,8 +572,43 @@ export const ParticleCanvas: React.FC<ParticleCanvasProps> = ({
 
             ctx.rect(p.x, p.y, p.size, p.size);
           }
+        };
 
+        // Render Primary Motion Particles (always active)
+        for (let b = 0; b < NUM_BUCKETS; b++) {
+          const list = primaryBuckets[b];
+          if (list.length === 0) continue;
+          ctx.fillStyle = bucketColors[b] || '#ffffff';
+          ctx.beginPath();
+          updateAndDrawList(list);
           ctx.fill();
+        }
+
+        // Render Crystallization Particles:
+        // As requested: "when we scroll then reduce the particales but then when text is almost forms then increase the particles there.. so text not look blurry or pixelated"
+        // Only rendered as text coalesces back to home (`settle > 0.05`), reducing GPU work during scroll
+        if (settle > 0.02) {
+          ctx.globalAlpha = vanishFactor * settle;
+          for (let b = 0; b < NUM_BUCKETS; b++) {
+            const list = crystalBuckets[b];
+            if (list.length === 0) continue;
+            ctx.fillStyle = bucketColors[b] || '#ffffff';
+            ctx.beginPath();
+            updateAndDrawList(list);
+            ctx.fill();
+          }
+        }
+
+        // 3. Final Razor-Sharp Anti-Aliased Lock:
+        // When settled at rest, seamlessly blend in the crisp offscreen vector canvas so the text is 100% vector-sharp and NEVER blurry or pixelated!
+        if (settle > 0.55 && crispTextCanvasRef.current && bloom <= 0.005) {
+          const lockAlpha = Math.min(Math.max((settle - 0.55) / 0.45, 0), 1) * vanishFactor;
+          if (lockAlpha > 0.01) {
+            ctx.save();
+            ctx.globalAlpha = lockAlpha * 0.95;
+            ctx.drawImage(crispTextCanvasRef.current, 0, 0, width, height);
+            ctx.restore();
+          }
         }
 
         ctx.globalAlpha = 1.0;
