@@ -1,8 +1,6 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { BlueberryBlobs } from './components/BlueberryBlobs';
-import { ParticleCanvas } from './components/ParticleCanvas';
+import { useEffect, useState, useRef } from 'react';
+import { GlassTextHero } from './components/GlassTextHero';
 import { FullScreenVideo } from './components/FullScreenVideo';
-import { ChevronDown } from 'lucide-react';
 
 export default function App() {
   const [scrollProgress, setScrollProgress] = useState(0);
@@ -35,18 +33,18 @@ export default function App() {
       const scrollY = window.scrollY || document.documentElement.scrollTop;
       const maxScroll = Math.max(
         document.documentElement.scrollHeight - window.innerHeight,
-        350
+        400
       );
       const progress = Math.min(Math.max(scrollY / maxScroll, 0), 1);
       scheduleProgressUpdate(progress);
       targetScrollRef.current = scrollY;
     };
 
-    // 2. Wheel Event Listener (Immediate trackpad & mouse wheel response in sandbox iframes)
+    // 2. Wheel Event Listener (Trackpad & mouse wheel response in iframe sandbox)
     const handleWheel = (e: WheelEvent) => {
       const maxScroll = Math.max(
         document.documentElement.scrollHeight - window.innerHeight,
-        350
+        400
       );
       const currentScroll = window.scrollY || targetScrollRef.current;
       const newScroll = Math.min(Math.max(currentScroll + e.deltaY * 0.9, 0), maxScroll);
@@ -68,7 +66,7 @@ export default function App() {
 
       const maxScroll = Math.max(
         document.documentElement.scrollHeight - window.innerHeight,
-        350
+        400
       );
       const currentScroll = window.scrollY || targetScrollRef.current;
       const newScroll = Math.min(Math.max(currentScroll + deltaY * 2.2, 0), maxScroll);
@@ -82,17 +80,17 @@ export default function App() {
     const handleKeyDown = (e: KeyboardEvent) => {
       const maxScroll = Math.max(
         document.documentElement.scrollHeight - window.innerHeight,
-        350
+        400
       );
       const currentScroll = window.scrollY || targetScrollRef.current;
 
       if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') {
         e.preventDefault();
-        const newScroll = Math.min(currentScroll + 180, maxScroll);
+        const newScroll = Math.min(currentScroll + 200, maxScroll);
         window.scrollTo({ top: newScroll, behavior: 'smooth' });
       } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
         e.preventDefault();
-        const newScroll = Math.max(currentScroll - 180, 0);
+        const newScroll = Math.max(currentScroll - 200, 0);
         window.scrollTo({ top: newScroll, behavior: 'smooth' });
       }
     };
@@ -113,73 +111,43 @@ export default function App() {
     };
   }, []);
 
-  // Screen fades out smoothly to pure black on scroll
-  // By scrollProgress >= 0.75, the screen is 100% pure black with no remaining elements
-  const blackFadeProgress = Math.min(
-    Math.max((scrollProgress - (isMobile ? 0.20 : 0.25)) / (isMobile ? 0.50 : 0.55), 0),
-    1
-  );
+  // Smooth video reveal curve: starts fading in at 0.12, fully visible by 0.70
+  const videoOpacity = Math.min(Math.max((scrollProgress - 0.12) / 0.58, 0), 1);
 
-  // When scrolled fully down (>= 0.88), transition into fullscreen video playback
-  const isVideoActive = scrollProgress >= 0.88;
-
-  const handleCloseVideo = () => {
-    targetScrollRef.current = 0;
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    setScrollProgress(0);
-  };
-
-  const handleScrollToBottom = () => {
+  const handleExploreVideo = () => {
     const maxScroll = Math.max(
       document.documentElement.scrollHeight - window.innerHeight,
-      350
+      400
     );
     window.scrollTo({ top: maxScroll, behavior: 'smooth' });
+  };
+
+  const handleReturnToTop = () => {
+    targetScrollRef.current = 0;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
     <div
       className={`relative w-full bg-black ${
-        isMobile ? 'min-h-[185vh]' : 'min-h-[230vh]'
+        isMobile ? 'min-h-[190vh]' : 'min-h-[220vh]'
       }`}
     >
       {/* Pinned Fullscreen Viewport */}
       <div className="fixed inset-0 w-full h-full overflow-hidden flex items-center justify-center bg-black">
-        {/* Ambient atmospheric blueberry/indigo/violet nebulae that fade out to pure black */}
-        <BlueberryBlobs scrollProgress={scrollProgress} />
-
-        {/* Center Text: "What if ChatGPT could generate Smells?" in the dark introduction theme */}
-        {/* Particles scatter away outward into space on scroll */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-auto">
-          <ParticleCanvas scrollProgress={scrollProgress} />
-        </div>
-
-        {/* Pure Black Fadeout Layer: As you scroll down, screen smoothly transitions into 100% pure black */}
-        <div
-          className="absolute inset-0 pointer-events-none bg-black transition-opacity duration-150 ease-out z-20"
-          style={{
-            opacity: blackFadeProgress,
-          }}
-        />
-
-        {/* Bottom subtle scroll prompt (visible only at the top) */}
-        {scrollProgress < 0.15 && (
-          <button
-            onClick={handleScrollToBottom}
-            className="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center gap-1.5 text-white/50 hover:text-white transition-all duration-300 cursor-pointer group"
-          >
-            <span className="text-[11px] tracking-widest uppercase font-mono">
-              Scroll Down
-            </span>
-            <ChevronDown className="w-4 h-4 animate-bounce text-white/60 group-hover:text-white" />
-          </button>
-        )}
-
-        {/* Fullscreen Video Player: Activates when scrolled fully down */}
+        {/* Fullscreen Video Player - Streamed in high performance H.264 */}
         <FullScreenVideo
-          isVisible={isVideoActive}
-          onClose={handleCloseVideo}
+          opacity={videoOpacity}
+          onReturnToTop={handleReturnToTop}
         />
+
+        {/* iOS Glassmorphic Text Hero: ONLY the text "What if ChatGPT could generate Smells?" */}
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
+          <GlassTextHero
+            scrollProgress={scrollProgress}
+            onExploreVideo={handleExploreVideo}
+          />
+        </div>
       </div>
     </div>
   );

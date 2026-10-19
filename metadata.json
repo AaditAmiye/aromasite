@@ -1,6 +1,6 @@
 {
-  "name": "Remix Olfactory AI - What If ChatGPT Could Generate Smell",
-  "description": "An interactive sensory experience exploring what happens when artificial intelligence synthesizes scent molecules, featuring organic blueberry blobs and text formed by reacting aroma particles.",
-  "requestFramePermissions": [],
-  "majorCapabilities": []
+  "name": "ChatGPT Smells — Sensory Experience",
+  "description": "An interactive sensory concept experience exploring what if ChatGPT could generate smells, featuring iOS lockscreen glass typography and an immersive perfume film.",
+  "permissions": [],
+  "capabilities": []
 }
