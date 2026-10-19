@@ -296,7 +296,7 @@ export const IntroducingScene: React.FC<IntroducingSceneProps> = ({ scrollProgre
       ctx.clearRect(0, 0, width, height);
 
       const minTrigger = isMobile ? 0.14 : 0.20;
-      if (scrollProgress < minTrigger) {
+      if (scrollProgress < minTrigger || scrollProgress >= 0.99) {
         animationFrameId.current = requestAnimationFrame(render);
         return;
       }
@@ -310,12 +310,17 @@ export const IntroducingScene: React.FC<IntroducingSceneProps> = ({ scrollProgre
         ? Math.min(Math.max((scrollProgress - 0.34) / 0.24, 0), 1)
         : Math.min(Math.max((scrollProgress - 0.54) / 0.36, 0), 1);
 
+      // Gentle fade out as scroll reaches the bottom (0.80 -> 0.98)
+      const fadeOutRatio = Math.min(Math.max((scrollProgress - 0.80) / 0.18, 0), 1);
+      const fadeOut = Math.max(0, 1 - Math.pow(fadeOutRatio, 1.25));
+
       const mouse = mouseRef.current;
       const particles = particlesRef.current;
       const now = Date.now();
 
-      // Pure glowing starlight white particles make 100% of the text
+      // Pure glowing starlight white particles with gentle fade out into the dark void
       ctx.fillStyle = '#ffffff';
+      ctx.globalAlpha = fadeOut;
       ctx.beginPath();
 
       for (let i = 0; i < particles.length; i++) {
@@ -440,10 +445,16 @@ export const IntroducingScene: React.FC<IntroducingSceneProps> = ({ scrollProgre
   };
 
   const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
-  const containerOpacity = Math.min(
+  const fadeIn = Math.min(
     Math.max((scrollProgress - (isMobile ? 0.16 : 0.22)) / (isMobile ? 0.12 : 0.16), 0),
     1
   );
+
+  // Gentle fade out when fully scrolling down (between 0.80 and 0.98)
+  const fadeOutRatio = Math.min(Math.max((scrollProgress - 0.80) / 0.18, 0), 1);
+  const fadeOut = Math.max(0, 1 - Math.pow(fadeOutRatio, 1.25));
+
+  const containerOpacity = fadeIn * fadeOut;
 
   return (
     <div
@@ -451,7 +462,8 @@ export const IntroducingScene: React.FC<IntroducingSceneProps> = ({ scrollProgre
       className="absolute inset-0 flex items-center justify-center select-none pointer-events-none transition-opacity duration-150"
       style={{
         opacity: containerOpacity,
-        pointerEvents: scrollProgress > (isMobile ? 0.22 : 0.28) ? 'auto' : 'none',
+        pointerEvents:
+          scrollProgress > (isMobile ? 0.22 : 0.28) && scrollProgress < 0.96 ? 'auto' : 'none',
       }}
     >
       <canvas
