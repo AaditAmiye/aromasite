@@ -1,6 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { BlueberryBlobs } from './components/BlueberryBlobs';
 import { ParticleCanvas } from './components/ParticleCanvas';
+import { FullScreenVideo } from './components/FullScreenVideo';
+import { ChevronDown } from 'lucide-react';
 
 export default function App() {
   const [scrollProgress, setScrollProgress] = useState(0);
@@ -118,10 +120,27 @@ export default function App() {
     1
   );
 
+  // When scrolled fully down (>= 0.88), transition into fullscreen video playback
+  const isVideoActive = scrollProgress >= 0.88;
+
+  const handleCloseVideo = () => {
+    targetScrollRef.current = 0;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    setScrollProgress(0);
+  };
+
+  const handleScrollToBottom = () => {
+    const maxScroll = Math.max(
+      document.documentElement.scrollHeight - window.innerHeight,
+      350
+    );
+    window.scrollTo({ top: maxScroll, behavior: 'smooth' });
+  };
+
   return (
     <div
       className={`relative w-full bg-black ${
-        isMobile ? 'min-h-[175vh]' : 'min-h-[220vh]'
+        isMobile ? 'min-h-[185vh]' : 'min-h-[230vh]'
       }`}
     >
       {/* Pinned Fullscreen Viewport */}
@@ -129,7 +148,7 @@ export default function App() {
         {/* Ambient atmospheric blueberry/indigo/violet nebulae that fade out to pure black */}
         <BlueberryBlobs scrollProgress={scrollProgress} />
 
-        {/* Center Text: "What if ChatGPT can generate Smells?" in the dark introduction theme */}
+        {/* Center Text: "What if ChatGPT could generate Smells?" in the dark introduction theme */}
         {/* Particles scatter away outward into space on scroll */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-auto">
           <ParticleCanvas scrollProgress={scrollProgress} />
@@ -141,6 +160,25 @@ export default function App() {
           style={{
             opacity: blackFadeProgress,
           }}
+        />
+
+        {/* Bottom subtle scroll prompt (visible only at the top) */}
+        {scrollProgress < 0.15 && (
+          <button
+            onClick={handleScrollToBottom}
+            className="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center gap-1.5 text-white/50 hover:text-white transition-all duration-300 cursor-pointer group"
+          >
+            <span className="text-[11px] tracking-widest uppercase font-mono">
+              Scroll Down
+            </span>
+            <ChevronDown className="w-4 h-4 animate-bounce text-white/60 group-hover:text-white" />
+          </button>
+        )}
+
+        {/* Fullscreen Video Player: Activates when scrolled fully down */}
+        <FullScreenVideo
+          isVisible={isVideoActive}
+          onClose={handleCloseVideo}
         />
       </div>
     </div>
