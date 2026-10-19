@@ -18,6 +18,16 @@ export default function App() {
   }, []);
 
   useEffect(() => {
+    let rafId: number | null = null;
+
+    const scheduleProgressUpdate = (progress: number) => {
+      if (rafId !== null) cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(() => {
+        setScrollProgress(progress);
+        rafId = null;
+      });
+    };
+
     // 1. Native Window Scroll Listener
     const handleScroll = () => {
       const scrollY = window.scrollY || document.documentElement.scrollTop;
@@ -26,7 +36,7 @@ export default function App() {
         350
       );
       const progress = Math.min(Math.max(scrollY / maxScroll, 0), 1);
-      setScrollProgress(progress);
+      scheduleProgressUpdate(progress);
       targetScrollRef.current = scrollY;
     };
 
@@ -41,7 +51,7 @@ export default function App() {
       targetScrollRef.current = newScroll;
 
       window.scrollTo({ top: newScroll, behavior: 'instant' as ScrollBehavior });
-      setScrollProgress(newScroll / maxScroll);
+      scheduleProgressUpdate(newScroll / maxScroll);
     };
 
     // 3. Touch Drag Event for Mobile
@@ -63,7 +73,7 @@ export default function App() {
       targetScrollRef.current = newScroll;
 
       window.scrollTo({ top: newScroll, behavior: 'instant' as ScrollBehavior });
-      setScrollProgress(newScroll / maxScroll);
+      scheduleProgressUpdate(newScroll / maxScroll);
     };
 
     // 4. Keyboard Navigation (Arrow keys, space, page down)
@@ -92,6 +102,7 @@ export default function App() {
     window.addEventListener('keydown', handleKeyDown);
 
     return () => {
+      if (rafId !== null) cancelAnimationFrame(rafId);
       window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('wheel', handleWheel);
       window.removeEventListener('touchstart', handleTouchStart);

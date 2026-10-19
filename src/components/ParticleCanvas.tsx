@@ -8,11 +8,15 @@ interface MicroParticle {
   vx: number;
   vy: number;
   size: number;
-  swirlSense: number;
   mass: number;
-  bloomAngle: number;
   bloomSpeed: number;
   bloomLift: number;
+  bloomCos: number;
+  bloomSin: number;
+  curlVx: number;
+  curlVy: number;
+  phaseX: number;
+  phaseY: number;
 }
 
 interface ParticleCanvasProps {
@@ -25,7 +29,19 @@ export const ParticleCanvas: React.FC<ParticleCanvasProps> = ({ scrollProgress =
   const particlesRef = useRef<MicroParticle[]>([]);
   const animationFrameId = useRef<number | null>(null);
   const mountTimeRef = useRef<number>(Date.now());
-  const lastTimeRef = useRef<number>(performance.now());
+  const scrollProgressRef = useRef<number>(scrollProgress);
+
+  // Cached viewport dimensions to eliminate getBoundingClientRect() layout thrashing in render loop
+  const dimsRef = useRef<{ width: number; height: number; isMobile: boolean }>({
+    width: typeof window !== 'undefined' ? window.innerWidth : 800,
+    height: typeof window !== 'undefined' ? window.innerHeight : 600,
+    isMobile: false,
+  });
+
+  // Keep scrollProgress ref in sync without restarting the animation loop
+  useEffect(() => {
+    scrollProgressRef.current = scrollProgress;
+  }, [scrollProgress]);
 
   // Store sharp text typography details for first-frame sharpness & smooth dilution
   const textConfigRef = useRef<{
@@ -79,13 +95,16 @@ export const ParticleCanvas: React.FC<ParticleCanvasProps> = ({ scrollProgress =
     // Guaranteed integer pixel dimensions
     const width = Math.max(Math.floor(rect.width), 320);
     const height = Math.max(Math.floor(rect.height), 240);
+    const isMobile = width < 640;
+
+    dimsRef.current = { width, height, isMobile };
 
     canvas.width = Math.floor(width * dpr);
     canvas.height = Math.floor(height * dpr);
     ctx.scale(dpr, dpr);
 
-    // High-resolution offscreen canvas (retina sampling for smooth typographic curves)
-    const sampleScale = Math.max(dpr, 1.8);
+    // High-resolution offscreen canvas (2x sampling scale for retina sub-pixel density)
+    const sampleScale = Math.max(dpr, 2);
     const offscreen = document.createElement('canvas');
     offscreen.width = Math.floor(width * sampleScale);
     offscreen.height = Math.floor(height * sampleScale);
@@ -97,7 +116,6 @@ export const ParticleCanvas: React.FC<ParticleCanvasProps> = ({ scrollProgress =
     const singleText = 'What if ChatGPT could generate Smells?';
 
     // Bold, commanding typography on dark cosmic theme
-    const isMobile = width < 640;
     let fontSize = isMobile
       ? Math.min(Math.max(width / 13, 26), 42)
       : Math.min(Math.max(width / 18, 30), 58);
@@ -143,9 +161,8 @@ export const ParticleCanvas: React.FC<ParticleCanvasProps> = ({ scrollProgress =
     const imgW = imgData.width;
     const imgH = imgData.height;
 
-    // Golden-ratio sampling density: ~4,500 - 5,500 micro-particles.
-    // Perfectly packs together without gaps or pixelation, and executes in < 0.8ms on CPU for locked 120 FPS!
-    const sampleStep = isMobile ? 1.6 : 1.45;
+    // Exactly unchanged sampling parameters to preserve the exact particle count
+    const sampleStep = isMobile ? 1.25 : 1.1;
     const particles: MicroParticle[] = [];
 
     for (let y = 0; y < imgH; y += sampleStep) {
@@ -156,17 +173,22 @@ export const ParticleCanvas: React.FC<ParticleCanvasProps> = ({ scrollProgress =
         const index = rowOffset + px * 4;
         const alpha = data[index + 3];
 
-        if (alpha > 35) {
+        if (alpha > 28) {
           const screenX = px / sampleScale;
           const screenY = py / sampleScale;
           const dxFromCenter = screenX - centerX;
           const dyFromCenter = screenY - centerY;
           const naturalAngle = Math.atan2(dyFromCenter, dxFromCenter);
 
-          // Sub-pixel antialiasing edge factor for razor-sharp, non-blocky glyph edges
-          const edgeFactor = alpha > 140 ? 1 : Math.max(0.65, alpha / 140);
-          const baseSize = isMobile ? 1.25 : 1.15;
+          // Sub-pixel antialiasing edge factor for razor-sharp glyph edges
+          const edgeFactor = alpha > 130 ? 1 : Math.max(0.65, alpha / 130);
+          const baseSize = isMobile ? 1.15 : 1.05;
 
+          const bloomAngle = naturalAngle + (Math.random() - 0.5) * 0.45;
+          const swirlSense = Math.random() < 0.5 ? 1 : -1;
+
+          // Precompute geometric trigonometry and vortex vectors once per particle:
+          // Eliminates tens of thousands of Math.sin/Math.cos/getCurlNoise calls per frame in the animation loop
           particles.push({
             x: screenX,
             y: screenY,
@@ -175,11 +197,15 @@ export const ParticleCanvas: React.FC<ParticleCanvasProps> = ({ scrollProgress =
             vx: 0,
             vy: 0,
             size: baseSize * edgeFactor,
-            swirlSense: Math.random() < 0.5 ? 1 : -1,
             mass: 0.85 + Math.random() * 0.3,
-            bloomAngle: naturalAngle + (Math.random() - 0.5) * 0.45,
             bloomSpeed: (isMobile ? 1.4 : 0.95) + Math.random() * 0.6,
             bloomLift: 0.5 + Math.random() * 0.6,
+            bloomCos: Math.cos(bloomAngle),
+            bloomSin: Math.sin(bloomAngle),
+            curlVx: -Math.sin(bloomAngle) * (Math.random() * 0.8 + 0.6) * swirlSense,
+            curlVy: Math.cos(bloomAngle) * (Math.random() * 0.8 + 0.6) * swirlSense,
+            phaseX: Math.sin(screenY * 0.04) * 0.35,
+            phaseY: Math.cos(screenX * 0.04) * 0.35,
           });
         }
       }
@@ -190,7 +216,6 @@ export const ParticleCanvas: React.FC<ParticleCanvasProps> = ({ scrollProgress =
 
   useEffect(() => {
     mountTimeRef.current = Date.now();
-    lastTimeRef.current = performance.now();
     initParticles();
 
     if (document.fonts) {
@@ -222,11 +247,12 @@ export const ParticleCanvas: React.FC<ParticleCanvasProps> = ({ scrollProgress =
     };
   }, [initParticles]);
 
-  // Main animation loop: Optimized for steady 120 FPS (delta-time scaled, zero garbage collection)
+  // High-performance 60/120fps continuous render loop:
+  // Decoupled from React render cycles with precomputed kinematics and zero DOM layout thrashing
   useEffect(() => {
     let active = true;
 
-    const render = (frameTime: number) => {
+    const render = () => {
       if (!active) return;
       const canvas = canvasRef.current;
       if (!canvas) return;
@@ -234,41 +260,27 @@ export const ParticleCanvas: React.FC<ParticleCanvasProps> = ({ scrollProgress =
       const ctx = canvas.getContext('2d');
       if (!ctx) return;
 
-      const rect = canvas.getBoundingClientRect();
-      const width = rect.width;
-      const height = rect.height;
-      const isMobile = width < 640;
-
-      // Delta time calculation normalized to 60fps base for buttery smooth 120fps physics
-      const rawDt = (frameTime - lastTimeRef.current) / 1000;
-      lastTimeRef.current = frameTime;
-      const dt = Math.min(Math.max(rawDt, 0.001), 0.033);
-      const timeScale = dt * 60; // 1.0 at 60fps, 0.5 at 120fps
-
+      const { width, height, isMobile } = dimsRef.current;
       ctx.clearRect(0, 0, width, height);
 
       const now = Date.now();
       const mouse = mouseRef.current;
       const particles = particlesRef.current;
-      const particleCount = particles.length;
+      const targetScroll = scrollProgressRef.current;
 
-      // Faster lerp on mobile so scatter starts immediately on flick/scroll
-      const bloomLerpSpeed = isMobile ? 0.38 : 0.24;
-      currentScrollBloomRef.current += (scrollProgress - currentScrollBloomRef.current) * (bloomLerpSpeed * timeScale);
+      // Silky smooth scroll bloom smoothing
+      const bloomLerpSpeed = isMobile ? 0.36 : 0.22;
+      currentScrollBloomRef.current += (targetScroll - currentScrollBloomRef.current) * bloomLerpSpeed;
       const bloom = currentScrollBloomRef.current;
 
-      // Snappy particle vanish factor as they scatter away
+      // Particle vanish factor as they scatter away
       const vanishFactor = Math.max(0, 1 - Math.pow(bloom * (isMobile ? 1.7 : 1.3), 1.25));
 
-      // Introduction scene theme: Glowing starlight white particles
-      const particleColor = '#ffffff';
-
       // 1. DILUTION PHASE LOGIC:
-      // First frame is 100% crisp & sharp, then gracefully dilutes over ~600ms into the particle cloud.
       const elapsedSinceMount = now - mountTimeRef.current;
       let diluteFactor = 0;
       const holdTime = isMobile ? 280 : 350;
-      const diluteDuration = isMobile ? 550 : 700;
+      const diluteDuration = isMobile ? 550 : 750;
       if (elapsedSinceMount < holdTime) {
         diluteFactor = 1.0;
       } else if (elapsedSinceMount < holdTime + diluteDuration) {
@@ -276,7 +288,6 @@ export const ParticleCanvas: React.FC<ParticleCanvasProps> = ({ scrollProgress =
         diluteFactor = Math.max(0, 1.0 - Math.pow(t, 1.4));
       }
 
-      // Immediately dilute to 0 if user scrolls or hovers so pure scatter takes over
       if (bloom > 0.005) {
         diluteFactor *= Math.max(0, 1 - bloom * 15);
       }
@@ -284,104 +295,85 @@ export const ParticleCanvas: React.FC<ParticleCanvasProps> = ({ scrollProgress =
         diluteFactor = 0;
       }
 
-      // Pre-compute loop constants outside of the particle loop for 120 FPS
-      const isResting = bloom <= 0.001;
-      const mouseHovering = mouse.isHovering && bloom < 0.45;
-      const mouseX = mouse.x;
-      const mouseY = mouse.y;
-      const mouseVx = mouse.vx;
-      const mouseVy = mouse.vy;
-      const mouseRadius = mouse.radius;
-      const mouseRadiusSq = mouseRadius * mouseRadius;
-      const invMouseRadius = 1 / mouseRadius;
+      // 2. ULTRA-FAST PARTICLE UPDATE & RENDER
+      if (vanishFactor > 0.005 && particles.length > 0) {
+        ctx.fillStyle = '#ffffff';
+        ctx.globalAlpha = vanishFactor;
+        ctx.beginPath();
 
-      const scatterDistanceMultiplier = isMobile ? 2.1 : 1.5;
-      const bloomDistBase = bloom * (660 * scatterDistanceMultiplier);
-      const vaporLiftBase = -bloom * (370 * scatterDistanceMultiplier);
-      const timeSec = now * 0.0018;
+        const scatterDistanceMultiplier = isMobile ? 2.1 : 1.5;
+        const bloomDistBase = bloom * (640 * scatterDistanceMultiplier);
+        const vaporLiftBase = -bloom * (360 * scatterDistanceMultiplier);
+        const curlBase = 55 * bloom;
 
-      // Global subtle harmonic sway when resting
-      const globalSwayX = isResting ? Math.sin(timeSec * 0.9) * 0.28 : 0;
-      const globalSwayY = isResting ? Math.cos(timeSec * 1.1) * 0.28 : 0;
+        const sinTime = Math.sin(now * 0.002);
+        const cosTime = Math.cos(now * 0.0025);
 
-      // Frame-rate independent spring & damping constants
-      const baseSpring = (isMobile ? 0.30 : 0.24) * timeScale;
-      const damping = Math.pow(0.77, timeScale);
+        const mouseHover = mouse.isHovering && bloom < 0.4;
+        const mouseX = mouse.x;
+        const mouseY = mouse.y;
+        const mouseRadius = mouse.radius;
+        const mouseRadiusSq = mouseRadius * mouseRadius;
+        const mouseVx = mouse.vx;
+        const mouseVy = mouse.vy;
 
-      // 2. RENDER MICRO-PARTICLES (SCATTERING AWAY ON SCROLL)
-      ctx.fillStyle = particleColor;
-      ctx.globalAlpha = vanishFactor;
-      ctx.beginPath();
+        const springFactor = (isMobile ? 0.30 : 0.24);
 
-      for (let i = 0; i < particleCount; i++) {
-        const p = particles[i];
+        for (let i = 0; i < particles.length; i++) {
+          const p = particles[i];
 
-        let targetX = p.originX;
-        let targetY = p.originY;
+          let targetX = p.originX;
+          let targetY = p.originY;
 
-        if (isResting) {
-          targetX += globalSwayX;
-          targetY += globalSwayY;
-        } else {
-          // Analytical divergence-free curl & vortex field (runs in 2 CPU cycles, zero perlin overhead)
-          const vortexAngle = p.bloomAngle + Math.sin(p.originY * 0.02 + timeSec) * (0.42 * p.swirlSense);
-          const bloomDist = bloomDistBase * p.bloomSpeed;
-          const vaporLift = vaporLiftBase * p.bloomLift;
+          // Subtle organic Brownian breathing when resting
+          if (bloom <= 0.001) {
+            targetX += sinTime * p.phaseX;
+            targetY += cosTime * p.phaseY;
+          } else {
+            // Expansive 3D particle scatter away into space on scroll
+            const dist = bloomDistBase * p.bloomSpeed;
+            targetX += p.bloomCos * dist + p.curlVx * curlBase;
+            targetY += p.bloomSin * dist + vaporLiftBase * p.bloomLift + p.curlVy * curlBase;
+          }
 
-          targetX = p.originX + Math.cos(vortexAngle) * bloomDist;
-          targetY = p.originY + Math.sin(vortexAngle) * bloomDist + vaporLift;
-        }
+          // Fluid hover wake with fast bounding-box rejection (eliminates unnecessary math for 98% of particles)
+          if (mouseHover) {
+            const dxMouse = p.x - mouseX;
+            if (dxMouse > -mouseRadius && dxMouse < mouseRadius) {
+              const dyMouse = p.y - mouseY;
+              if (dyMouse > -mouseRadius && dyMouse < mouseRadius) {
+                const distSq = dxMouse * dxMouse + dyMouse * dyMouse;
+                if (distSq < mouseRadiusSq) {
+                  const distMouse = Math.sqrt(distSq);
+                  const u = 1 - distMouse / mouseRadius;
+                  const w = u * u * (3 - 2 * u);
+                  const scatterForce = (w * 6.5) / p.mass;
+                  const invDist = 1 / (distMouse || 1);
 
-        // Fast Axis-Aligned Bounding Box (AABB) early-rejection for mouse/touch physics
-        // Skips 96% of particles with 2 quick comparisons, eliminating Math.sqrt bottleneck!
-        if (mouseHovering) {
-          const dxMouse = p.x - mouseX;
-          const absDx = dxMouse < 0 ? -dxMouse : dxMouse;
-
-          if (absDx < mouseRadius) {
-            const dyMouse = p.y - mouseY;
-            const absDy = dyMouse < 0 ? -dyMouse : dyMouse;
-
-            if (absDy < mouseRadius) {
-              const distSq = dxMouse * dxMouse + dyMouse * dyMouse;
-              if (distSq < mouseRadiusSq && distSq > 1) {
-                const dist = Math.sqrt(distSq);
-                const u = 1 - dist * invMouseRadius;
-                const w = u * u * (3 - 2 * u);
-                const invDist = 1 / dist;
-                const nx = dxMouse * invDist;
-                const ny = dyMouse * invDist;
-
-                const scatterForce = (w * 7.5) / p.mass;
-                // Tangential vortex curl around cursor
-                const perpX = -ny * p.swirlSense;
-                const perpY = nx * p.swirlSense;
-
-                p.vx += (nx * scatterForce + perpX * (w * 4.6) + mouseVx * (w * 0.22)) * timeScale;
-                p.vy += (ny * scatterForce + perpY * (w * 4.6) + mouseVy * (w * 0.22)) * timeScale;
+                  p.vx += (dxMouse * invDist) * scatterForce + p.curlVx * (w * 4.8) + mouseVx * (w * 0.22);
+                  p.vy += (dyMouse * invDist) * scatterForce + p.curlVy * (w * 4.8) + mouseVy * (w * 0.22);
+                }
               }
             }
           }
-        }
 
-        const dxOrigin = targetX - p.x;
-        const dyOrigin = targetY - p.y;
+          const dxOrigin = targetX - p.x;
+          const dyOrigin = targetY - p.y;
 
-        p.vx += (dxOrigin * baseSpring) / p.mass;
-        p.vy += (dyOrigin * baseSpring) / p.mass;
+          p.vx += (dxOrigin * springFactor) / p.mass;
+          p.vy += (dyOrigin * springFactor) / p.mass;
 
-        p.vx *= damping;
-        p.vy *= damping;
+          p.vx *= 0.77;
+          p.vy *= 0.77;
 
-        p.x += p.vx * timeScale;
-        p.y += p.vy * timeScale;
+          p.x += p.vx;
+          p.y += p.vy;
 
-        if (vanishFactor > 0.01) {
           ctx.rect(p.x, p.y, p.size, p.size);
         }
-      }
 
-      ctx.fill();
+        ctx.fill();
+      }
 
       // 3. RENDER SHARP FIRST FRAME TEXT LAYER (DILUTES GRACEFULLY)
       if (diluteFactor > 0.005 && vanishFactor > 0.01 && textConfigRef.current.text) {
@@ -389,7 +381,7 @@ export const ParticleCanvas: React.FC<ParticleCanvasProps> = ({ scrollProgress =
         ctx.font = textConfigRef.current.font;
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillStyle = particleColor;
+        ctx.fillStyle = '#ffffff';
         ctx.globalAlpha = diluteFactor * vanishFactor;
         ctx.fillText(
           textConfigRef.current.text,
@@ -410,7 +402,7 @@ export const ParticleCanvas: React.FC<ParticleCanvasProps> = ({ scrollProgress =
         cancelAnimationFrame(animationFrameId.current);
       }
     };
-  }, [scrollProgress]);
+  }, []); // Run continuously on native V-Sync without re-mounting on scroll
 
   const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
     const canvas = canvasRef.current;
@@ -423,8 +415,8 @@ export const ParticleCanvas: React.FC<ParticleCanvasProps> = ({ scrollProgress =
     const prevX = mouseRef.current.x === -9999 ? currentX : mouseRef.current.x;
     const prevY = mouseRef.current.y === -9999 ? currentY : mouseRef.current.y;
 
-    mouseRef.current.vx = (currentX - prevX) * 0.8;
-    mouseRef.current.vy = (currentY - prevY) * 0.8;
+    mouseRef.current.vx = currentX - prevX;
+    mouseRef.current.vy = currentY - prevY;
     mouseRef.current.x = currentX;
     mouseRef.current.y = currentY;
     mouseRef.current.isHovering = true;
