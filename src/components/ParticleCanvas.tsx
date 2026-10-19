@@ -9,15 +9,9 @@ interface Particle {
   vy: number;
   size: number;
   mass: number;
-  bloomSpeed: number;
-  bloomLift: number;
-  bloomCos: number;
-  bloomSin: number;
-  curlVx: number;
-  curlVy: number;
 }
 
-// Ambient floating aroma wisps and embers
+// Ambient floating aroma motes (subtle glowing orange embers)
 interface AromaMote {
   x: number;
   y: number;
@@ -44,15 +38,21 @@ export const ParticleCanvas: React.FC<ParticleCanvasProps> = ({
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
 
-  // Group particles into 32 pre-sorted color buckets for ultra-fast GPU batch rendering (zero GC pressure)
+  // Pre-rendered pristine text canvas (used when undisturbed for 100% vector-sharp text)
+  const offscreenTextCanvasRef = useRef<HTMLCanvasElement | null>(null);
+
+  // 32 pre-sorted color buckets for particle rendering (zero string allocations, zero GC stutter)
   const bucketsRef = useRef<Particle[][]>(Array.from({ length: NUM_BUCKETS }, () => []));
   const bucketColorsRef = useRef<string[]>([]);
   const motesRef = useRef<AromaMote[]>([]);
   const animationFrameId = useRef<number | null>(null);
+
   const isExplodedRef = useRef<boolean>(false);
   const scrollProgressRef = useRef<number>(scrollProgress);
-  const currentScrollBloomRef = useRef<number>(0);
   const lastTimeRef = useRef<number>(0);
+
+  // Track whether any particle is actively displaced or in motion
+  const isDisplacedRef = useRef<boolean>(false);
 
   useEffect(() => {
     scrollProgressRef.current = scrollProgress;
@@ -127,7 +127,7 @@ export const ParticleCanvas: React.FC<ParticleCanvasProps> = ({
     bucketColorsRef.current = colors;
   }, []);
 
-  // Rasterize the exact typography matching image_b5c7e97d.png
+  // Rasterize typography and populate particles
   const initParticles = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -165,7 +165,7 @@ export const ParticleCanvas: React.FC<ParticleCanvasProps> = ({
     const isMobile = width < 640;
     const isTablet = width >= 640 && width < 1024;
 
-    // Line 2 is commanding and larger than Line 1 (matching reference image)
+    // Line 2 is larger and bolder than Line 1 (matching reference image)
     let fontSize2 = isMobile
       ? Math.min(Math.max(width * 0.095, 34), 48)
       : isTablet
@@ -196,7 +196,7 @@ export const ParticleCanvas: React.FC<ParticleCanvasProps> = ({
     octx.textAlign = 'center';
     octx.textBaseline = 'middle';
 
-    // 1. RENDER LINE 1: "What if ChatGPT"
+    // 1. RENDER LINE 1: "What if ChatGPT" (Metallic silver gradient)
     const grad1 = octx.createLinearGradient(
       centerX,
       line1Y - fontSize1 * 0.52,
@@ -214,7 +214,7 @@ export const ParticleCanvas: React.FC<ParticleCanvasProps> = ({
     octx.letterSpacing = '-0.02em';
     octx.fillText(line1, centerX, line1Y);
 
-    // 2. RENDER LINE 2: "could generate Smells?"
+    // 2. RENDER LINE 2: "could generate Smells?" (Fiery orange gradient)
     const grad2 = octx.createLinearGradient(
       centerX,
       line2Y - fontSize2 * 0.52,
@@ -232,16 +232,19 @@ export const ParticleCanvas: React.FC<ParticleCanvasProps> = ({
     octx.letterSpacing = '-0.02em';
     octx.fillText(line2, centerX, line2Y);
 
-    // Read pixel data
+    // Store pristine rendered text canvas for 100% crisp solid text at rest
+    offscreenTextCanvasRef.current = offscreen;
+
+    // Read pixel data to create the particle system
     const imgData = octx.getImageData(0, 0, offscreen.width, offscreen.height);
     const data = imgData.data;
     const imgW = imgData.width;
     const imgH = imgData.height;
 
-    // High density sampling step: preserved particle count (25,000+ particles)
-    const step = isMobile ? 1.25 : 1.15;
+    // Sub-pixel sampling step: Preserves full particle density (25,000+ particles)
+    const step = isMobile ? 1.2 : 1.1;
     const buckets: Particle[][] = Array.from({ length: NUM_BUCKETS }, () => []);
-    const baseParticleSize = isMobile ? 1.25 : 1.35;
+    const baseParticleSize = isMobile ? 1.3 : 1.4;
 
     const lineMidpointY = (line1Y + line2Y) / 2;
     const line1Top = line1Y - fontSize1 * 0.52;
@@ -263,20 +266,12 @@ export const ParticleCanvas: React.FC<ParticleCanvasProps> = ({
           const screenY = py / sampleScale;
           const normA = alpha / 255;
 
-          const dxFromCenter = screenX - centerX;
-          const dyFromCenter = screenY - centerY;
-          const naturalAngle = Math.atan2(dyFromCenter, dxFromCenter);
-          const bloomAngle = naturalAngle + (Math.random() - 0.5) * 0.45;
-          const swirlSense = Math.random() < 0.5 ? 1 : -1;
-
-          // Assign to color bucket
+          // Assign to corresponding color bucket
           let bucketIndex = 0;
           if (screenY < lineMidpointY) {
-            // Line 1 Silver (Buckets 0..15)
             const frac = Math.min(Math.max((screenY - line1Top) / line1Height, 0), 1);
             bucketIndex = Math.min(15, Math.floor(frac * 16));
           } else {
-            // Line 2 Orange (Buckets 16..31)
             const frac = Math.min(Math.max((screenY - line2Top) / line2Height, 0), 1);
             bucketIndex = 16 + Math.min(15, Math.floor(frac * 16));
           }
@@ -290,12 +285,6 @@ export const ParticleCanvas: React.FC<ParticleCanvasProps> = ({
             vy: 0,
             size: baseParticleSize * (normA > 0.6 ? 1 : 0.85),
             mass: 0.85 + Math.random() * 0.3,
-            bloomSpeed: 0.9 + Math.random() * 0.6,
-            bloomLift: 0.5 + Math.random() * 0.6,
-            bloomCos: Math.cos(bloomAngle),
-            bloomSin: Math.sin(bloomAngle),
-            curlVx: -Math.sin(bloomAngle) * (Math.random() * 0.8 + 0.6) * swirlSense,
-            curlVy: Math.cos(bloomAngle) * (Math.random() * 0.8 + 0.6) * swirlSense,
           });
         }
       }
@@ -303,7 +292,7 @@ export const ParticleCanvas: React.FC<ParticleCanvasProps> = ({
 
     bucketsRef.current = buckets;
 
-    // Ambient floating aroma motes
+    // Ambient floating aroma motes (subtle glowing orange embers)
     const motes: AromaMote[] = [];
     const moteCount = isMobile ? 25 : 45;
     for (let i = 0; i < moteCount; i++) {
@@ -325,6 +314,7 @@ export const ParticleCanvas: React.FC<ParticleCanvasProps> = ({
   // Explode shockwave action on click or spacebar
   const triggerExplosion = useCallback((clickX?: number, clickY?: number) => {
     isExplodedRef.current = true;
+    isDisplacedRef.current = true;
 
     const { width, height } = dimsRef.current;
     const originX = clickX !== undefined ? clickX : width / 2;
@@ -344,12 +334,11 @@ export const ParticleCanvas: React.FC<ParticleCanvasProps> = ({
         const proxFactor = Math.max(0.3, 1 - dist / (width * 0.55));
         const speed = ((Math.random() * 22 + 10) * proxFactor) / p.mass;
 
-        p.vx += Math.cos(angle) * speed + p.curlVx * (Math.random() * 5);
-        p.vy += Math.sin(angle) * speed - (Math.random() * 5 + 1.5);
+        p.vx += Math.cos(angle) * speed;
+        p.vy += Math.sin(angle) * speed - (Math.random() * 4 + 1.5);
       }
     }
 
-    // Gracefully reassemble automatically after 0.85s
     setTimeout(() => {
       isExplodedRef.current = false;
     }, 850);
@@ -379,7 +368,9 @@ export const ParticleCanvas: React.FC<ParticleCanvasProps> = ({
     };
   }, [initParticles]);
 
-  // Silky smooth 60/120fps continuous physics loop with zero GC allocations
+  // High-performance 60/120fps render loop:
+  // - On scroll: Pure smooth fade in / fade out with NO scattering!
+  // - On hover/drag: Solid text is removed; particles immediately disperse and swirl away with 0ms delay!
   useEffect(() => {
     let active = true;
 
@@ -396,156 +387,157 @@ export const ParticleCanvas: React.FC<ParticleCanvasProps> = ({
 
       // Delta time calculation
       if (lastTimeRef.current === 0) lastTimeRef.current = time;
-      const dt = Math.min((time - lastTimeRef.current) * 0.001, 0.033);
       lastTimeRef.current = time;
 
       const mouse = mouseRef.current;
       const buckets = bucketsRef.current;
       const bucketColors = bucketColorsRef.current;
       const motes = motesRef.current;
-      const targetScroll = scrollProgressRef.current;
+      const scrollProgress = scrollProgressRef.current;
 
-      // Silky frame-rate independent scroll bloom interpolation
-      const lerpSpeed = 1 - Math.exp(-14 * dt);
-      currentScrollBloomRef.current += (targetScroll - currentScrollBloomRef.current) * lerpSpeed;
-      const bloom = currentScrollBloomRef.current;
+      // On scroll: purely fade out smoothly into black (NO SCATTERING)
+      const fadeOpacity = Math.max(0, 1 - scrollProgress * 2.3);
 
-      // Vanish factor on scroll
-      const vanishFactor = Math.max(0, 1 - Math.pow(bloom * 1.6, 1.25));
+      if (fadeOpacity <= 0.005) {
+        animationFrameId.current = requestAnimationFrame(render);
+        return;
+      }
 
-      const mouseHover = mouse.isHovering && bloom < 0.35;
+      const mouseHover = mouse.isHovering && fadeOpacity > 0.4;
       const mouseX = mouse.x;
       const mouseY = mouse.y;
       const mouseVx = mouse.vx;
       const mouseVy = mouse.vy;
 
-      const repelRadius = 110;
+      // Repulsion field
+      const repelRadius = 120;
       const repelRadiusSq = repelRadius * repelRadius;
 
-      // Spring stiffness & friction
-      const springK = isExplodedRef.current ? 0.025 : 0.16;
-      const friction = isExplodedRef.current ? 0.93 : 0.78;
+      // Critically damped spring parameters (zero jitter)
+      const springK = isExplodedRef.current ? 0.025 : 0.14;
+      const friction = isExplodedRef.current ? 0.93 : 0.82;
 
-      // 1. Ambient Aroma Embers (fast single-path render)
-      if (vanishFactor > 0.05) {
-        ctx.fillStyle = `rgba(255, 140, 36, ${0.35 * vanishFactor})`;
-        ctx.beginPath();
-        for (let i = 0; i < motes.length; i++) {
-          const m = motes[i];
-          m.life += 1;
-          if (m.life > m.maxLife) {
-            m.life = 0;
-            m.x = width * 0.5 + (Math.random() - 0.5) * (width * 0.55);
-            m.y = height * 0.55 + (Math.random() - 0.2) * 35;
-            m.vx = (Math.random() - 0.5) * 0.35;
-            m.vy = -0.25 - Math.random() * 0.5;
+      let anyParticleDisplacedThisFrame = false;
+
+      // 1. Ambient Aroma Embers (fade cleanly on scroll without scattering)
+      ctx.fillStyle = `rgba(255, 140, 36, ${0.35 * fadeOpacity})`;
+      ctx.beginPath();
+      for (let i = 0; i < motes.length; i++) {
+        const m = motes[i];
+        m.life += 1;
+        if (m.life > m.maxLife) {
+          m.life = 0;
+          m.x = width * 0.5 + (Math.random() - 0.5) * (width * 0.55);
+          m.y = height * 0.55 + (Math.random() - 0.2) * 35;
+          m.vx = (Math.random() - 0.5) * 0.35;
+          m.vy = -0.25 - Math.random() * 0.5;
+        }
+
+        m.x += m.vx;
+        m.y += m.vy;
+
+        if (mouseHover) {
+          const dx = m.x - mouseX;
+          const dy = m.y - mouseY;
+          const distSq = dx * dx + dy * dy;
+          if (distSq < repelRadiusSq) {
+            const dist = Math.sqrt(distSq) || 1;
+            const force = (1 - dist / repelRadius) * 2;
+            m.vx += (dx / dist) * force;
+            m.vy += (dy / dist) * force;
           }
+        }
 
-          m.x += m.vx;
-          m.y += m.vy;
+        ctx.rect(m.x, m.y, m.size, m.size);
+      }
+      ctx.fill();
 
+      // 2. Physics Update for all particles (ONLY responds to hover/click, NO scroll scattering)
+      for (let b = 0; b < NUM_BUCKETS; b++) {
+        const list = buckets[b];
+        const len = list.length;
+
+        for (let i = 0; i < len; i++) {
+          const p = list[i];
+
+          const targetX = p.originX;
+          const targetY = p.originY;
+
+          // Zero-delay instantaneous mouse repulsion with high-speed bounding box test
           if (mouseHover) {
-            const dx = m.x - mouseX;
-            const dy = m.y - mouseY;
-            const distSq = dx * dx + dy * dy;
-            if (distSq < repelRadiusSq) {
-              const dist = Math.sqrt(distSq) || 1;
-              const force = (1 - dist / repelRadius) * 2;
-              m.vx += (dx / dist) * force;
-              m.vy += (dy / dist) * force;
+            const dx = p.x - mouseX;
+            if (dx > -repelRadius && dx < repelRadius) {
+              const dy = p.y - mouseY;
+              if (dy > -repelRadius && dy < repelRadius) {
+                const distSq = dx * dx + dy * dy;
+                if (distSq < repelRadiusSq) {
+                  const dist = Math.sqrt(distSq) || 1;
+                  const u = 1 - dist / repelRadius;
+                  const factor = u * u;
+                  const repelForce = (factor * 11.5) / p.mass;
+                  const invDist = 1 / dist;
+
+                  p.vx += dx * invDist * repelForce + mouseVx * (factor * 0.25);
+                  p.vy += dy * invDist * repelForce + mouseVy * (factor * 0.25);
+                  anyParticleDisplacedThisFrame = true;
+                }
+              }
             }
           }
 
-          ctx.rect(m.x, m.y, m.size, m.size);
+          // Hooke's Law Spring force returning to target
+          const forceX = (targetX - p.x) * springK;
+          const forceY = (targetY - p.y) * springK;
+
+          p.vx = (p.vx + forceX / p.mass) * friction;
+          p.vy = (p.vy + forceY / p.mass) * friction;
+
+          p.x += p.vx;
+          p.y += p.vy;
+
+          // Deadband micro-snapping to eliminate microscopic sub-pixel float jitter
+          const distToOrigin = Math.abs(p.x - p.originX) + Math.abs(p.y - p.originY);
+          const velMag = Math.abs(p.vx) + Math.abs(p.vy);
+
+          if (!mouseHover && !isExplodedRef.current && distToOrigin < 0.35 && velMag < 0.08) {
+            p.x = p.originX;
+            p.y = p.originY;
+            p.vx = 0;
+            p.vy = 0;
+          } else if (distToOrigin > 0.4 || velMag > 0.05) {
+            anyParticleDisplacedThisFrame = true;
+          }
         }
-        ctx.fill();
       }
 
-      // 2. High-Performance Batched Particle Physics & Draw (32 batched paths per frame)
-      if (vanishFactor > 0.005) {
-        ctx.globalAlpha = vanishFactor;
+      isDisplacedRef.current = anyParticleDisplacedThisFrame || isExplodedRef.current || mouseHover;
 
-        const bloomDistBase = bloom * 620;
-        const vaporLiftBase = -bloom * 340;
-        const curlBase = 45 * bloom;
+      // 3. Render: Pure smooth fade on scroll with NO scattering
+      ctx.globalAlpha = fadeOpacity;
 
+      if (!isDisplacedRef.current && offscreenTextCanvasRef.current) {
+        // Pristine vector text
+        ctx.drawImage(offscreenTextCanvasRef.current, 0, 0, width, height);
+      } else {
+        // Active particles dispersing on hover with NO text underneath
         for (let b = 0; b < NUM_BUCKETS; b++) {
           const list = buckets[b];
           const len = list.length;
           if (len === 0) continue;
 
-          // Set fillStyle ONCE per bucket (32 times total, not 25,000 times)
           ctx.fillStyle = bucketColors[b] || '#ffffff';
           ctx.beginPath();
 
           for (let i = 0; i < len; i++) {
             const p = list[i];
-
-            let targetX = p.originX;
-            let targetY = p.originY;
-
-            // Scatter outward into space on scroll
-            if (bloom > 0.001) {
-              const dist = bloomDistBase * p.bloomSpeed;
-              targetX += p.bloomCos * dist + p.curlVx * curlBase;
-              targetY += p.bloomSin * dist + vaporLiftBase * p.bloomLift + p.curlVy * curlBase;
-            }
-
-            // High-speed bounding-box rejection for mouse hover (eliminates 95% of math)
-            if (mouseHover) {
-              const dx = p.x - mouseX;
-              if (dx > -repelRadius && dx < repelRadius) {
-                const dy = p.y - mouseY;
-                if (dy > -repelRadius && dy < repelRadius) {
-                  const distSq = dx * dx + dy * dy;
-                  if (distSq < repelRadiusSq) {
-                    const dist = Math.sqrt(distSq) || 1;
-                    const u = 1 - dist / repelRadius;
-                    const factor = u * u;
-                    const repelForce = (factor * 9.5) / p.mass;
-                    const invDist = 1 / dist;
-
-                    p.vx += dx * invDist * repelForce + p.curlVx * (factor * 3.2) + mouseVx * (factor * 0.22);
-                    p.vy += dy * invDist * repelForce + mouseVy * (factor * 0.22);
-                  }
-                }
-              }
-            }
-
-            // Hooke's Law Spring force returning to target
-            const forceX = (targetX - p.x) * springK;
-            const forceY = (targetY - p.y) * springK;
-
-            p.vx = (p.vx + forceX / p.mass) * friction;
-            p.vy = (p.vy + forceY / p.mass) * friction;
-
-            p.x += p.vx;
-            p.y += p.vy;
-
-            // Micro-snapping when at rest to eliminate microscopic sub-pixel float jitter
-            if (
-              !mouseHover &&
-              bloom <= 0.001 &&
-              !isExplodedRef.current &&
-              Math.abs(p.vx) < 0.015 &&
-              Math.abs(p.vy) < 0.015 &&
-              Math.abs(p.x - p.originX) < 0.06 &&
-              Math.abs(p.y - p.originY) < 0.06
-            ) {
-              p.x = p.originX;
-              p.y = p.originY;
-              p.vx = 0;
-              p.vy = 0;
-            }
-
             ctx.rect(p.x, p.y, p.size, p.size);
           }
 
           ctx.fill();
         }
-
-        ctx.globalAlpha = 1.0;
       }
+
+      ctx.globalAlpha = 1.0;
 
       animationFrameId.current = requestAnimationFrame(render);
     };
@@ -560,7 +552,7 @@ export const ParticleCanvas: React.FC<ParticleCanvasProps> = ({
     };
   }, []);
 
-  // Mouse & Touch events
+  // Instantaneous Mouse & Touch events (0ms delay)
   const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
