@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { AppleBuyModal } from './components/AppleBuyModal';
 import { AppleUnifiedNav } from './components/AppleUnifiedNav';
 import { ProductFeatures } from './components/ProductFeatures';
+import { RollingWord } from './components/RollingWord';
 
 export default function App() {
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -68,8 +69,12 @@ export default function App() {
               <p className="text-xl sm:text-2xl md:text-3xl font-semibold text-white tracking-tight">
                 Aromax AI
               </p>
-              <h1 className="text-5xl sm:text-7xl md:text-8xl lg:text-[104px] font-bold text-white tracking-tight leading-[1.02]">
-                Your house<br />Your Atmosphere.
+              <h1 className="text-5xl sm:text-7xl md:text-8xl lg:text-[104px] font-bold text-white tracking-tight leading-[1.04]">
+                <span className="inline-flex flex-wrap items-baseline gap-x-3 sm:gap-x-4">
+                  <span>Your</span>
+                  <RollingWord />
+                </span>
+                <span className="block text-white">Your Atmosphere.</span>
               </h1>
             </div>
 
