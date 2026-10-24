@@ -22,7 +22,7 @@ export const AppleUnifiedNav: React.FC<AppleUnifiedNavProps> = ({
   onBuyClick,
   onNavClick,
 }) => {
-  const [scrollY, setScrollY] = useState(0);
+  const [isScrolled, setIsScrolled] = useState(false);
   const [activeItem, setActiveItem] = useState('Aro');
 
   useEffect(() => {
@@ -31,7 +31,8 @@ export const AppleUnifiedNav: React.FC<AppleUnifiedNavProps> = ({
     const handleScroll = () => {
       if (!ticking) {
         window.requestAnimationFrame(() => {
-          setScrollY(window.scrollY);
+          // Trigger when user scrolls past 60px down
+          setIsScrolled(window.scrollY > 60);
           ticking = false;
         });
         ticking = true;
@@ -43,15 +44,6 @@ export const AppleUnifiedNav: React.FC<AppleUnifiedNavProps> = ({
 
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-
-  // Determine transition states
-  // 1. isScrollingAway: user started scrolling down past initial top view (collapse menu items)
-  const isScrollingAway = scrollY > 40;
-
-  // 2. isDocked: user has scrolled down into the product content area (dissolve pill, reveal full sticky bar)
-  // Window inner height is roughly the video section height
-  const windowHeight = typeof window !== 'undefined' ? window.innerHeight : 800;
-  const isDocked = scrollY > windowHeight * 0.85;
 
   const handleItemClick = (item: string) => {
     setActiveItem(item);
@@ -69,103 +61,47 @@ export const AppleUnifiedNav: React.FC<AppleUnifiedNavProps> = ({
   };
 
   return (
-    <>
-      {/* 
-        STICKY TOP BAR DOCK (Appears when scrolled to product section):
-        Matte dark charcoal (#161617) with border-b border-white/10
-      */}
-      <header
-        className={`fixed top-0 left-0 right-0 z-40 h-13 bg-[#161617]/90 backdrop-blur-xl border-b border-white/10 transition-opacity duration-300 ${
-          isDocked ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
-        }`}
-      >
-        <div className="max-w-7xl mx-auto h-full px-6 flex items-center justify-between">
-          {/* Left: [Logo] Aromax AI */}
-          <div
-            onClick={handleScrollToTop}
-            className="flex items-center gap-2.5 cursor-pointer group"
-          >
-            {/* Logo placeholder space to avoid duplicate render when docked */}
-            <div className="w-5 h-5 flex-shrink-0" />
-            <span className="text-white font-semibold text-sm tracking-tight group-hover:text-neutral-200 transition-colors">
-              Aromax AI
-            </span>
-          </div>
-
-          {/* Right: Pricing & Buy button */}
-          <div className="flex items-center gap-4 sm:gap-6">
-            <span className="hidden md:inline-block text-xs text-neutral-300 font-medium">
-              From ₹20000.00* or ₹1667.00/mo. for 12 mo.‡
-            </span>
-            <button
-              type="button"
-              onClick={onBuyClick}
-              className="bg-[#0071e3] hover:bg-[#0077ed] active:scale-95 text-white font-medium text-xs px-3.5 py-1.5 rounded-full transition-all cursor-pointer shadow-sm"
-            >
-              Buy
-            </button>
-          </div>
-        </div>
-      </header>
-
-      {/* 
-        FLOATING / MORPHING PILL CONTAINER:
-        - At Top: Centered pill with full matte texture (#161617 / #1d1d1f), 9 menu items.
-        - Scrolling Down: Links smoothly collapse, pill translates to top-left.
-        - When Docked: The pill's background and border dissolve completely to 0 opacity,
-          positioning the Logo (w-5 h-5) seamlessly into the docked header beside "Aromax AI".
-      */}
-      <div
-        className="fixed z-50 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] select-none pointer-events-auto"
-        style={{
-          top: isDocked ? '14px' : isScrollingAway ? '14px' : '20px',
-          left: isDocked
-            ? 'calc(max(24px, (100vw - 80rem) / 2 + 24px))'
-            : isScrollingAway
-            ? '24px'
-            : '50%',
-          transform:
-            !isScrollingAway && !isDocked ? 'translate3d(-50%, 0, 0)' : 'translate3d(0, 0, 0)',
-        }}
-      >
+    <header
+      className={`fixed top-0 left-0 right-0 z-50 h-14 transition-all duration-300 ease-out ${
+        isScrolled
+          ? 'bg-[#161617]/92 backdrop-blur-xl border-b border-white/10 shadow-lg'
+          : 'bg-black/30 backdrop-blur-md border-b border-transparent'
+      }`}
+    >
+      <div className="max-w-7xl mx-auto h-full px-6 flex items-center justify-between relative">
+        {/* 
+          LEFT: [Logo] Aromax AI
+          - Permanent position & fixed size (w-5 h-5).
+          - Perfectly vertically centered with the text.
+          - Never moves or animates coordinates to prevent awkward jumping.
+        */}
         <div
-          onClick={isDocked || isScrollingAway ? handleScrollToTop : undefined}
-          title={isDocked || isScrollingAway ? 'Aromax AI — Click to scroll to top' : undefined}
-          className={`relative flex items-center transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
-            isDocked
-              ? 'bg-transparent border-transparent shadow-none p-0 cursor-pointer'
-              : isScrollingAway
-              ? 'bg-[#161617]/95 border border-white/10 rounded-full px-3 py-2 shadow-2xl backdrop-blur-xl cursor-pointer hover:border-white/20'
-              : 'bg-[#161617]/90 border border-white/10 rounded-full px-4 sm:px-5 py-2 shadow-2xl backdrop-blur-xl max-w-[94vw] lg:max-w-5xl'
+          onClick={handleScrollToTop}
+          className="flex items-center gap-2.5 cursor-pointer select-none group z-10 flex-shrink-0"
+        >
+          <div className="w-5 h-5 flex items-center justify-center flex-shrink-0">
+            <AromaxLogo className="w-5 h-5" />
+          </div>
+          <span className="text-white font-semibold text-sm tracking-tight group-hover:text-neutral-300 transition-colors">
+            Aromax AI
+          </span>
+        </div>
+
+        {/* 
+          CENTER: Navigation Pill
+          - Uses exact colors and texture from reference image:
+            bg-[#1d1d1f] matte dark titanium, border-[#2a2a2c], rounded-full.
+            Active item: bg-white text-black font-semibold.
+          - Smoothly dissolves (opacity-0 scale-95) on scroll down.
+        */}
+        <div
+          className={`absolute left-1/2 -translate-x-1/2 flex items-center transition-all duration-300 ease-out ${
+            isScrolled
+              ? 'opacity-0 scale-95 pointer-events-none'
+              : 'opacity-100 scale-100 pointer-events-auto'
           }`}
         >
-          {/* Subtle dark matte card texture matching reference image */}
-          {!isDocked && (
-            <div className="absolute inset-0 rounded-full bg-gradient-to-b from-white/[0.04] to-transparent pointer-events-none" />
-          )}
-
-          {/* 
-            AROMAX LOGO:
-            - Exactly w-5 h-5 (20px) at all times so there is ZERO size transition or jumping!
-            - Transparent background (only pure white star glyph).
-          */}
-          <div className="w-5 h-5 flex-shrink-0 flex items-center justify-center relative z-10">
-            <AromaxLogo className="w-5 h-5" glow={false} />
-          </div>
-
-          {/* 
-            NAV ITEMS (Visible at top, smoothly collapses when scrolling away):
-            Styled with exact colors and textures from reference image:
-            - Active pill: bg-white text-black font-semibold rounded-full
-            - Inactive: text-[#86868b] hover:text-white
-          */}
-          <div
-            className={`flex items-center gap-1 sm:gap-2 ml-3 sm:ml-4 overflow-x-auto no-scrollbar transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] ${
-              isScrollingAway || isDocked
-                ? 'opacity-0 max-w-0 ml-0 pointer-events-none scale-95'
-                : 'opacity-100 max-w-4xl pointer-events-auto scale-100'
-            }`}
-          >
+          <div className="bg-[#1d1d1f]/95 border border-[#2a2a2c] rounded-full px-3 py-1.5 flex items-center gap-1 sm:gap-1.5 shadow-2xl backdrop-blur-xl max-w-[85vw] overflow-x-auto no-scrollbar">
             {NAV_ITEMS.map((item) => {
               const isActive = activeItem === item;
               return (
@@ -173,7 +109,7 @@ export const AppleUnifiedNav: React.FC<AppleUnifiedNavProps> = ({
                   key={item}
                   type="button"
                   onClick={() => handleItemClick(item)}
-                  className={`px-3 py-1 rounded-full text-xs sm:text-[13px] tracking-tight whitespace-nowrap transition-all duration-150 cursor-pointer ${
+                  className={`px-3 py-1 rounded-full text-xs font-medium tracking-tight whitespace-nowrap transition-all duration-150 cursor-pointer ${
                     isActive
                       ? 'bg-white text-black font-semibold shadow-sm'
                       : 'text-[#86868b] hover:text-white hover:bg-white/10'
@@ -185,7 +121,31 @@ export const AppleUnifiedNav: React.FC<AppleUnifiedNavProps> = ({
             })}
           </div>
         </div>
+
+        {/* 
+          RIGHT: Pricing & Buy Button
+          - Appears smoothly on scroll down.
+          - Fades in seamlessly without layout jumps.
+        */}
+        <div
+          className={`flex items-center gap-4 sm:gap-6 z-10 flex-shrink-0 transition-all duration-300 ease-out ${
+            isScrolled
+              ? 'opacity-100 translate-x-0 pointer-events-auto'
+              : 'opacity-0 translate-x-3 pointer-events-none'
+          }`}
+        >
+          <span className="hidden md:inline-block text-xs text-neutral-300 font-medium">
+            From ₹20000.00* or ₹1667.00/mo. for 12 mo.‡
+          </span>
+          <button
+            type="button"
+            onClick={onBuyClick}
+            className="bg-[#0071e3] hover:bg-[#0077ed] active:scale-95 text-white font-medium text-xs px-4 py-1.5 rounded-full transition-all cursor-pointer shadow-sm"
+          >
+            Buy
+          </button>
+        </div>
       </div>
-    </>
+    </header>
   );
 };
