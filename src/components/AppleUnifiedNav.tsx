@@ -23,24 +23,9 @@ export const AppleUnifiedNav: React.FC<AppleUnifiedNavProps> = ({
   onNavClick,
 }) => {
   const [scrollY, setScrollY] = useState(0);
-  const [dockOffset, setDockOffset] = useState<number>(0);
   const [activeItem, setActiveItem] = useState('Aro');
 
-  // Compute exact pixel delta from screen center (50vw) to the left edge of max-w-7xl
-  useEffect(() => {
-    const updateOffset = () => {
-      const vw = window.innerWidth;
-      const contentLeft = vw > 1280 ? (vw - 1280) / 2 + 24 : 24;
-      const targetDelta = contentLeft - vw / 2;
-      setDockOffset(targetDelta);
-    };
-
-    updateOffset();
-    window.addEventListener('resize', updateOffset);
-    return () => window.removeEventListener('resize', updateOffset);
-  }, []);
-
-  // Track window scroll
+  // Track scroll position
   useEffect(() => {
     let ticking = false;
 
@@ -60,10 +45,10 @@ export const AppleUnifiedNav: React.FC<AppleUnifiedNavProps> = ({
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Stage 1: Trigger collapse & slide when scrolled past 30px
-  const isScrolled = scrollY > 30;
+  // Stage 1: Collapse menu items into logo and slide to left corner
+  const isScrolled = scrollY > 25;
 
-  // Stage 2: Scrolled below the video (reveal sticky header, dissolve circle blob into header, show "Aromax AI")
+  // Stage 2: Scrolled below the video (reveal sticky header, dissolve blob into header, show "Aromax AI")
   const windowHeight = typeof window !== 'undefined' ? window.innerHeight : 800;
   const isBelowVideo = scrollY > windowHeight * 0.72;
 
@@ -85,8 +70,9 @@ export const AppleUnifiedNav: React.FC<AppleUnifiedNavProps> = ({
   return (
     <>
       {/* 
-        STICKY DOCKED HEADER BAR (Below video):
-        Fades in smoothly when scrolling into the product section
+        STICKY DOCKED HEADER BAR (Spans full viewport edge-to-edge):
+        - Left corner: [Logo spacer] Aromax AI
+        - Right corner: Pricing & Buy button
       */}
       <header
         className={`fixed top-0 left-0 right-0 z-40 h-14 transition-all duration-300 ease-out select-none ${
@@ -95,13 +81,13 @@ export const AppleUnifiedNav: React.FC<AppleUnifiedNavProps> = ({
             : 'bg-transparent border-b border-transparent pointer-events-none'
         }`}
       >
-        <div className="max-w-7xl mx-auto h-full px-6 flex items-center justify-between relative">
-          {/* Left placeholder for the docked logo (w-9 h-9) + "Aromax AI" text */}
+        <div className="w-full h-full px-6 sm:px-8 flex items-center justify-between relative">
+          {/* Left Corner: Spacer matching the docked logo (w-9 h-9) + "Aromax AI" */}
           <div
             onClick={handleScrollToTop}
             className="flex items-center gap-2.5 cursor-pointer select-none group"
           >
-            {/* Transparent spacer so text sits right next to the slid logo */}
+            {/* Transparent spacer so "Aromax AI" sits right beside the docked logo */}
             <div className="w-9 h-9 flex-shrink-0" />
             <span
               className={`font-semibold text-sm tracking-tight text-white transition-opacity duration-300 group-hover:text-neutral-300 ${
@@ -112,7 +98,7 @@ export const AppleUnifiedNav: React.FC<AppleUnifiedNavProps> = ({
             </span>
           </div>
 
-          {/* Right Buy bar & pricing */}
+          {/* Right Corner: Pricing & Buy button */}
           <div
             className={`flex items-center gap-4 sm:gap-6 flex-shrink-0 transition-all duration-300 ease-out ${
               isBelowVideo
@@ -120,7 +106,7 @@ export const AppleUnifiedNav: React.FC<AppleUnifiedNavProps> = ({
                 : 'opacity-0 translate-x-4 pointer-events-none'
             }`}
           >
-            <span className="hidden md:inline-block text-xs text-neutral-300 font-medium">
+            <span className="hidden sm:inline-block text-xs text-neutral-300 font-medium">
               From ₹20000.00* or ₹1667.00/mo. for 12 mo.‡
             </span>
             <button
@@ -135,41 +121,42 @@ export const AppleUnifiedNav: React.FC<AppleUnifiedNavProps> = ({
       </header>
 
       {/* 
-        CENTERED TO LEFT-DOCK SLIDING PILL NAVBAR:
-        - At Top: Horizontally centered at 50% with transform: translateX(-50%).
-        - On Scroll: Everything folds/collapses into the logo, and it slides smoothly with blur depth to dockOffset.
-        - Below Video: The circle blob dissolves away, leaving the logo seamlessly in place.
+        MORPHING & SLIDING NAVBAR:
+        - Anchored at left: 24px (left-6 / left corner).
+        - At Top: Translated to horizontal center via calc(50vw - 24px - 50%).
+        - On Scroll: Everything folds into the logo, and it smoothly slides to translate3d(0,0,0) (exact left corner).
+        - Critical Damping: cubic-bezier(0.22, 1, 0.36, 1) ensures ZERO bounce and buttery smooth deceleration.
+        - Blur Depth: backdrop-blur-2xl, ambient specular highlight, and deep diffused shadow.
       */}
       <nav
         aria-label="Aromax Navigation"
-        className="fixed top-2.5 z-50 pointer-events-auto select-none transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]"
+        className="fixed top-2.5 left-6 sm:left-8 z-50 pointer-events-auto select-none transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"
         style={{
-          left: '50%',
           transform: isScrolled
-            ? `translate3d(${dockOffset}px, 0, 0)`
-            : 'translate3d(-50%, 0, 0)',
+            ? 'translate3d(0, 0, 0)'
+            : 'translate3d(calc(50vw - 24px - 50%), 0, 0)',
         }}
       >
         <div
           onClick={isScrolled ? handleScrollToTop : undefined}
           title={isScrolled ? 'Aromax AI — Click to scroll to top' : undefined}
-          className={`relative flex items-center transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+          className={`relative flex items-center transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
             isBelowVideo
               ? 'bg-transparent border-transparent shadow-none p-0 cursor-pointer'
               : isScrolled
-              ? 'w-9 h-9 rounded-full bg-[#1d1d1f]/95 border border-white/15 shadow-[0_16px_40px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.25)] backdrop-blur-2xl justify-center cursor-pointer hover:scale-105 active:scale-95'
-              : 'h-9 rounded-full bg-[#1d1d1f]/95 border border-[#2a2a2c] pl-1 pr-2.5 py-1 shadow-[0_20px_50px_rgba(0,0,0,0.7),inset_0_1px_1px_rgba(255,255,255,0.15)] backdrop-blur-2xl max-w-[94vw]'
+              ? 'w-9 h-9 rounded-full bg-[#161617]/95 border border-white/15 shadow-[0_12px_32px_rgba(0,0,0,0.7),inset_0_1px_1px_rgba(255,255,255,0.25)] backdrop-blur-2xl justify-center cursor-pointer hover:border-white/30 active:scale-95'
+              : 'h-9 rounded-full bg-[#161617]/95 border border-[#2a2a2c] pl-1 pr-2.5 py-1 shadow-[0_16px_40px_rgba(0,0,0,0.7),inset_0_1px_1px_rgba(255,255,255,0.15)] backdrop-blur-2xl max-w-[94vw]'
           }`}
         >
-          {/* Ambient blur depth glow layer when in motion */}
+          {/* Subtle depth blur backlight for natural motion */}
           {!isBelowVideo && isScrolled && (
-            <div className="absolute -inset-1 rounded-full bg-white/[0.06] blur-sm pointer-events-none -z-10" />
+            <div className="absolute -inset-1 rounded-full bg-white/[0.05] blur-sm pointer-events-none -z-10" />
           )}
 
           {/* 
             THE LOGO:
-            - Exactly w-5 h-5 (20px), centered inside w-9 h-9.
-            - Never changes size or internal alignment.
+            - Locked at w-5 h-5 (20px), centered inside w-9 h-9.
+            - Dead-centered, crisp white, transparent background.
           */}
           <div className="w-9 h-9 flex items-center justify-center flex-shrink-0">
             <AromaxLogo className="w-5 h-5" glow={false} />
@@ -177,14 +164,14 @@ export const AppleUnifiedNav: React.FC<AppleUnifiedNavProps> = ({
 
           {/* 
             MENU ITEMS:
-            - Collapse and fold into the logo when scrolled (max-w-0 opacity-0).
-            - Expand smoothly back out when returning to top.
+            - Folds smoothly into the logo with cubic-bezier easing.
+            - Expands smoothly when returning to top.
           */}
           <div
-            className={`flex items-center gap-1 sm:gap-1.5 overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+            className={`flex items-center gap-1 sm:gap-1.5 overflow-hidden transition-all duration-400 ease-[cubic-bezier(0.22,1,0.36,1)] ${
               isScrolled
-                ? 'max-w-0 opacity-0 pointer-events-none ml-0 scale-90'
-                : 'max-w-3xl opacity-100 pointer-events-auto ml-1 scale-100'
+                ? 'max-w-0 opacity-0 pointer-events-none ml-0'
+                : 'max-w-3xl opacity-100 pointer-events-auto ml-1'
             }`}
           >
             {NAV_ITEMS.map((item) => {
