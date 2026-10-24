@@ -13,130 +13,191 @@ const WORDS = [
 ];
 
 export const RollingWord: React.FC = () => {
-  const [index, setIndex] = useState(0);
-  const [prevIndex, setPrevIndex] = useState<number | null>(null);
-  const [isPreRolling, setIsPreRolling] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [nextIndex, setNextIndex] = useState(1);
+  const [isFlipping, setIsFlipping] = useState(false);
 
   useEffect(() => {
-    // Faster, energetic rotation interval: every 1.5 seconds
-    const interval = setInterval(() => {
-      // 1. Anticipation cue: 140ms before the roll, set isPreRolling = true (creates visible pre-roll tension)
-      setIsPreRolling(true);
+    const timer = setInterval(() => {
+      setIsFlipping(true);
 
+      // Halfway through flip (top flap reaches 90deg), ensure bottom flap activates
       setTimeout(() => {
-        setIsPreRolling(false);
-        setIndex((curr) => {
-          setPrevIndex(curr);
-          return (curr + 1) % WORDS.length;
-        });
-      }, 140);
-    }, 1500);
+        // Flip completes at 420ms
+        setTimeout(() => {
+          setCurrentIndex((curr) => {
+            const next = (curr + 1) % WORDS.length;
+            setNextIndex((next + 1) % WORDS.length);
+            return next;
+          });
+          setIsFlipping(false);
+        }, 220);
+      }, 200);
+    }, 2000);
 
-    return () => clearInterval(interval);
+    return () => clearInterval(timer);
   }, []);
 
-  // Clean up outgoing word right after the quick roll completes (500ms)
-  useEffect(() => {
-    if (prevIndex !== null) {
-      const timeout = setTimeout(() => {
-        setPrevIndex(null);
-      }, 520);
-      return () => clearTimeout(timeout);
-    }
-  }, [prevIndex, index]);
+  const currentWord = WORDS[currentIndex];
+  const nextWord = WORDS[nextIndex];
 
   return (
-    <span
-      className="relative inline-flex h-[1.14em] overflow-hidden align-baseline select-none transition-[width] duration-350 ease-[cubic-bezier(0.22,1,0.36,1)]"
-      style={{
-        maskImage:
-          'linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%)',
-        WebkitMaskImage:
-          'linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%)',
-      }}
-    >
-      {/* Invisible spacer to maintain natural width without layout jumps */}
-      <span
-        className="invisible whitespace-nowrap pr-1"
-        aria-hidden="true"
+    <span className="relative inline-flex items-center align-baseline select-none">
+      {/* 
+        FLIP CLOCK CARD HOUSING:
+        Mechanical split-flap aesthetic with side hinge notches and center divider slit
+      */}
+      <div
+        className="relative inline-flex items-center justify-center rounded-xl sm:rounded-2xl border border-white/15 bg-[#161618] shadow-[0_12px_32px_rgba(0,0,0,0.85),inset_0_1px_1px_rgba(255,255,255,0.25)] h-[1.28em] px-3.5 sm:px-5 overflow-hidden transition-[width] duration-300 ease-out"
+        style={{
+          perspective: '1000px',
+        }}
       >
-        {WORDS[index]}
-      </span>
-
-      {/* Outgoing Word: Anticipation Dip + Fast High-Blur Roll Up */}
-      {prevIndex !== null && (
+        {/* Invisible spacer to maintain container width naturally for both words */}
         <span
-          key={`prev-${prevIndex}`}
-          className="absolute inset-0 whitespace-nowrap text-white flex items-center"
+          className="invisible whitespace-nowrap font-bold tracking-tight text-transparent px-1"
+          aria-hidden="true"
+        >
+          {WORDS[isFlipping ? nextIndex : currentIndex]}
+        </span>
+
+        {/* 
+          1. BACK TOP FLAP (Shows NEXT word waiting underneath)
+        */}
+        <div className="absolute inset-x-0 top-0 h-1/2 overflow-hidden bg-[#18181b] rounded-t-xl sm:rounded-t-2xl">
+          <div className="absolute inset-x-0 top-0 h-[200%] flex items-center justify-center px-3.5 sm:px-5">
+            <span className="text-white font-bold tracking-tight whitespace-nowrap">
+              {nextWord}
+            </span>
+          </div>
+          {/* Top highlight specular rim */}
+          <div className="absolute inset-x-0 top-0 h-[1px] bg-white/20" />
+        </div>
+
+        {/* 
+          2. BACK BOTTOM FLAP (Shows CURRENT word waiting underneath until covered)
+        */}
+        <div className="absolute inset-x-0 bottom-0 h-1/2 overflow-hidden bg-[#141416] rounded-b-xl sm:rounded-b-2xl">
+          <div className="absolute inset-x-0 -top-[100%] h-[200%] flex items-center justify-center px-3.5 sm:px-5">
+            <span className="text-white font-bold tracking-tight whitespace-nowrap">
+              {currentWord}
+            </span>
+          </div>
+          {/* Subtle bottom shadow vignette */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/35 to-transparent pointer-events-none" />
+        </div>
+
+        {/* 
+          3. ANIMATING TOP FLAP: Flips down on horizontal hinge (rotateX: 0 -> -90deg)
+        */}
+        <div
+          key={`flip-top-${currentIndex}-${isFlipping}`}
+          className="absolute inset-x-0 top-0 h-1/2 overflow-hidden bg-[#18181b] rounded-t-xl sm:rounded-t-2xl z-20"
           style={{
-            animation: 'rollOutFast 480ms cubic-bezier(0.25, 0.1, 0.25, 1) forwards',
+            transformOrigin: '50% 100%',
+            backfaceVisibility: 'hidden',
+            animation: isFlipping
+              ? 'flipTop 210ms cubic-bezier(0.37, 0, 0.63, 1) forwards'
+              : 'none',
           }}
         >
-          {WORDS[prevIndex]}
-        </span>
-      )}
+          <div className="absolute inset-x-0 top-0 h-[200%] flex items-center justify-center px-3.5 sm:px-5">
+            <span className="text-white font-bold tracking-tight whitespace-nowrap">
+              {currentWord}
+            </span>
+          </div>
+          <div className="absolute inset-x-0 top-0 h-[1px] bg-white/20" />
+          {/* Shadow deepening as flap flips away */}
+          <div
+            className="absolute inset-0 bg-black/60 pointer-events-none transition-opacity"
+            style={{
+              animation: isFlipping ? 'shadowFadeIn 210ms linear forwards' : 'none',
+              opacity: 0,
+            }}
+          />
+        </div>
 
-      {/* Incoming Word: Fast Roll In from Bottom with Motion Blur to Sharp */}
-      <span
-        key={`curr-${index}`}
-        className={`absolute inset-0 whitespace-nowrap text-white flex items-center transition-transform duration-140 ${
-          isPreRolling ? 'translate-y-[3.5px] opacity-90 scale-[0.99]' : 'translate-y-0 opacity-100 scale-100'
-        }`}
-        style={
-          prevIndex !== null
-            ? {
-                animation: 'rollInFast 480ms cubic-bezier(0.18, 0.9, 0.3, 1) forwards',
-              }
-            : undefined
-        }
-      >
-        {WORDS[index]}
-      </span>
+        {/* 
+          4. ANIMATING BOTTOM FLAP: Falls down into place (rotateX: 90deg -> 0deg)
+        */}
+        <div
+          key={`flip-bottom-${nextIndex}-${isFlipping}`}
+          className="absolute inset-x-0 bottom-0 h-1/2 overflow-hidden bg-[#141416] rounded-b-xl sm:rounded-b-2xl z-30"
+          style={{
+            transformOrigin: '50% 0%',
+            backfaceVisibility: 'hidden',
+            animation: isFlipping
+              ? 'flipBottom 210ms 200ms cubic-bezier(0.16, 1, 0.3, 1) forwards'
+              : 'none',
+            transform: isFlipping ? 'rotateX(90deg)' : 'rotateX(0deg)',
+          }}
+        >
+          <div className="absolute inset-x-0 -top-[100%] h-[200%] flex items-center justify-center px-3.5 sm:px-5">
+            <span className="text-white font-bold tracking-tight whitespace-nowrap">
+              {nextWord}
+            </span>
+          </div>
+          <div className="absolute inset-0 bg-gradient-to-t from-black/35 to-transparent pointer-events-none" />
+          {/* Shadow lifting as bottom flap lands */}
+          <div
+            className="absolute inset-0 bg-black/50 pointer-events-none"
+            style={{
+              animation: isFlipping
+                ? 'shadowFadeOut 210ms 200ms linear forwards'
+                : 'none',
+              opacity: isFlipping ? 1 : 0,
+            }}
+          />
+        </div>
+
+        {/* 
+          MECHANICAL CENTER SPLIT DIVIDER & PIVOT HINGES:
+          - Crisp horizontal seam across the exact middle
+          - Small circular side notches where the cards mount to the axle
+        */}
+        <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-[1px] bg-black/95 shadow-[0_1px_0_rgba(255,255,255,0.08)] z-40 pointer-events-none" />
+
+        {/* Left Pivot Hinge Notch */}
+        <div className="absolute left-0 top-1/2 -translate-y-1/2 w-2 h-2 rounded-r-full bg-black/90 border-r border-y border-white/10 z-40 shadow-inner pointer-events-none" />
+
+        {/* Right Pivot Hinge Notch */}
+        <div className="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-2 rounded-l-full bg-black/90 border-l border-y border-white/10 z-40 shadow-inner pointer-events-none" />
+      </div>
 
       <style>{`
-        /* Outgoing word: Dips down 3px for anticipation, then swiftly rolls up with heavy motion blur */
-        @keyframes rollOutFast {
+        @keyframes flipTop {
           0% {
-            transform: translateY(0px);
-            opacity: 1;
-            filter: blur(0px);
-          }
-          18% {
-            transform: translateY(3.5px);
-            opacity: 0.95;
-            filter: blur(0.5px);
-          }
-          45% {
-            transform: translateY(-30%);
-            opacity: 0.7;
-            filter: blur(5px);
+            transform: rotateX(0deg);
           }
           100% {
-            transform: translateY(-120%);
-            opacity: 0;
-            filter: blur(10px);
+            transform: rotateX(-90deg);
           }
         }
 
-        /* Incoming word: Shoots in from below with optical motion blur, then snaps into crisp focus */
-        @keyframes rollInFast {
+        @keyframes flipBottom {
           0% {
-            transform: translateY(120%);
-            opacity: 0;
-            filter: blur(10px);
-          }
-          40% {
-            opacity: 0.85;
-            filter: blur(4px);
-          }
-          80% {
-            transform: translateY(-2px);
-            filter: blur(0.5px);
+            transform: rotateX(90deg);
           }
           100% {
-            transform: translateY(0%);
-            opacity: 1;
-            filter: blur(0px);
+            transform: rotateX(0deg);
+          }
+        }
+
+        @keyframes shadowFadeIn {
+          0% {
+            opacity: 0;
+          }
+          100% {
+            opacity: 0.7;
+          }
+        }
+
+        @keyframes shadowFadeOut {
+          0% {
+            opacity: 0.7;
+          }
+          100% {
+            opacity: 0;
           }
         }
       `}</style>
