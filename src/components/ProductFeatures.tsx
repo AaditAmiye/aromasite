@@ -7,22 +7,22 @@ interface ProductFeaturesProps {
 
 const FINISH_GALLERY = [
   {
-    name: 'Natural Titanium',
-    tag: 'Warm raw metallic luster with physical vapor deposition coating',
-    bgGrad: 'from-amber-950/20 via-neutral-900 to-black',
-    accent: '#A89F91',
-  },
-  {
-    name: 'Space Black',
-    tag: 'Forged dark titanium with carbon diamond-like finish',
+    name: 'Charcoal Black',
+    tag: 'Deep anodized matte black finish with micro-textured acoustic dampening',
     bgGrad: 'from-neutral-900 via-neutral-950 to-black',
-    accent: '#3B3B3F',
+    accent: '#232325',
   },
   {
-    name: 'Pure Silver',
-    tag: 'Mirror-beveled satin silver polished to optical precision',
-    bgGrad: 'from-slate-800/30 via-neutral-900 to-black',
-    accent: '#E5E7EB',
+    name: 'Ivory White',
+    tag: 'Warm satin ceramic finish engineered to reflect ambient room light',
+    bgGrad: 'from-stone-900/40 via-neutral-950 to-black',
+    accent: '#F3F2EC',
+  },
+  {
+    name: 'Wooden Brown',
+    tag: 'Natural warm timber grain with organic satin seal and precision vents',
+    bgGrad: 'from-amber-950/30 via-neutral-950 to-black',
+    accent: '#8B5A2B',
   },
 ];
 
@@ -55,15 +55,15 @@ export const ProductFeatures: React.FC<ProductFeaturesProps> = ({ onBuyClick }) 
 
   return (
     <div className="w-full max-w-7xl mx-auto space-y-32">
-      {/* 1. Titanium Finish Showcase */}
+      {/* 1. Design & Finish Showcase */}
       <div className="rounded-3xl border border-white/10 bg-gradient-to-b from-[#161617] to-black p-8 sm:p-14 overflow-hidden relative">
-        <div className="max-w-2xl">
+        <div className="max-w-3xl">
           <p className="text-xs uppercase tracking-widest text-neutral-400 font-mono mb-2">Design</p>
           <h3 className="text-3xl sm:text-5xl font-bold tracking-tight text-white mb-4">
-            Forged in Grade 5 Titanium.
+            Engineered to shape your atmosphere.
           </h3>
           <p className="text-neutral-400 text-base sm:text-lg leading-relaxed">
-            The same aerospace alloy used in spacecraft expeditions. Milled from a single block for unmatched durability, featherweight elegance, and seamless thermal conductivity.
+            Precision engineering meets purposeful design. AromaxAI brings multiple scent experiences into one sophisticated home appliance, giving you greater control over how your space feels. Thoughtfully designed around scent delivery, intuitive control, and everyday use, it makes personalizing your environment feel as natural as adjusting the lights.
           </p>
         </div>
 

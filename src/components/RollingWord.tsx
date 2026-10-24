@@ -19,7 +19,7 @@ export const RollingWord: React.FC = () => {
   const [nextWord, setNextWord] = useState(WORDS[1]);
 
   useEffect(() => {
-    // 1.8s total cycle: 500ms 3D cube rotation + 1.3s pause
+    // Fast 3D cube rotation: snappy 1.15s cycle with rapid 300ms 90-degree turn
     const interval = setInterval(() => {
       setIsRotating(true);
 
@@ -32,17 +32,17 @@ export const RollingWord: React.FC = () => {
           return newIdx;
         });
         setIsRotating(false);
-      }, 500);
+      }, 300);
 
       return () => clearTimeout(finishTimer);
-    }, 1800);
+    }, 1150);
 
     return () => clearInterval(interval);
   }, [index]);
 
   return (
     <span
-      className="relative inline-flex items-center align-baseline select-none transition-[width] duration-400 ease-[cubic-bezier(0.22,1,0.36,1)] h-[1.24em]"
+      className="relative inline-flex items-center align-baseline select-none transition-[width] duration-250 ease-[cubic-bezier(0.22,1,0.36,1)] h-[1.24em]"
       style={{
         perspective: '1200px',
       }}
@@ -56,18 +56,17 @@ export const RollingWord: React.FC = () => {
       </span>
 
       {/* 
-        3D CUBE ROTATION ENGINE:
-        - The container rotates 90 degrees around its horizontal X axis (rotateX: 0 -> 90deg).
-        - Face 1 (currentWord) is positioned on the FRONT face at translateZ(0.62em).
-        - Face 2 (nextWord) is positioned on the BOTTOM face at rotateX(-90deg) translateZ(0.62em).
-        - It physically rotates like an invisible cube with genuine 3D foreshortening.
+        FAST 3D CUBE ROTATION ENGINE:
+        - The container rotates 90 degrees around its horizontal X axis in 300ms.
+        - Face 1 (currentWord) is on the FRONT face at translateZ(0.62em).
+        - Face 2 (nextWord) is on the BOTTOM face at rotateX(-90deg) translateZ(0.62em).
       */}
       <span
         className="absolute inset-0 w-full h-full"
         style={{
           transformStyle: 'preserve-3d',
           animation: isRotating
-            ? 'cubeTurn 500ms cubic-bezier(0.22, 1, 0.36, 1) forwards'
+            ? 'cubeTurnFast 300ms cubic-bezier(0.22, 1, 0.36, 1) forwards'
             : 'none',
         }}
       >
@@ -84,12 +83,11 @@ export const RollingWord: React.FC = () => {
           }}
         >
           <span>{currentWord}</span>
-          {/* Subtle 3D cube face shading that darkens as the face rotates away */}
           <span
             className="absolute inset-0 pointer-events-none bg-black transition-opacity"
             style={{
               opacity: isRotating ? 0.6 : 0,
-              transition: isRotating ? 'opacity 500ms cubic-bezier(0.22, 1, 0.36, 1)' : 'none',
+              transition: isRotating ? 'opacity 300ms cubic-bezier(0.22, 1, 0.36, 1)' : 'none',
             }}
           />
         </span>
@@ -107,20 +105,19 @@ export const RollingWord: React.FC = () => {
           }}
         >
           <span>{nextWord}</span>
-          {/* Subtle 3D cube face shading that clears to 0 as the face faces camera */}
           <span
             className="absolute inset-0 pointer-events-none bg-black transition-opacity"
             style={{
               opacity: isRotating ? 0 : 0.6,
-              transition: isRotating ? 'opacity 500ms cubic-bezier(0.22, 1, 0.36, 1)' : 'none',
+              transition: isRotating ? 'opacity 300ms cubic-bezier(0.22, 1, 0.36, 1)' : 'none',
             }}
           />
         </span>
       </span>
 
       <style>{`
-        /* 90-degree orthogonal cube turn */
-        @keyframes cubeTurn {
+        /* Fast 90-degree orthogonal cube turn */
+        @keyframes cubeTurnFast {
           0% {
             transform: rotateX(0deg);
           }

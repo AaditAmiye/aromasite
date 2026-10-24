@@ -8,22 +8,22 @@ interface AppleBuyModalProps {
 
 const FINISHES = [
   {
-    id: 'natural-titanium',
-    name: 'Natural Titanium',
-    desc: 'Warm metallic finish with micro-blasted texture',
-    hex: '#A89F91',
+    id: 'charcoal-black',
+    name: 'Charcoal Black',
+    desc: 'Deep anodized matte black finish with micro-textured acoustic dampening',
+    hex: '#232325',
   },
   {
-    id: 'space-black',
-    name: 'Space Black',
-    desc: 'Deep anodized matte black titanium',
-    hex: '#2B2B2D',
+    id: 'ivory-white',
+    name: 'Ivory White',
+    desc: 'Warm satin ceramic finish engineered to reflect ambient room light',
+    hex: '#F3F2EC',
   },
   {
-    id: 'pure-silver',
-    name: 'Pure Silver',
-    desc: 'Lustrous diamond-cut polished titanium',
-    hex: '#E3E4E6',
+    id: 'wooden-brown',
+    name: 'Wooden Brown',
+    desc: 'Natural warm timber grain with organic satin seal and precision vents',
+    hex: '#8B5A2B',
   },
 ];
 
@@ -44,7 +44,7 @@ const SCENT_BUNDLES = [
 ];
 
 export const AppleBuyModal: React.FC<AppleBuyModalProps> = ({ isOpen, onClose }) => {
-  const [selectedFinish, setSelectedFinish] = useState('natural-titanium');
+  const [selectedFinish, setSelectedFinish] = useState('charcoal-black');
   const [selectedBundle, setSelectedBundle] = useState('signature');
   const [paymentOption, setPaymentOption] = useState<'full' | 'emi'>('full');
   const [isOrdered, setIsOrdered] = useState(false);
