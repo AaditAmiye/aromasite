@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 const WORDS = [
   'Penthouse',
@@ -17,15 +17,39 @@ export const RollingWord: React.FC = () => {
   const [isFlipping, setIsFlipping] = useState(false);
   const [currentWord, setCurrentWord] = useState(WORDS[0]);
   const [nextWord, setNextWord] = useState(WORDS[1]);
+  const [cardWidth, setCardWidth] = useState<number | null>(null);
+
+  const measurerRef = useRef<HTMLSpanElement | null>(null);
+
+  // Active word to measure: when flipping, begin expanding/contracting toward nextWord immediately
+  const activeWordToMeasure = isFlipping ? nextWord : currentWord;
+
+  // Measure natural text width and add comfortable padding
+  const updateWidth = () => {
+    if (measurerRef.current) {
+      const textWidth = measurerRef.current.getBoundingClientRect().width;
+      // Add housing horizontal padding (approx 36px on mobile, 48px on desktop)
+      const padding = window.innerWidth < 640 ? 32 : 44;
+      setCardWidth(Math.ceil(textWidth) + padding);
+    }
+  };
+
+  useEffect(() => {
+    updateWidth();
+  }, [activeWordToMeasure]);
+
+  useEffect(() => {
+    window.addEventListener('resize', updateWidth);
+    return () => window.removeEventListener('resize', updateWidth);
+  }, [activeWordToMeasure]);
 
   useEffect(() => {
     const timer = setInterval(() => {
       // Begin flip animation
       setIsFlipping(true);
 
-      // Total flip animation is 400ms (200ms top fold + 200ms bottom fall)
+      // Total flip animation is 420ms (200ms top fold + 200ms bottom fall)
       const completeTimer = setTimeout(() => {
-        // Flip complete: commit new word to currentWord so BOTH halves show the new word
         setIndex((curr) => {
           const newIdx = (curr + 1) % WORDS.length;
           const upcomingIdx = (newIdx + 1) % WORDS.length;
@@ -34,10 +58,10 @@ export const RollingWord: React.FC = () => {
           return newIdx;
         });
         setIsFlipping(false);
-      }, 420);
+      }, 430);
 
       return () => clearTimeout(completeTimer);
-    }, 2200);
+    }, 2300);
 
     return () => clearInterval(timer);
   }, [index]);
@@ -45,14 +69,28 @@ export const RollingWord: React.FC = () => {
   return (
     <span className="relative inline-flex items-center align-baseline select-none">
       {/* 
+        OFFSCREEN MEASURER:
+        Accurately calculates target pixel width for smooth width morphing
+      */}
+      <span
+        ref={measurerRef}
+        className="invisible absolute pointer-events-none whitespace-nowrap font-bold tracking-tight text-transparent px-1"
+        aria-hidden="true"
+      >
+        {activeWordToMeasure}
+      </span>
+
+      {/* 
         FLIP CLOCK CARD CONTAINER:
-        - Static width (w-[11.5ch] sm:w-[12ch] md:w-[12.2ch]) prevents card jumping
-        - Full split flap mechanics: At rest, BOTH halves ALWAYS show currentWord.
+        - Smoothly interpolates width (transition: width 460ms cubic-bezier(0.22, 1, 0.36, 1))
+        - True mechanical split-flap simulation: at rest, BOTH halves ALWAYS match!
       */}
       <div
-        className="relative inline-flex items-center justify-center rounded-xl sm:rounded-2xl border border-white/15 bg-[#141416] shadow-[0_12px_32px_rgba(0,0,0,0.85),inset_0_1px_1px_rgba(255,255,255,0.22)] h-[1.32em] w-[11.5ch] sm:w-[12ch] md:w-[12.2ch] overflow-hidden"
+        className="relative inline-flex items-center justify-center rounded-xl sm:rounded-2xl border border-white/15 bg-[#141416] shadow-[0_12px_32px_rgba(0,0,0,0.85),inset_0_1px_1px_rgba(255,255,255,0.22)] h-[1.32em] overflow-hidden"
         style={{
           perspective: '1200px',
+          width: cardWidth ? `${cardWidth}px` : undefined,
+          transition: 'width 460ms cubic-bezier(0.22, 1, 0.36, 1)',
         }}
       >
         {/* Invisible spacer to maintain container height & baseline */}
@@ -60,7 +98,7 @@ export const RollingWord: React.FC = () => {
           className="invisible whitespace-nowrap font-bold tracking-tight text-transparent px-1"
           aria-hidden="true"
         >
-          {currentWord}
+          {activeWordToMeasure}
         </span>
 
         {/* 
