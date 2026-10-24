@@ -28,8 +28,8 @@ export const RollingWord: React.FC = () => {
   const updateWidth = () => {
     if (measurerRef.current) {
       const textWidth = measurerRef.current.getBoundingClientRect().width;
-      // Add housing horizontal padding (approx 36px on mobile, 48px on desktop)
-      const padding = window.innerWidth < 640 ? 32 : 44;
+      // Add housing horizontal padding (approx 32px on mobile, 44px on desktop)
+      const padding = window.innerWidth < 640 ? 30 : 42;
       setCardWidth(Math.ceil(textWidth) + padding);
     }
   };
@@ -44,11 +44,11 @@ export const RollingWord: React.FC = () => {
   }, [activeWordToMeasure]);
 
   useEffect(() => {
+    // Fast cadence: flips every 1.15 seconds
     const timer = setInterval(() => {
-      // Begin flip animation
       setIsFlipping(true);
 
-      // Total flip animation is 420ms (200ms top fold + 200ms bottom fall)
+      // Fast flip: total duration 260ms (130ms top + 130ms bottom)
       const completeTimer = setTimeout(() => {
         setIndex((curr) => {
           const newIdx = (curr + 1) % WORDS.length;
@@ -58,10 +58,10 @@ export const RollingWord: React.FC = () => {
           return newIdx;
         });
         setIsFlipping(false);
-      }, 430);
+      }, 260);
 
       return () => clearTimeout(completeTimer);
-    }, 2300);
+    }, 1150);
 
     return () => clearInterval(timer);
   }, [index]);
@@ -70,7 +70,7 @@ export const RollingWord: React.FC = () => {
     <span className="relative inline-flex items-center align-baseline select-none">
       {/* 
         OFFSCREEN MEASURER:
-        Accurately calculates target pixel width for smooth width morphing
+        Accurately calculates target pixel width for fast, smooth width morphing
       */}
       <span
         ref={measurerRef}
@@ -82,15 +82,15 @@ export const RollingWord: React.FC = () => {
 
       {/* 
         FLIP CLOCK CARD CONTAINER:
-        - Smoothly interpolates width (transition: width 460ms cubic-bezier(0.22, 1, 0.36, 1))
-        - True mechanical split-flap simulation: at rest, BOTH halves ALWAYS match!
+        - Fast, smooth width interpolation (260ms)
+        - Synchronous split flap: at rest, BOTH halves ALWAYS match!
       */}
       <div
         className="relative inline-flex items-center justify-center rounded-xl sm:rounded-2xl border border-white/15 bg-[#141416] shadow-[0_12px_32px_rgba(0,0,0,0.85),inset_0_1px_1px_rgba(255,255,255,0.22)] h-[1.32em] overflow-hidden"
         style={{
           perspective: '1200px',
           width: cardWidth ? `${cardWidth}px` : undefined,
-          transition: 'width 460ms cubic-bezier(0.22, 1, 0.36, 1)',
+          transition: 'width 260ms cubic-bezier(0.22, 1, 0.36, 1)',
         }}
       >
         {/* Invisible spacer to maintain container height & baseline */}
@@ -137,7 +137,7 @@ export const RollingWord: React.FC = () => {
         ) : (
           /* 
             =======================================================
-            B. DURING FLIP: Mechanical transition to nextWord
+            B. DURING FAST FLIP: Mechanical transition to nextWord
             =======================================================
           */
           <>
@@ -167,7 +167,7 @@ export const RollingWord: React.FC = () => {
               <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent pointer-events-none" />
             </div>
 
-            {/* 3. Top Flap: Top half of currentWord folds DOWN (rotateX: 0 -> -90deg) */}
+            {/* 3. Top Flap: Top half of currentWord folds DOWN fast (130ms) */}
             <div
               key={`flip-top-${currentWord}`}
               className="absolute inset-0 z-20 overflow-hidden"
@@ -175,7 +175,7 @@ export const RollingWord: React.FC = () => {
                 clipPath: 'inset(0 0 50% 0)',
                 transformOrigin: '50% 50%',
                 backfaceVisibility: 'hidden',
-                animation: 'flipTopDown 200ms cubic-bezier(0.37, 0, 0.63, 1) forwards',
+                animation: 'fastFlipTop 130ms cubic-bezier(0.37, 0, 0.63, 1) forwards',
               }}
             >
               <div className="w-full h-full flex items-center justify-center px-2 bg-[#18181b]">
@@ -186,11 +186,11 @@ export const RollingWord: React.FC = () => {
               <div className="absolute inset-x-0 top-0 h-[1px] bg-white/20" />
               <div
                 className="absolute inset-0 bg-black/60 pointer-events-none"
-                style={{ animation: 'shadowIn 200ms linear forwards' }}
+                style={{ animation: 'fastShadowIn 130ms linear forwards' }}
               />
             </div>
 
-            {/* 4. Bottom Flap: Bottom half of nextWord drops DOWN (rotateX: 90deg -> 0deg) */}
+            {/* 4. Bottom Flap: Bottom half of nextWord drops DOWN fast (130ms) */}
             <div
               key={`flip-bot-${nextWord}`}
               className="absolute inset-0 z-30 overflow-hidden"
@@ -198,7 +198,7 @@ export const RollingWord: React.FC = () => {
                 clipPath: 'inset(50% 0 0 0)',
                 transformOrigin: '50% 50%',
                 backfaceVisibility: 'hidden',
-                animation: 'flipBotDown 200ms 190ms cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                animation: 'fastFlipBot 130ms 120ms cubic-bezier(0.16, 1, 0.3, 1) forwards',
                 transform: 'rotateX(90deg)',
               }}
             >
@@ -210,7 +210,7 @@ export const RollingWord: React.FC = () => {
               <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent pointer-events-none" />
               <div
                 className="absolute inset-0 bg-black/50 pointer-events-none"
-                style={{ animation: 'shadowOut 200ms 190ms linear forwards' }}
+                style={{ animation: 'fastShadowOut 130ms 120ms linear forwards' }}
               />
             </div>
           </>
@@ -225,7 +225,7 @@ export const RollingWord: React.FC = () => {
       </div>
 
       <style>{`
-        @keyframes flipTopDown {
+        @keyframes fastFlipTop {
           0% {
             transform: rotateX(0deg);
           }
@@ -234,7 +234,7 @@ export const RollingWord: React.FC = () => {
           }
         }
 
-        @keyframes flipBotDown {
+        @keyframes fastFlipBot {
           0% {
             transform: rotateX(90deg);
           }
@@ -243,7 +243,7 @@ export const RollingWord: React.FC = () => {
           }
         }
 
-        @keyframes shadowIn {
+        @keyframes fastShadowIn {
           0% {
             opacity: 0;
           }
@@ -252,7 +252,7 @@ export const RollingWord: React.FC = () => {
           }
         }
 
-        @keyframes shadowOut {
+        @keyframes fastShadowOut {
           0% {
             opacity: 0.65;
           }

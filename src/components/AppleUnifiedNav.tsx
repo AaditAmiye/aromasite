@@ -45,12 +45,12 @@ export const AppleUnifiedNav: React.FC<AppleUnifiedNavProps> = ({
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Stage 1: Collapse menu items into logo and slide to left corner
-  const isScrolled = scrollY > 25;
+  // Stage 1: Collapse menu items into logo and slide to left corner almost immediately on scroll
+  const isScrolled = scrollY > 10;
 
   // Stage 2: Scrolled below the video (reveal sticky header, dissolve blob into header, show "Aromax AI")
   const windowHeight = typeof window !== 'undefined' ? window.innerHeight : 800;
-  const isBelowVideo = scrollY > windowHeight * 0.72;
+  const isBelowVideo = scrollY > windowHeight * 0.45;
 
   const handleItemClick = (item: string) => {
     setActiveItem(item);
@@ -77,7 +77,7 @@ export const AppleUnifiedNav: React.FC<AppleUnifiedNavProps> = ({
       <header
         className={`fixed top-0 left-0 right-0 z-40 h-14 transition-all duration-300 ease-out select-none ${
           isBelowVideo
-            ? 'bg-[#161617]/92 backdrop-blur-2xl border-b border-white/10 shadow-lg'
+            ? 'bg-black/60 backdrop-blur-2xl border-b border-white/15 shadow-xl'
             : 'bg-transparent border-b border-transparent pointer-events-none'
         }`}
       >
@@ -122,15 +122,11 @@ export const AppleUnifiedNav: React.FC<AppleUnifiedNavProps> = ({
 
       {/* 
         MORPHING & SLIDING NAVBAR:
-        - Anchored at left: 24px (left-6 / left corner).
-        - At Top: Translated to horizontal center via calc(50vw - 24px - 50%).
-        - On Scroll: Everything folds into the logo, and it smoothly slides to translate3d(0,0,0) (exact left corner).
-        - Critical Damping: cubic-bezier(0.22, 1, 0.36, 1) ensures ZERO bounce and buttery smooth deceleration.
-        - Blur Depth: backdrop-blur-2xl, ambient specular highlight, and deep diffused shadow.
+        - Translucent frosted glass blur (bg-black/45 with backdrop-blur-2xl and specular rim)
       */}
       <nav
         aria-label="Aromax Navigation"
-        className="fixed top-2.5 left-6 sm:left-8 z-50 pointer-events-auto select-none transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"
+        className="fixed top-2.5 left-6 sm:left-8 z-50 pointer-events-auto select-none transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
         style={{
           transform: isScrolled
             ? 'translate3d(0, 0, 0)'
@@ -140,12 +136,12 @@ export const AppleUnifiedNav: React.FC<AppleUnifiedNavProps> = ({
         <div
           onClick={isScrolled ? handleScrollToTop : undefined}
           title={isScrolled ? 'Aromax AI — Click to scroll to top' : undefined}
-          className={`relative flex items-center transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+          className={`relative flex items-center transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
             isBelowVideo
               ? 'bg-transparent border-transparent shadow-none p-0 cursor-pointer'
               : isScrolled
-              ? 'w-9 h-9 rounded-full bg-[#161617]/95 border border-white/15 shadow-[0_12px_32px_rgba(0,0,0,0.7),inset_0_1px_1px_rgba(255,255,255,0.25)] backdrop-blur-2xl justify-center cursor-pointer hover:border-white/30 active:scale-95'
-              : 'h-9 rounded-full bg-[#161617]/95 border border-[#2a2a2c] pl-1 pr-2.5 py-1 shadow-[0_16px_40px_rgba(0,0,0,0.7),inset_0_1px_1px_rgba(255,255,255,0.15)] backdrop-blur-2xl max-w-[94vw]'
+              ? 'w-9 h-9 rounded-full bg-black/50 border border-white/20 shadow-[0_12px_32px_rgba(0,0,0,0.7),inset_0_1px_1px_rgba(255,255,255,0.35)] backdrop-blur-2xl justify-center cursor-pointer hover:border-white/35 active:scale-95'
+              : 'h-9 rounded-full bg-black/45 border border-white/20 pl-1 pr-2.5 py-1 shadow-[0_16px_40px_rgba(0,0,0,0.7),inset_0_1px_1px_rgba(255,255,255,0.3)] backdrop-blur-2xl max-w-[94vw]'
           }`}
         >
           {/* Subtle depth blur backlight for natural motion */}
