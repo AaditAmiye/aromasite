@@ -64,17 +64,19 @@ export default function App() {
         <div className="max-w-7xl mx-auto flex flex-col justify-between min-h-[60vh]">
           {/* Main Hero Header: Left Typography & Right Apple Pill Bar */}
           <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-10 md:gap-14 pt-4 pb-20 border-b border-neutral-900">
-            {/* Left Product Title & Massive Tagline */}
-            <div className="space-y-3 sm:space-y-4 max-w-3xl">
-              <p className="text-xl sm:text-2xl md:text-3xl font-semibold text-white tracking-tight">
+            {/* Left Product Title & Tagline */}
+            <div className="space-y-2 sm:space-y-3 max-w-4xl">
+              <p className="text-lg sm:text-xl md:text-2xl font-semibold text-white tracking-tight">
                 Aromax AI
               </p>
-              <h1 className="text-5xl sm:text-7xl md:text-8xl lg:text-[104px] font-bold text-white tracking-tight leading-[1.04]">
-                <span className="inline-flex flex-wrap items-baseline gap-x-3 sm:gap-x-4">
+              <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white tracking-tight leading-[1.12]">
+                <div className="flex items-baseline gap-x-2.5 sm:gap-x-4 whitespace-nowrap">
                   <span>Your</span>
                   <RollingWord />
-                </span>
-                <span className="block text-white">Your Atmosphere.</span>
+                </div>
+                <div className="text-white whitespace-nowrap mt-1 sm:mt-1.5">
+                  Your Atmosphere.
+                </div>
               </h1>
             </div>
 
