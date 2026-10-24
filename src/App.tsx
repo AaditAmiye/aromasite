@@ -1,12 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 import { AppleBuyModal } from './components/AppleBuyModal';
-import { AppleStickyBar } from './components/AppleStickyBar';
+import { AppleUnifiedNav } from './components/AppleUnifiedNav';
 import { ProductFeatures } from './components/ProductFeatures';
 
 export default function App() {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const heroRef = useRef<HTMLDivElement | null>(null);
-  const [showStickyBar, setShowStickyBar] = useState(false);
   const [isBuyModalOpen, setIsBuyModalOpen] = useState(false);
 
   // Guarantee autoplay on mount
@@ -23,31 +22,13 @@ export default function App() {
     }
   }, []);
 
-  // Track scroll position to show sticky bar when scrolled past the hero banner
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollY = window.scrollY;
-      const windowHeight = window.innerHeight;
-
-      // When scrolled past the first viewport and past the hero headline (~1.3x screen height)
-      if (scrollY > windowHeight * 1.35) {
-        setShowStickyBar(true);
-      } else {
-        setShowStickyBar(false);
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
   const openBuy = () => setIsBuyModalOpen(true);
   const closeBuy = () => setIsBuyModalOpen(false);
 
   return (
     <div className="relative w-full bg-black text-white selection:bg-neutral-800 selection:text-white">
-      {/* Apple Sticky Top Sub-Navigation Bar */}
-      <AppleStickyBar isVisible={showStickyBar} onBuyClick={openBuy} />
+      {/* Unified Matte Dark Apple Navigation & Sticky Dock */}
+      <AppleUnifiedNav onBuyClick={openBuy} />
 
       {/* Interactive Apple Buy / Configuration Drawer */}
       <AppleBuyModal isOpen={isBuyModalOpen} onClose={closeBuy} />

@@ -73,10 +73,10 @@ export const ProductFeatures: React.FC<ProductFeaturesProps> = ({ onBuyClick }) 
             <button
               key={f.name}
               onClick={() => setActiveFinishIndex(idx)}
-              className={`px-5 py-2.5 rounded-full text-xs sm:text-sm font-semibold transition-all cursor-pointer flex items-center gap-2.5 border ${
+              className={`px-5 py-2 rounded-full text-xs sm:text-sm font-medium transition-all cursor-pointer flex items-center gap-2.5 border ${
                 activeFinishIndex === idx
-                  ? 'border-white bg-white text-black'
-                  : 'border-white/15 bg-white/5 text-neutral-300 hover:border-white/30'
+                  ? 'border-white bg-white text-black font-semibold shadow-sm'
+                  : 'border-[#2a2a2c] bg-[#1d1d1f] text-white hover:border-white/25'
               }`}
             >
               <span
