@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Play, Pause, ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { Play, Pause, ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface SlideData {
   id: string;
@@ -36,7 +36,6 @@ export const HighlightsCarousel: React.FC = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
   const [progress, setProgress] = useState(0);
-  const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
 
   const timerRef = useRef<number | null>(null);
   const startTimeRef = useRef<number>(Date.now());
@@ -97,29 +96,20 @@ export const HighlightsCarousel: React.FC = () => {
   };
 
   return (
-    <section className="w-full max-w-[1440px] mx-auto space-y-6 sm:space-y-8 select-none px-4 sm:px-6">
-      {/* 1. Header: "Get the highlights." + "Watch the film" */}
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 px-2">
-        <h2 className="text-4xl sm:text-6xl md:text-7xl font-bold tracking-tight text-white">
-          Get the highlights.
-        </h2>
-
-        <button
-          onClick={() => setIsVideoModalOpen(true)}
-          className="inline-flex items-center gap-2 text-sm sm:text-base font-medium text-[#2997ff] hover:text-[#0071e3] transition-colors cursor-pointer group"
-        >
-          <span>Watch the film</span>
-          <span className="w-6 h-6 rounded-full border border-[#2997ff] flex items-center justify-center group-hover:bg-[#2997ff]/10 transition-all">
-            <Play className="w-3 h-3 fill-current ml-0.5" />
-          </span>
-        </button>
-      </div>
-
-      {/* 2. Main Slideshow Carousel Track with Pure Sharp Images (Zero Fade, Zero Text Overlay) */}
-      <div className="relative group/carousel overflow-hidden rounded-[28px] sm:rounded-[36px] border border-white/10 bg-black shadow-2xl">
+    <section className="w-full max-w-[1440px] mx-auto select-none px-4 sm:px-6">
+      {/* 
+        MAIN SLIDESHOW CAROUSEL:
+        - Surrounding slide background: rgb(29, 29, 31) / #1d1d1f
+        - Scaled-down centered images with comfortable breathing room
+        - Header ("Get the highlights" & "Watch the film") removed as requested
+      */}
+      <div
+        className="relative group/carousel overflow-hidden rounded-[28px] sm:rounded-[36px] border border-white/10 shadow-2xl"
+        style={{ backgroundColor: 'rgb(29, 29, 31)' }}
+      >
         {/* Slides Track */}
         <div
-          className="flex transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] aspect-[16/9] min-h-[440px] sm:min-h-[580px] lg:min-h-[680px]"
+          className="flex transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] aspect-[16/9] min-h-[420px] sm:min-h-[540px] lg:min-h-[640px]"
           style={{
             transform: `translateX(-${currentSlide * 100}%)`,
           }}
@@ -127,14 +117,17 @@ export const HighlightsCarousel: React.FC = () => {
           {SLIDES.map((slide) => (
             <div
               key={slide.id}
-              className="w-full flex-shrink-0 h-full relative overflow-hidden bg-black flex items-center justify-center"
+              className="w-full flex-shrink-0 h-full relative overflow-hidden flex items-center justify-center p-6 sm:p-10 md:p-14 lg:p-16"
+              style={{ backgroundColor: 'rgb(29, 29, 31)' }}
             >
-              {/* Full Image: 100% natural contrast, zero fade/vignette overlay, fully fitting */}
-              <img
-                src={slide.img}
-                alt={slide.title}
-                className="w-full h-full object-contain object-center"
-              />
+              {/* Scaled-down centered image resting cleanly inside rgb(29, 29, 31) housing */}
+              <div className="w-full h-full flex items-center justify-center">
+                <img
+                  src={slide.img}
+                  alt={slide.title}
+                  className="max-w-[90%] max-h-[85%] object-contain rounded-xl sm:rounded-2xl shadow-2xl transition-transform duration-500"
+                />
+              </div>
             </div>
           ))}
         </div>
@@ -155,7 +148,7 @@ export const HighlightsCarousel: React.FC = () => {
           <ChevronRight className="w-5 h-5" />
         </button>
 
-        {/* 3. Floating Bottom Control Capsule (Apple reference design) */}
+        {/* Floating Bottom Control Capsule */}
         <div className="absolute bottom-5 sm:bottom-7 left-1/2 -translate-x-1/2 z-20">
           <div className="bg-black/75 border border-white/20 rounded-full px-5 py-2.5 flex items-center gap-4 backdrop-blur-2xl shadow-2xl">
             {/* Progress Pill / Indicators */}
@@ -204,29 +197,6 @@ export const HighlightsCarousel: React.FC = () => {
           </div>
         </div>
       </div>
-
-      {/* 4. Film Modal (when clicking "Watch the film") */}
-      {isVideoModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-8 bg-black/95 backdrop-blur-2xl">
-          <div className="relative w-full max-w-5xl aspect-video rounded-3xl overflow-hidden bg-black border border-white/20 shadow-2xl">
-            <button
-              onClick={() => setIsVideoModalOpen(false)}
-              className="absolute top-4 right-4 z-20 w-10 h-10 rounded-full bg-black/60 hover:bg-black/90 border border-white/20 text-white flex items-center justify-center cursor-pointer transition-all"
-            >
-              <X className="w-5 h-5" />
-            </button>
-            <video
-              className="w-full h-full object-cover"
-              controls
-              autoPlay
-              playsInline
-            >
-              <source src="/assets/aistudio/armoax2_2ef98b78.mov" type="video/quicktime" />
-              <source src="/armoax2_web.mp4" type="video/mp4" />
-            </video>
-          </div>
-        </div>
-      )}
     </section>
   );
 };

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Wind, VolumeX, Cpu, Sparkles, Smartphone, ChevronRight } from 'lucide-react';
+import { Sparkles, ChevronRight, Layers, RefreshCw, SlidersHorizontal } from 'lucide-react';
 import { HighlightsCarousel } from './HighlightsCarousel';
 
 interface ProductFeaturesProps {
@@ -111,109 +111,118 @@ export const ProductFeatures: React.FC<ProductFeaturesProps> = ({ onBuyClick }) 
         </div>
       </div>
 
-      {/* 2. Apple Bento Grid Innovations */}
+      {/* 2. Make room for your favourites (Apple Bento Grid) */}
       <div>
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <p className="text-xs uppercase tracking-widest text-[#0071e3] font-mono mb-2">Technology</p>
+          <p className="text-xs uppercase tracking-widest text-[#0071e3] font-mono mb-2">Modular System</p>
           <h3 className="text-3xl sm:text-5xl font-bold tracking-tight text-white mb-4">
-            Groundbreaking in every molecule.
+            Make room for your favourites.
           </h3>
           <p className="text-neutral-400 text-base sm:text-lg">
-            Engineering fragrance at the nano scale without heat, water dilution, or chemical propellants.
+            One device. Thirty choices. Endless atmospheres.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Card 1 */}
-          <div className="rounded-3xl border border-white/10 bg-[#161617] p-8 flex flex-col justify-between">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+          {/* Box 1: Your library. Your rules. */}
+          <div className="md:col-span-12 lg:col-span-6 rounded-3xl border border-white/10 bg-[#161617] p-8 sm:p-10 flex flex-col justify-between shadow-xl">
             <div>
               <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white mb-6">
-                <Wind className="w-6 h-6 text-cyan-400" />
+                <Layers className="w-6 h-6 text-[#2997ff]" />
               </div>
-              <h4 className="text-xl font-bold text-white mb-2">Cold-Air Micro-Diffusion</h4>
-              <p className="text-neutral-400 text-sm leading-relaxed">
-                Proprietary twin-fluid nebulization fragments pure organic oils into 0.1-micron droplets that float suspended like morning dew without clinging to fabrics.
+              <h4 className="text-2xl sm:text-3xl font-bold text-white tracking-tight mb-1">
+                Your library. Your rules.
+              </h4>
+              <p className="text-sm sm:text-base font-semibold text-[#2997ff] tracking-tight mb-4">
+                30 scents. One device.
+              </p>
+              <p className="text-neutral-400 text-sm sm:text-base leading-relaxed mb-4">
+                Build your personal scent library. 30 slots. You choose what fills them — from petrichor and mitti to fresh coffee and old books.
+              </p>
+              <p className="text-white font-medium text-sm sm:text-base">
+                Your environment should smell like you.
               </p>
             </div>
-            <div className="mt-8 pt-6 border-t border-white/10 flex items-center justify-between text-xs text-neutral-400 font-mono">
-              <span>Particle Diameter</span>
-              <span className="text-white font-bold">&lt; 0.1 μm</span>
+            <div className="mt-8 pt-6 border-t border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-neutral-400 font-mono">
+              <span className="text-neutral-500 uppercase tracking-wider">Architecture</span>
+              <span className="text-white font-medium">30 × individually addressable channels. USB-C style cartridges.</span>
             </div>
           </div>
 
-          {/* Card 2 */}
-          <div className="rounded-3xl border border-white/10 bg-[#161617] p-8 flex flex-col justify-between">
+          {/* Box 2: Plug in. Switch up. */}
+          <div className="md:col-span-12 lg:col-span-6 rounded-3xl border border-white/10 bg-[#161617] p-8 sm:p-10 flex flex-col justify-between shadow-xl">
             <div>
               <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white mb-6">
-                <Cpu className="w-6 h-6 text-amber-400" />
+                <RefreshCw className="w-6 h-6 text-emerald-400" />
               </div>
-              <h4 className="text-xl font-bold text-white mb-2">A18 Olfactory Silicon</h4>
-              <p className="text-neutral-400 text-sm leading-relaxed">
-                Autonomous real-time air chemistry sensors scan ambient volatile organic compounds 1,000 times a second, calibrating release for human circadian alertness.
+              <h4 className="text-2xl sm:text-3xl font-bold text-white tracking-tight mb-1">
+                Plug in. Switch up.
+              </h4>
+              <p className="text-sm sm:text-base font-semibold text-emerald-400 tracking-tight mb-4">
+                A new kind of cartridge.
+              </p>
+              <p className="text-neutral-400 text-sm sm:text-base leading-relaxed mb-4">
+                Each scent is a dedicated plug-and-play cartridge. Pull one out. Plug one in. No tools. No rebuild.
+              </p>
+              <p className="text-white font-medium text-sm sm:text-base">
+                Less effort. More possibilities.
               </p>
             </div>
-            <div className="mt-8 pt-6 border-t border-white/10 flex items-center justify-between text-xs text-neutral-400 font-mono">
-              <span>Sensor Sample Rate</span>
-              <span className="text-white font-bold">1,000 Hz</span>
+            <div className="mt-8 pt-6 border-t border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-neutral-400 font-mono">
+              <span className="text-neutral-500 uppercase tracking-wider">Hot-Swap</span>
+              <span className="text-white font-medium">Hot-swappable. No calibration needed.</span>
             </div>
           </div>
 
-          {/* Card 3 */}
-          <div className="rounded-3xl border border-white/10 bg-[#161617] p-8 flex flex-col justify-between">
+          {/* Box 3: Designed to be changed. */}
+          <div className="md:col-span-6 lg:col-span-3 rounded-3xl border border-white/10 bg-[#161617] p-8 flex flex-col justify-between shadow-xl">
             <div>
               <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white mb-6">
-                <VolumeX className="w-6 h-6 text-emerald-400" />
+                <Sparkles className="w-6 h-6 text-amber-400" />
               </div>
-              <h4 className="text-xl font-bold text-white mb-2">Whisper Acoustic Chamber</h4>
-              <p className="text-neutral-400 text-sm leading-relaxed">
-                Acoustic labyrinth dampens fluid resonance to below 18 dBA. Completely imperceptible in quiet bedrooms, libraries, or recording studios.
+              <h4 className="text-xl sm:text-2xl font-bold text-white tracking-tight mb-1">
+                Designed to be changed.
+              </h4>
+              <p className="text-xs sm:text-sm font-semibold text-amber-400 tracking-tight mb-4">
+                Modular by design. Personal by nature.
+              </p>
+              <p className="text-neutral-400 text-xs sm:text-sm leading-relaxed mb-4">
+                Tastes change. Your device changes with you. Replace a single scent, swap your entire mood, or refresh your favorites — cartridge by cartridge.
               </p>
             </div>
-            <div className="mt-8 pt-6 border-t border-white/10 flex items-center justify-between text-xs text-neutral-400 font-mono">
-              <span>Operating Sound Floor</span>
-              <span className="text-white font-bold">&lt; 18 dBA</span>
+            <div className="mt-6 pt-5 border-t border-white/10 text-xs text-white font-medium leading-snug">
+              One device. Thirty choices. Endless atmospheres.
             </div>
           </div>
 
-          {/* Wide Card: Apple Ecosystem */}
-          <div className="md:col-span-2 rounded-3xl border border-white/10 bg-gradient-to-r from-[#161617] via-[#1c1c1e] to-[#161617] p-8 sm:p-10 flex flex-col justify-between">
+          {/* Box 4: Technology you feel. */}
+          <div className="md:col-span-6 lg:col-span-3 rounded-3xl border border-white/10 bg-[#161617] p-8 flex flex-col justify-between shadow-xl">
             <div>
               <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white mb-6">
-                <Smartphone className="w-6 h-6 text-[#0071e3]" />
+                <SlidersHorizontal className="w-6 h-6 text-purple-400" />
               </div>
-              <h4 className="text-2xl font-bold text-white mb-2">Native Apple Home & Siri Integration</h4>
-              <p className="text-neutral-400 text-base leading-relaxed max-w-xl">
-                Add Aromax AI to the Apple Home app in seconds with Matter. Automate scents with Good Morning or Sleep scenes. Ask Siri to refresh the atmosphere from your iPhone, Watch, or HomePod.
+              <h4 className="text-xl sm:text-2xl font-bold text-white tracking-tight mb-1">
+                Technology you feel.
+              </h4>
+              <p className="text-xs sm:text-sm font-semibold text-purple-400 tracking-tight mb-4">
+                Precision control. No compromises.
+              </p>
+              <p className="text-neutral-400 text-xs sm:text-sm leading-relaxed mb-4">
+                Intelligent software. Individually controlled channels. On-demand activation or custom blends.
               </p>
             </div>
-            <div className="mt-8 flex flex-wrap items-center gap-3">
-              <span className="px-3.5 py-1.5 rounded-full bg-white/10 text-white text-xs font-medium">
-                Works with Apple Home
-              </span>
-              <span className="px-3.5 py-1.5 rounded-full bg-white/10 text-white text-xs font-medium">
-                Matter Certified
-              </span>
-              <span className="px-3.5 py-1.5 rounded-full bg-white/10 text-white text-xs font-medium">
-                Siri Shortcuts
-              </span>
+            <div className="mt-6 pt-5 border-t border-white/10 text-xs text-white font-medium leading-snug">
+              From a single note to a whole new world — it starts with your imagination.
             </div>
           </div>
 
-          {/* Narrow Card: MagSafe Docking */}
-          <div className="rounded-3xl border border-white/10 bg-[#161617] p-8 flex flex-col justify-between">
-            <div>
-              <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white mb-6">
-                <Sparkles className="w-6 h-6 text-purple-400" />
-              </div>
-              <h4 className="text-xl font-bold text-white mb-2">Magnetic Base</h4>
-              <p className="text-neutral-400 text-sm leading-relaxed">
-                Snaps onto the weighted aluminum magnetic charge cradle. Delivers up to 48 hours of autonomous wireless operation anywhere in your home.
-              </p>
-            </div>
-            <div className="mt-8 pt-6 border-t border-white/10 flex items-center justify-between text-xs text-neutral-400 font-mono">
-              <span>Wireless Battery Life</span>
-              <span className="text-white font-bold">48 Hours</span>
-            </div>
+          {/* Box 5: Pure Visual Showcase Card (Fits fully on any screen, zero overlay text) */}
+          <div className="md:col-span-12 lg:col-span-6 rounded-3xl border border-white/10 bg-black overflow-hidden flex items-center justify-center shadow-2xl aspect-[16/9] min-h-[320px] sm:min-h-[420px]">
+            <img
+              src="/assets/aistudio/a59fe36e-0fba-4e31-a31c-4abb5715c222_76e53402.png"
+              alt="Aromax AI Scent Cartridge"
+              className="w-full h-full object-contain object-center"
+            />
           </div>
         </div>
       </div>
