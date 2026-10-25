@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Sparkles, ChevronRight, Layers, RefreshCw, SlidersHorizontal } from 'lucide-react';
 import { HighlightsCarousel } from './HighlightsCarousel';
+import { AroAISection } from './AroAISection';
 
 interface ProductFeaturesProps {
   onBuyClick: () => void;
@@ -24,30 +25,6 @@ const FINISH_GALLERY = [
     tag: 'Natural warm timber grain with organic satin seal and precision vents',
     bgGrad: 'from-amber-950/30 via-neutral-950 to-black',
     accent: '#8B5A2B',
-  },
-];
-
-const SCENT_NOTES = [
-  {
-    number: '01',
-    name: 'Bergamot Dawn',
-    top: 'Calabrian Bergamot, Crushed Mandarin',
-    heart: 'White Lotus, Jasmine Petals',
-    base: 'Golden Cedar, Cashmere Musk',
-  },
-  {
-    number: '02',
-    name: 'White Tea Santal',
-    top: 'Silver Needle Tea, Cardamom',
-    heart: 'Florentine Orris, Violet Leaf',
-    base: 'Creamy Australian Sandalwood, Dry Amber',
-  },
-  {
-    number: '03',
-    name: 'Midnight Cypress',
-    top: 'Crisp Pine Needle, Crisp Aldehydes',
-    heart: 'Smoked Frankincense, Earthy Vetiver',
-    base: 'Dark Patchouli, Black Leather',
   },
 ];
 
@@ -227,50 +204,8 @@ export const ProductFeatures: React.FC<ProductFeaturesProps> = ({ onBuyClick }) 
         </div>
       </div>
 
-      {/* 3. Olfactory Pod Masterpieces */}
-      <div>
-        <div className="text-center max-w-2xl mx-auto mb-14">
-          <p className="text-xs uppercase tracking-widest text-neutral-400 font-mono mb-2">Aromatics</p>
-          <h3 className="text-3xl sm:text-5xl font-bold tracking-tight text-white mb-4">
-            Three signature aromas. Included in box.
-          </h3>
-          <p className="text-neutral-400 text-sm sm:text-base">
-            Compounded in Grasse, France by master perfumers. 100% natural, non-toxic, and pet safe.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {SCENT_NOTES.map((s) => (
-            <div
-              key={s.number}
-              className="rounded-3xl border border-white/10 bg-[#161617] p-8 flex flex-col justify-between relative group hover:border-white/20 transition-all"
-            >
-              <div>
-                <span className="text-xs font-mono text-[#0071e3] font-semibold">{s.number}</span>
-                <h4 className="text-2xl font-bold text-white mt-2 mb-6">{s.name}</h4>
-                <div className="space-y-3 text-xs">
-                  <div>
-                    <span className="text-neutral-400 block font-mono uppercase text-[10px]">Top Notes</span>
-                    <span className="text-neutral-200 font-medium">{s.top}</span>
-                  </div>
-                  <div>
-                    <span className="text-neutral-400 block font-mono uppercase text-[10px]">Heart Notes</span>
-                    <span className="text-neutral-200 font-medium">{s.heart}</span>
-                  </div>
-                  <div>
-                    <span className="text-neutral-400 block font-mono uppercase text-[10px]">Base Notes</span>
-                    <span className="text-neutral-200 font-medium">{s.base}</span>
-                  </div>
-                </div>
-              </div>
-              <div className="mt-8 pt-6 border-t border-white/10 flex items-center justify-between">
-                <span className="text-xs text-neutral-400">60ml Amber Glass Pod</span>
-                <span className="text-xs font-bold text-white">350 hrs diffusion</span>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
+      {/* 3. Meet Aro AI Section */}
+      <AroAISection />
 
       {/* 4. Apple Call to Action Banner */}
       <div className="rounded-3xl border border-white/10 bg-gradient-to-r from-[#1d1d1f] to-[#121214] p-10 sm:p-16 text-center space-y-6">
