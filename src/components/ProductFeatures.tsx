@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Wind, VolumeX, Cpu, Sparkles, Smartphone, ChevronRight } from 'lucide-react';
+import { HighlightsCarousel } from './HighlightsCarousel';
 
 interface ProductFeaturesProps {
   onBuyClick: () => void;
@@ -55,6 +56,9 @@ export const ProductFeatures: React.FC<ProductFeaturesProps> = ({ onBuyClick }) 
 
   return (
     <div className="w-full max-w-7xl mx-auto space-y-32">
+      {/* 0. Apple Highlights Carousel (Replicating iPhone 18 Pro layout) */}
+      <HighlightsCarousel />
+
       {/* 1. Design & Finish Showcase */}
       <div className="rounded-3xl border border-white/10 bg-gradient-to-b from-[#161617] to-black p-8 sm:p-14 overflow-hidden relative">
         <div className="max-w-3xl">
