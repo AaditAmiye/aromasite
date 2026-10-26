@@ -99,10 +99,10 @@ export const FragranceSection: React.FC<FragranceSectionProps> = ({ onExploreCli
         <div
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
-          className="rounded-[24px] sm:rounded-[36px] md:rounded-[44px] border border-white/15 bg-gradient-to-b from-[#1d1d1f] to-[#111113] p-2.5 sm:p-5 md:p-6 shadow-[0_24px_70px_rgba(0,0,0,0.85)] relative overflow-hidden transition-all duration-500 hover:border-white/25 group"
+          className="rounded-[26px] sm:rounded-[38px] md:rounded-[46px] border-2 border-neutral-700/70 ring-1 ring-white/10 bg-gradient-to-b from-[#1c1c1e] to-[#101012] p-2.5 sm:p-5 md:p-6 shadow-[0_24px_70px_rgba(0,0,0,0.85)] relative overflow-hidden transition-all duration-500 hover:border-white/25 group"
         >
-          {/* Inner Curved Video Frame with fluid responsive aspect ratio preventing mobile cutoff */}
-          <div className="relative w-full aspect-[16/9] md:aspect-[21/9] rounded-[16px] sm:rounded-[26px] md:rounded-[34px] overflow-hidden bg-black border border-white/10 shadow-2xl flex items-center justify-center">
+          {/* Inner Curved Video Frame with distinct border and smooth rounded corners */}
+          <div className="relative w-full aspect-[16/9] md:aspect-[21/9] rounded-2xl sm:rounded-3xl md:rounded-[32px] overflow-hidden bg-black border-2 border-white/30 ring-1 ring-white/15 shadow-[0_20px_50px_rgba(0,0,0,0.9)] flex items-center justify-center">
             {/* Main Fragrance Video */}
             <video
               ref={videoRef}

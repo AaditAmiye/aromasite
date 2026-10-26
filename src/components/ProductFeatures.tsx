@@ -96,7 +96,7 @@ export const ProductFeatures: React.FC<ProductFeaturesProps> = ({ onBuyClick }) 
           </div>
 
           {/* Dynamic Image Display with Smooth Cross-Fade Transition */}
-          <div className="mt-6 sm:mt-8 relative w-full aspect-[4/3] sm:aspect-[16/10] md:aspect-[16/9] max-h-[380px] sm:max-h-[480px] md:max-h-[520px] rounded-2xl bg-[#0d0d0e] border border-white/10 overflow-hidden flex items-center justify-center p-3 sm:p-6 shadow-inner">
+          <div className="mt-6 sm:mt-8 relative w-full aspect-[4/3] sm:aspect-[16/10] md:aspect-[16/9] max-h-[380px] sm:max-h-[480px] md:max-h-[520px] rounded-2xl sm:rounded-3xl bg-[#0d0d0e] border-2 border-white/25 ring-1 ring-white/15 overflow-hidden flex items-center justify-center p-3 sm:p-6 shadow-[0_20px_50px_rgba(0,0,0,0.8)]">
             {FINISH_GALLERY.map((f, idx) => {
               const isActive = activeFinishIndex === idx;
               return (
@@ -242,13 +242,13 @@ export const ProductFeatures: React.FC<ProductFeaturesProps> = ({ onBuyClick }) 
         <ScrollReveal delay={120}>
           <div className="mt-8 sm:mt-12 rounded-[28px] sm:rounded-[38px] md:rounded-[44px] border border-white/15 bg-gradient-to-b from-[#18181a] via-[#121214] to-black p-4 sm:p-8 md:p-12 overflow-hidden shadow-2xl relative">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-              {/* Left Image Showcase with curved container and border */}
+              {/* Left Image Showcase with curved container and distinct border */}
               <div className="lg:col-span-6 flex items-center justify-center">
-                <div className="relative w-full max-w-[460px] rounded-[22px] sm:rounded-[30px] overflow-hidden bg-black border border-white/15 shadow-[0_20px_50px_rgba(0,0,0,0.9)] flex items-center justify-center p-2">
+                <div className="relative w-full max-w-[440px] rounded-2xl sm:rounded-3xl overflow-hidden bg-black border-2 border-white/25 ring-1 ring-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.95)] flex items-center justify-center">
                   <img
                     src="/assets/aistudio/WhatsApp_Image_2026-10-26_at_10.40.37_PM_d5275e11.jpeg"
                     alt="Aro - 1 Charcoal Black Edition"
-                    className="w-full h-auto object-contain"
+                    className="w-full h-auto object-contain block"
                   />
                 </div>
               </div>

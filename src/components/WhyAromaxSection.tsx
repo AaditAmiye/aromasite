@@ -31,8 +31,8 @@ export const WhyAromaxSection: React.FC = () => {
           {/* Dual Feature Grid: Image of Box + Image of Cartridges */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
             {/* Box 1: Hardware Architecture & Box */}
-            <div className="rounded-[24px] sm:rounded-[32px] border border-white/10 bg-[#141416]/90 p-4 sm:p-6 flex flex-col justify-between shadow-xl relative overflow-hidden">
-              <div className="relative w-full rounded-2xl overflow-hidden border border-white/10 bg-black aspect-[4/3] sm:aspect-[16/11] flex items-center justify-center p-2 sm:p-3">
+            <div className="rounded-[24px] sm:rounded-[32px] border border-white/15 bg-[#141416]/90 p-4 sm:p-6 flex flex-col justify-between shadow-xl relative overflow-hidden">
+              <div className="relative w-full rounded-2xl sm:rounded-3xl overflow-hidden border-2 border-white/25 ring-1 ring-white/10 bg-black aspect-[4/3] sm:aspect-[16/11] flex items-center justify-center shadow-lg">
                 <img
                   src="/assets/aistudio/IMG_9467_915d33b7.PNG"
                   alt="Freedom to build your own scent library with AromaxAI hardware"
@@ -52,8 +52,8 @@ export const WhyAromaxSection: React.FC = () => {
             </div>
 
             {/* Box 2: Type-C Cartridges */}
-            <div className="rounded-[24px] sm:rounded-[32px] border border-white/10 bg-[#141416]/90 p-4 sm:p-6 flex flex-col justify-between shadow-xl relative overflow-hidden">
-              <div className="relative w-full rounded-2xl overflow-hidden border border-white/10 bg-black aspect-[4/3] sm:aspect-[16/11] flex items-center justify-center p-2 sm:p-3">
+            <div className="rounded-[24px] sm:rounded-[32px] border border-white/15 bg-[#141416]/90 p-4 sm:p-6 flex flex-col justify-between shadow-xl relative overflow-hidden">
+              <div className="relative w-full rounded-2xl sm:rounded-3xl overflow-hidden border-2 border-white/25 ring-1 ring-white/10 bg-black aspect-[4/3] sm:aspect-[16/11] flex items-center justify-center shadow-lg">
                 <img
                   src="/assets/aistudio/IMG_9466_9e9c504e.PNG"
                   alt="AromaxAI Type-C Cartridges"

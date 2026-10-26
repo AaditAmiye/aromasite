@@ -137,7 +137,7 @@ export const AppleBuyModal: React.FC<AppleBuyModalProps> = ({ isOpen, onClose })
           {isOrdered ? (
             <div className="py-10 sm:py-14 text-center space-y-5 transition-all duration-500 ease-out">
               {/* Product preview thumbnail */}
-              <div className="relative w-32 h-24 sm:w-40 sm:h-28 mx-auto rounded-2xl bg-[#0f0f10] border border-white/10 overflow-hidden p-2 flex items-center justify-center">
+              <div className="relative w-32 h-24 sm:w-40 sm:h-28 mx-auto rounded-2xl bg-[#0f0f10] border-2 border-white/20 ring-1 ring-white/10 overflow-hidden p-2 flex items-center justify-center shadow-lg">
                 <img
                   src={currentFinishObj.image}
                   alt={`Aro - 1 in ${currentFinishObj.name}`}
@@ -226,7 +226,7 @@ export const AppleBuyModal: React.FC<AppleBuyModalProps> = ({ isOpen, onClose })
           ) : (
             <>
               {/* Product Visual Preview with Smooth Fade Transitions */}
-              <div className="relative w-full aspect-[16/10] sm:aspect-[16/9] max-h-56 sm:max-h-72 rounded-2xl bg-[#0f0f10] border border-white/10 overflow-hidden flex items-center justify-center p-2 sm:p-4 shadow-inner">
+              <div className="relative w-full aspect-[16/10] sm:aspect-[16/9] max-h-56 sm:max-h-72 rounded-2xl sm:rounded-3xl bg-[#0f0f10] border-2 border-white/20 ring-1 ring-white/10 overflow-hidden flex items-center justify-center p-2 sm:p-4 shadow-xl">
                 {FINISHES.map((f) => {
                   const isSelected = selectedFinish === f.id;
                   return (

@@ -68,7 +68,7 @@ export const TestimonialsSection: React.FC = () => {
           </div>
 
           {/* Video Container - Curved border, Apple aesthetic, looping seamlessly */}
-          <div className="mt-2 w-full rounded-2xl overflow-hidden border border-white/15 bg-black shadow-inner relative aspect-[16/9] flex items-center justify-center">
+          <div className="mt-2 w-full rounded-2xl sm:rounded-3xl overflow-hidden border-2 border-white/25 ring-1 ring-white/10 bg-black shadow-[0_16px_40px_rgba(0,0,0,0.9)] relative aspect-[16/9] sm:aspect-[16/10] flex items-center justify-center">
             <video
               ref={videoRef}
               src="/assets/aistudio/A001_10050109_D040__online-video-cutter.com__c6f7c6f7.mp4"
@@ -77,7 +77,7 @@ export const TestimonialsSection: React.FC = () => {
               muted
               playsInline
               controls={false}
-              className="w-full h-full object-contain"
+              className="w-full h-full object-cover"
             />
           </div>
         </div>
@@ -124,11 +124,11 @@ export const TestimonialsSection: React.FC = () => {
           </div>
 
           {/* Photo Container - The White Wall Photo */}
-          <div className="mt-2 w-full rounded-2xl overflow-hidden border border-white/15 bg-black shadow-inner relative aspect-[16/9] flex items-center justify-center">
+          <div className="mt-2 w-full rounded-2xl sm:rounded-3xl overflow-hidden border-2 border-white/25 ring-1 ring-white/10 bg-black shadow-[0_16px_40px_rgba(0,0,0,0.9)] relative aspect-[16/9] sm:aspect-[16/10] flex items-center justify-center">
             <img
               src="/assets/aistudio/IMG_8781_87a26e56.png"
               alt="AromaxAI unit in yoga and meditation room by Shlok Pandey"
-              className="w-full h-full object-contain"
+              className="w-full h-full object-cover"
               loading="lazy"
             />
           </div>

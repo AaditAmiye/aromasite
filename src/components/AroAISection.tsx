@@ -51,7 +51,7 @@ export const AroAISection: React.FC = () => {
         <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
           {/* Left Column: Aro AI Video (Loops continuously, square mascot, no controls) */}
           <div className="lg:col-span-5 flex flex-col items-center justify-center">
-            <div className="relative w-full max-w-[380px] aspect-square rounded-[32px] sm:rounded-[36px] overflow-hidden bg-black border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.9),0_0_40px_rgba(255,255,255,0.06)] flex items-center justify-center">
+            <div className="relative w-full max-w-[380px] aspect-square rounded-[28px] sm:rounded-[36px] overflow-hidden bg-black border-2 border-white/30 ring-1 ring-white/15 shadow-[0_24px_60px_rgba(0,0,0,0.95)] flex items-center justify-center">
               <video
                 ref={videoRef}
                 src="/assets/aistudio/___online-video-cutter.com__acbc7330.mp4"

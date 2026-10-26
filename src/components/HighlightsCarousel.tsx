@@ -127,8 +127,8 @@ export const HighlightsCarousel: React.FC = () => {
           - Background: rgb(29, 29, 31)
         */}
         <div
-          className="relative group/carousel overflow-hidden rounded-[26px] sm:rounded-[38px] md:rounded-[44px] border border-white/10 shadow-2xl w-full aspect-[16/10] sm:aspect-[16/9] min-h-[240px] sm:min-h-[420px] md:min-h-[520px] lg:min-h-[640px]"
-          style={{ backgroundColor: 'rgb(29, 29, 31)' }}
+          className="relative group/carousel overflow-hidden rounded-[26px] sm:rounded-[38px] md:rounded-[44px] border-2 border-neutral-700/70 ring-1 ring-white/10 shadow-2xl w-full aspect-[16/10] sm:aspect-[16/9] min-h-[240px] sm:min-h-[420px] md:min-h-[520px] lg:min-h-[640px]"
+          style={{ backgroundColor: 'rgb(24, 24, 26)' }}
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
@@ -143,11 +143,10 @@ export const HighlightsCarousel: React.FC = () => {
             {SLIDES.map((slide) => (
               <div
                 key={slide.id}
-                className="w-full h-full flex-shrink-0 flex items-center justify-center p-3 sm:p-5 md:p-7 lg:p-9 relative"
-                style={{ backgroundColor: 'rgb(29, 29, 31)' }}
+                className="w-full h-full flex-shrink-0 flex items-center justify-center p-3 sm:p-5 md:p-6 lg:p-8 relative"
               >
-                {/* Inner curved card: smaller than grey box, curved edges, grey container acts as border */}
-                <div className="w-full h-full rounded-[18px] sm:rounded-[26px] md:rounded-[32px] overflow-hidden bg-black border border-white/10 shadow-2xl relative flex items-center justify-center">
+                {/* Image Frame with distinct rounded corners and clear visible border */}
+                <div className="w-full h-full rounded-2xl sm:rounded-3xl md:rounded-[30px] overflow-hidden bg-black border-2 border-white/30 ring-1 ring-white/15 shadow-[0_16px_40px_rgba(0,0,0,0.9)] relative flex items-center justify-center">
                   <img
                     src={slide.img}
                     alt={slide.title}
