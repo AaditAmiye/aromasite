@@ -52,7 +52,7 @@ export const AroAISection: React.FC = () => {
           <div className="relative w-full max-w-[380px] aspect-square rounded-[32px] sm:rounded-[36px] overflow-hidden bg-black border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.9),0_0_40px_rgba(255,255,255,0.06)] group">
             <video
               ref={videoRef}
-              src="/assets/aistudio/IMG_9423_d65311ef.MP4"
+              src="/assets/aistudio/___online-video-cutter.com__acbc7330.mp4"
               autoPlay
               loop
               muted

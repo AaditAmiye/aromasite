@@ -5,23 +5,22 @@ import { ProductFeatures } from './components/ProductFeatures';
 import { RollingWord } from './components/RollingWord';
 
 export default function App() {
-  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const desktopVideoRef = useRef<HTMLVideoElement | null>(null);
+  const mobileVideoRef = useRef<HTMLVideoElement | null>(null);
   const heroRef = useRef<HTMLDivElement | null>(null);
   const [isBuyModalOpen, setIsBuyModalOpen] = useState(false);
   const [isBuyBtnPressed, setIsBuyBtnPressed] = useState(false);
 
-  // Guarantee autoplay on mount
+  // Guarantee autoplay on mount for both mobile and desktop videos
   useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
+    const playVideo = (v: HTMLVideoElement | null) => {
+      if (!v) return;
+      v.muted = true;
+      v.play().catch(() => {});
+    };
 
-    video.muted = true;
-    const playPromise = video.play();
-    if (playPromise !== undefined) {
-      playPromise.catch(() => {
-        // Handled browser autoplay policy
-      });
-    }
+    playVideo(desktopVideoRef.current);
+    playVideo(mobileVideoRef.current);
   }, []);
 
   const openBuy = () => {
@@ -42,10 +41,26 @@ export default function App() {
       <AppleBuyModal isOpen={isBuyModalOpen} onClose={closeBuy} />
 
       {/* SECTION 1: Starting Page — Pure Fullscreen Video on Pure Black Background */}
-      <section className="relative w-full h-screen bg-black overflow-hidden flex items-center justify-center p-0 m-0">
+      <section className="relative w-full h-[100dvh] min-h-[100dvh] bg-black overflow-hidden flex items-center justify-center p-0 m-0">
+        {/* Mobile Phone Hero Video (Full screen vertical framing for phone viewports) */}
         <video
-          ref={videoRef}
-          className="w-full h-full object-cover bg-black"
+          ref={mobileVideoRef}
+          src="/assets/aistudio/aromax_mob__online-video-cutter.com__2cd2fff9.mp4"
+          className="block md:hidden w-full h-full object-cover bg-black"
+          autoPlay
+          playsInline
+          muted
+          loop
+          preload="auto"
+          controls={false}
+          disablePictureInPicture
+          controlsList="nodownload nofullscreen noremoteplayback"
+        />
+
+        {/* Desktop / Tablet Hero Video */}
+        <video
+          ref={desktopVideoRef}
+          className="hidden md:block w-full h-full object-cover bg-black"
           autoPlay
           playsInline
           muted

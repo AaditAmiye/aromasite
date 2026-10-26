@@ -9,11 +9,6 @@ interface SlideData {
 
 const SLIDES: SlideData[] = [
   {
-    id: 'diffuser-collection',
-    img: '/assets/aistudio/AromaxAI_Diffuser_Collection_6457b2ea.png',
-    title: 'Aromax AI Diffuser Collection',
-  },
-  {
     id: 'library-scents',
     img: '/assets/aistudio/Library_of_Scents_with_Handheld_Vials_fd03d189.png',
     title: 'Library of Scents',
@@ -30,7 +25,7 @@ const SLIDES: SlideData[] = [
   },
 ];
 
-const SLIDE_DURATION = 5500; // 5.5s per slide
+const SLIDE_DURATION = 2600; // Faster auto-slide duration (2.6s per slide)
 
 export const HighlightsCarousel: React.FC = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -138,7 +133,7 @@ export const HighlightsCarousel: React.FC = () => {
       >
         {/* Slides Track */}
         <div
-          className="flex w-full h-full transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]"
+          className="flex w-full h-full transition-transform duration-450 ease-[cubic-bezier(0.22,1,0.36,1)]"
           style={{
             transform: `translateX(-${currentSlide * 100}%)`,
           }}

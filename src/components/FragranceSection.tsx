@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { Sparkles, Compass, Volume2, VolumeX, ArrowUpRight } from 'lucide-react';
+import { Sparkles, Volume2, VolumeX, ArrowUpRight } from 'lucide-react';
 
 interface FragranceSectionProps {
   onExploreClick?: () => void;
@@ -37,7 +37,6 @@ export const FragranceSection: React.FC<FragranceSectionProps> = ({ onExploreCli
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [isHovered, setIsHovered] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
-  const [activeNoteIdx, setActiveNoteIdx] = useState(0);
   const [showNotesModal, setShowNotesModal] = useState(false);
 
   useEffect(() => {
@@ -96,19 +95,20 @@ export const FragranceSection: React.FC<FragranceSectionProps> = ({ onExploreCli
 
       {/* 
         Curved Border Video Presentation Card
-        - Grey outer border frame with deep bevel
-        - Inner curved container playing the video
-        - Interactive hover state showing "Explore Fragrance" pill & atmosphere details
+        - Grey outer border frame with smooth Apple bevel
+        - Inner curved container playing the fragrance film
+        - Video darkens smoothly on hover with "Explore More" call to action
       */}
       <div
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
-        className="rounded-[26px] sm:rounded-[36px] md:rounded-[44px] border border-white/15 bg-gradient-to-b from-[#1d1d1f] to-[#111113] p-3 sm:p-5 md:p-6 shadow-[0_24px_70px_rgba(0,0,0,0.85)] relative overflow-hidden transition-all duration-500 hover:border-white/25"
+        className="rounded-[26px] sm:rounded-[36px] md:rounded-[44px] border border-white/15 bg-gradient-to-b from-[#1d1d1f] to-[#111113] p-3 sm:p-5 md:p-6 shadow-[0_24px_70px_rgba(0,0,0,0.85)] relative overflow-hidden transition-all duration-500 hover:border-white/25 group"
       >
-        <div className="relative w-full aspect-[16/10] sm:aspect-[16/9] md:aspect-[21/9] min-h-[260px] sm:min-h-[420px] md:min-h-[500px] rounded-[18px] sm:rounded-[26px] md:rounded-[34px] overflow-hidden bg-black border border-white/10 shadow-2xl group flex items-center justify-center">
-          {/* Main Atmosphere Video */}
+        <div className="relative w-full aspect-[16/10] sm:aspect-[16/9] md:aspect-[21/9] min-h-[260px] sm:min-h-[420px] md:min-h-[500px] rounded-[18px] sm:rounded-[26px] md:rounded-[34px] overflow-hidden bg-black border border-white/10 shadow-2xl flex items-center justify-center">
+          {/* Main Fragrance Video */}
           <video
             ref={videoRef}
+            src="/assets/aistudio/IMG_9419_2ec26605.MP4"
             autoPlay
             loop
             muted={isMuted}
@@ -117,26 +117,17 @@ export const FragranceSection: React.FC<FragranceSectionProps> = ({ onExploreCli
             controls={false}
             disablePictureInPicture
             controlsList="nodownload nofullscreen noremoteplayback"
-            className="w-full h-full object-cover select-none pointer-events-none transition-transform duration-1000 ease-out group-hover:scale-105"
-          >
-            <source src="/armoax2_web.mp4" type="video/mp4" />
-            <source src="/assets/aistudio/armoax2_2ef98b78.mov" type="video/quicktime" />
-            <source src="/armoax2.mp4" type="video/mp4" />
-          </video>
+            className={`w-full h-full object-cover select-none pointer-events-none transition-all duration-700 ease-out ${
+              isHovered ? 'scale-105 brightness-[0.70]' : 'brightness-100'
+            }`}
+          />
 
-          {/* Cinematic Vignette Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/40 pointer-events-none transition-opacity duration-500" />
-
-          {/* Top Left Floating Tag */}
-          <div className="absolute top-3 sm:top-5 left-3 sm:left-5 z-20 flex items-center gap-2">
-            <div className="px-3 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/15 text-[10px] sm:text-xs font-mono text-neutral-300 flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span>Fragrance Film</span>
-            </div>
-            <span className="hidden sm:inline-block text-[11px] text-neutral-400 font-mono">
-              Cold Micro-Diffusion
-            </span>
-          </div>
+          {/* Darkening Hover Overlay ("make it black a little on hover") */}
+          <div
+            className={`absolute inset-0 bg-black transition-opacity duration-500 pointer-events-none ${
+              isHovered ? 'opacity-40' : 'opacity-10'
+            }`}
+          />
 
           {/* Top Right Sound Toggle */}
           <div className="absolute top-3 sm:top-5 right-3 sm:right-5 z-20">
@@ -156,89 +147,28 @@ export const FragranceSection: React.FC<FragranceSectionProps> = ({ onExploreCli
           </div>
 
           {/* 
-            Center Interactive "Explore Fragrance" Button
-            - Elegant Apple frosted glass pill
-            - Smoothly scales up and blooms on hover
+            Center Interactive "Explore More" Button
+            - Only "Explore More"
+            - Appears and highlights smoothly on hover
           */}
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20 p-4">
             <div
               className={`pointer-events-auto transform transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
                 isHovered
                   ? 'scale-100 opacity-100 translate-y-0'
-                  : 'scale-90 opacity-90 sm:opacity-0 sm:translate-y-4'
+                  : 'scale-90 opacity-90 sm:opacity-0 sm:translate-y-3'
               }`}
             >
               <button
                 type="button"
                 onClick={() => setShowNotesModal(true)}
-                className="group/btn relative px-5 sm:px-7 py-3 sm:py-3.5 rounded-full bg-black/70 hover:bg-black/90 active:scale-95 border border-white/30 hover:border-white/60 text-white backdrop-blur-2xl shadow-[0_16px_40px_rgba(0,0,0,0.6),inset_0_1px_1px_rgba(255,255,255,0.4)] flex items-center gap-3 transition-all duration-300 cursor-pointer"
+                className="group/btn relative px-6 sm:px-8 py-3 sm:py-3.5 rounded-full bg-black/75 hover:bg-black/95 active:scale-95 border border-white/30 hover:border-white/70 text-white backdrop-blur-2xl shadow-[0_20px_50px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.4)] flex items-center gap-2.5 transition-all duration-300 cursor-pointer font-medium text-sm sm:text-base tracking-wide"
               >
-                <div className="w-6 h-6 rounded-full bg-[#0071e3] text-white flex items-center justify-center flex-shrink-0 transition-transform duration-300 group-hover/btn:scale-110">
-                  <Compass className="w-3.5 h-3.5" />
-                </div>
-                <div className="text-left">
-                  <div className="text-xs sm:text-sm font-semibold tracking-tight text-white flex items-center gap-1.5">
-                    <span>Explore Fragrance Notes</span>
-                    <ArrowUpRight className="w-3.5 h-3.5 text-neutral-400 group-hover/btn:text-white transition-colors" />
-                  </div>
-                  <div className="text-[10px] sm:text-[11px] text-neutral-400">
-                    Discover 30 bespoke cold-diffused blends
-                  </div>
-                </div>
+                <span>Explore More</span>
+                <ArrowUpRight className="w-4 h-4 text-white/80 group-hover/btn:text-white transition-transform duration-300 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5" />
               </button>
             </div>
           </div>
-
-          {/* Bottom Banner inside the curved frame */}
-          <div className="absolute bottom-3 sm:bottom-5 left-3 sm:left-5 right-3 sm:right-5 z-20 flex flex-col sm:flex-row items-start sm:items-end justify-between gap-2 pointer-events-none">
-            <div className="px-3.5 py-1.5 rounded-2xl bg-black/65 backdrop-blur-md border border-white/10 text-neutral-300 text-[11px] sm:text-xs">
-              <span className="font-semibold text-white">Atmosphere 01</span> • 100% Pure Botanical Concentrate
-            </div>
-            <div className="hidden md:flex items-center gap-2 pointer-events-auto">
-              {FRAGRANCE_FAMILIES.map((fam, idx) => (
-                <button
-                  key={fam.name}
-                  onClick={() => setActiveNoteIdx(idx)}
-                  className={`px-3 py-1 rounded-full text-[11px] font-medium backdrop-blur-md transition-all cursor-pointer border ${
-                    activeNoteIdx === idx
-                      ? 'bg-white text-black border-white shadow-md font-semibold'
-                      : 'bg-black/60 text-neutral-300 border-white/15 hover:border-white/30'
-                  }`}
-                >
-                  {fam.name}
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Selected Fragrance Notes Details Strip */}
-        <div className="mt-4 sm:mt-5 p-3.5 sm:p-5 rounded-2xl bg-black/40 border border-white/10 flex flex-col md:flex-row items-start md:items-center justify-between gap-3 sm:gap-4 transition-all duration-300">
-          <div className="space-y-1">
-            <div className="flex items-center gap-2">
-              <span
-                className="w-2.5 h-2.5 rounded-full"
-                style={{ backgroundColor: FRAGRANCE_FAMILIES[activeNoteIdx].accent }}
-              />
-              <span className="text-xs sm:text-sm font-semibold text-white">
-                {FRAGRANCE_FAMILIES[activeNoteIdx].name}
-              </span>
-              <span className="text-[10px] sm:text-xs px-2 py-0.5 rounded-full bg-white/10 text-neutral-300 font-mono">
-                {FRAGRANCE_FAMILIES[activeNoteIdx].mood}
-              </span>
-            </div>
-            <p className="text-xs sm:text-sm text-neutral-400">
-              {FRAGRANCE_FAMILIES[activeNoteIdx].notes}
-            </p>
-          </div>
-          <button
-            type="button"
-            onClick={() => setShowNotesModal(true)}
-            className="text-xs text-[#2997ff] hover:text-[#70baff] font-medium flex items-center gap-1 cursor-pointer transition-colors"
-          >
-            <span>View all 30 formulas</span>
-            <ArrowUpRight className="w-3.5 h-3.5" />
-          </button>
         </div>
       </div>
 
