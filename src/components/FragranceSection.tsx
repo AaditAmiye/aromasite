@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { Sparkles, Volume2, VolumeX, ArrowUpRight } from 'lucide-react';
+import { Sparkles, ArrowUpRight } from 'lucide-react';
+import { ScrollReveal } from './ScrollReveal';
 
 interface FragranceSectionProps {
   onExploreClick?: () => void;
@@ -36,14 +37,13 @@ export const FragranceSection: React.FC<FragranceSectionProps> = ({ onExploreCli
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [isHovered, setIsHovered] = useState(false);
-  const [isMuted, setIsMuted] = useState(true);
   const [showNotesModal, setShowNotesModal] = useState(false);
 
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
 
-    video.muted = isMuted;
+    video.muted = true;
     video.play().catch(() => {});
 
     const observer = new IntersectionObserver(
@@ -61,15 +61,7 @@ export const FragranceSection: React.FC<FragranceSectionProps> = ({ onExploreCli
     }
 
     return () => observer.disconnect();
-  }, [isMuted]);
-
-  const toggleSound = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (videoRef.current) {
-      videoRef.current.muted = !isMuted;
-      setIsMuted(!isMuted);
-    }
-  };
+  }, []);
 
   return (
     <div
@@ -77,96 +69,86 @@ export const FragranceSection: React.FC<FragranceSectionProps> = ({ onExploreCli
       id="fragrance"
       className="w-full space-y-6 sm:space-y-8 select-none"
     >
-      {/* Section Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 max-w-4xl">
-        <div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-[11px] sm:text-xs font-mono uppercase tracking-widest text-[#2997ff] border border-white/10 mb-2 sm:mb-3">
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>Fragrance</span>
+      {/* Section Header with Apple Scroll Reveal */}
+      <ScrollReveal delay={0}>
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 max-w-4xl">
+          <div>
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-[11px] sm:text-xs font-mono uppercase tracking-widest text-[#2997ff] border border-white/10 mb-2 sm:mb-3">
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Fragrance</span>
+            </div>
+            <h3 className="text-2xl sm:text-4xl md:text-5xl font-bold tracking-tight text-white leading-tight">
+              Scent made visible.
+            </h3>
           </div>
-          <h3 className="text-2xl sm:text-4xl md:text-5xl font-bold tracking-tight text-white leading-tight">
-            Scent made visible.
-          </h3>
+          <p className="text-neutral-400 text-xs sm:text-sm md:text-base max-w-md leading-relaxed">
+            Crafted by world-class noses. Vaporized into microscopic cold clouds without heat or degradation, preserving the delicate top notes of every extract.
+          </p>
         </div>
-        <p className="text-neutral-400 text-xs sm:text-sm md:text-base max-w-md leading-relaxed">
-          Crafted by world-class noses. Vaporized into microscopic cold clouds without heat or degradation, preserving the delicate top notes of every extract.
-        </p>
-      </div>
+      </ScrollReveal>
 
       {/* 
         Curved Border Video Presentation Card
         - Grey outer border frame with smooth Apple bevel
         - Inner curved container playing the fragrance film
-        - Video darkens smoothly on hover with "Explore More" call to action
+        - Optimized for phones (aspect-video / fluid height so nothing is cut off)
+        - Darkens smoothly on hover
+        - Sound / mute toggle removed as requested
       */}
-      <div
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-        className="rounded-[26px] sm:rounded-[36px] md:rounded-[44px] border border-white/15 bg-gradient-to-b from-[#1d1d1f] to-[#111113] p-3 sm:p-5 md:p-6 shadow-[0_24px_70px_rgba(0,0,0,0.85)] relative overflow-hidden transition-all duration-500 hover:border-white/25 group"
-      >
-        <div className="relative w-full aspect-[16/10] sm:aspect-[16/9] md:aspect-[21/9] min-h-[260px] sm:min-h-[420px] md:min-h-[500px] rounded-[18px] sm:rounded-[26px] md:rounded-[34px] overflow-hidden bg-black border border-white/10 shadow-2xl flex items-center justify-center">
-          {/* Main Fragrance Video */}
-          <video
-            ref={videoRef}
-            src="/assets/aistudio/IMG_9419_2ec26605.MP4"
-            autoPlay
-            loop
-            muted={isMuted}
-            playsInline
-            preload="auto"
-            controls={false}
-            disablePictureInPicture
-            controlsList="nodownload nofullscreen noremoteplayback"
-            className={`w-full h-full object-cover select-none pointer-events-none transition-all duration-700 ease-out ${
-              isHovered ? 'scale-105 brightness-[0.70]' : 'brightness-100'
-            }`}
-          />
+      <ScrollReveal delay={120}>
+        <div
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+          className="rounded-[24px] sm:rounded-[36px] md:rounded-[44px] border border-white/15 bg-gradient-to-b from-[#1d1d1f] to-[#111113] p-2.5 sm:p-5 md:p-6 shadow-[0_24px_70px_rgba(0,0,0,0.85)] relative overflow-hidden transition-all duration-500 hover:border-white/25 group"
+        >
+          {/* Inner Curved Video Frame with fluid responsive aspect ratio preventing mobile cutoff */}
+          <div className="relative w-full aspect-[16/9] md:aspect-[21/9] rounded-[16px] sm:rounded-[26px] md:rounded-[34px] overflow-hidden bg-black border border-white/10 shadow-2xl flex items-center justify-center">
+            {/* Main Fragrance Video */}
+            <video
+              ref={videoRef}
+              src="/assets/aistudio/IMG_9419_2ec26605.MP4"
+              autoPlay
+              loop
+              muted
+              playsInline
+              preload="auto"
+              controls={false}
+              disablePictureInPicture
+              controlsList="nodownload nofullscreen noremoteplayback"
+              className={`w-full h-full object-cover sm:object-cover object-center select-none pointer-events-none transition-all duration-700 ease-out ${
+                isHovered ? 'scale-105 brightness-[0.70]' : 'brightness-100'
+              }`}
+            />
 
-          {/* Darkening Hover Overlay ("make it black a little on hover") */}
-          <div
-            className={`absolute inset-0 bg-black transition-opacity duration-500 pointer-events-none ${
-              isHovered ? 'opacity-40' : 'opacity-10'
-            }`}
-          />
+            {/* Darkening Hover Overlay ("make it black a little on hover") */}
+            <div
+              className={`absolute inset-0 bg-black transition-opacity duration-500 pointer-events-none ${
+                isHovered ? 'opacity-40' : 'opacity-10'
+              }`}
+            />
+          </div>
 
-          {/* Top Right Sound Toggle */}
-          <div className="absolute top-3 sm:top-5 right-3 sm:right-5 z-20">
+          {/* Action bar below the video: Explore More button and fragrance formulation note */}
+          <div className="mt-4 sm:mt-5 pt-1 sm:pt-2 flex flex-col sm:flex-row items-center justify-between gap-4 px-2 sm:px-3">
+            <div className="text-center sm:text-left space-y-0.5">
+              <p className="text-white text-sm sm:text-base font-semibold">
+                Hydrosol-based scent formulations
+              </p>
+              <p className="text-neutral-400 text-xs sm:text-sm">
+                Cold ultrasonic vapor preserving the delicate natural architecture of every botanical note.
+              </p>
+            </div>
             <button
-              onClick={toggleSound}
               type="button"
-              className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-black/60 hover:bg-black/90 active:scale-95 border border-white/20 backdrop-blur-md flex items-center justify-center text-white transition-all cursor-pointer shadow-lg"
-              title={isMuted ? 'Unmute' : 'Mute'}
-              aria-label={isMuted ? 'Unmute video' : 'Mute video'}
+              onClick={() => setShowNotesModal(true)}
+              className="group/btn relative px-7 sm:px-8 py-2.5 sm:py-3 rounded-full bg-white text-black hover:bg-neutral-200 active:scale-95 border border-white/20 flex items-center gap-2.5 transition-all duration-300 cursor-pointer font-medium text-xs sm:text-sm tracking-wide shadow-lg flex-shrink-0"
             >
-              {isMuted ? (
-                <VolumeX className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-neutral-400" />
-              ) : (
-                <Volume2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white" />
-              )}
+              <span>Explore More</span>
+              <ArrowUpRight className="w-4 h-4 text-black/75 group-hover/btn:text-black transition-transform duration-300 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5" />
             </button>
           </div>
         </div>
-
-        {/* Action bar below the video: Explore More button and fragrance formulation note */}
-        <div className="mt-4 sm:mt-5 pt-1 sm:pt-2 flex flex-col sm:flex-row items-center justify-between gap-4 px-2 sm:px-3">
-          <div className="text-center sm:text-left space-y-0.5">
-            <p className="text-white text-sm sm:text-base font-semibold">
-              Hydrosol-based scent formulations
-            </p>
-            <p className="text-neutral-400 text-xs sm:text-sm">
-              Cold ultrasonic vapor preserving the delicate natural architecture of every botanical note.
-            </p>
-          </div>
-          <button
-            type="button"
-            onClick={() => setShowNotesModal(true)}
-            className="group/btn relative px-7 sm:px-8 py-2.5 sm:py-3 rounded-full bg-white text-black hover:bg-neutral-200 active:scale-95 border border-white/20 flex items-center gap-2.5 transition-all duration-300 cursor-pointer font-medium text-xs sm:text-sm tracking-wide shadow-lg flex-shrink-0"
-          >
-            <span>Explore More</span>
-            <ArrowUpRight className="w-4 h-4 text-black/75 group-hover/btn:text-black transition-transform duration-300 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5" />
-          </button>
-        </div>
-      </div>
+      </ScrollReveal>
 
       {/* Interactive Scent Notes Overlay Modal */}
       {showNotesModal && (

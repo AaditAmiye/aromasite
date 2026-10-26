@@ -3,6 +3,7 @@ import { AppleBuyModal } from './components/AppleBuyModal';
 import { AppleUnifiedNav } from './components/AppleUnifiedNav';
 import { ProductFeatures } from './components/ProductFeatures';
 import { RollingWord } from './components/RollingWord';
+import { ScrollReveal } from './components/ScrollReveal';
 
 export default function App() {
   const desktopVideoRef = useRef<HTMLVideoElement | null>(null);
@@ -42,10 +43,10 @@ export default function App() {
 
       {/* SECTION 1: Starting Page — Pure Fullscreen Video on Pure Black Background */}
       <section className="relative w-full h-[100dvh] min-h-[100dvh] bg-black overflow-hidden flex items-center justify-center p-0 m-0">
-        {/* Mobile Phone Hero Video (Full screen vertical framing for phone viewports) */}
+        {/* Mobile Phone Hero Video (Using uploaded phone vertical video Timeline_1_a1aa5ac5.mov) */}
         <video
           ref={mobileVideoRef}
-          src="/assets/aistudio/aromax_mob__online-video-cutter.com__2cd2fff9.mp4"
+          src="/assets/aistudio/Timeline_1_a1aa5ac5.mov"
           className="block md:hidden w-full h-full object-cover bg-black"
           autoPlay
           playsInline
@@ -55,7 +56,10 @@ export default function App() {
           controls={false}
           disablePictureInPicture
           controlsList="nodownload nofullscreen noremoteplayback"
-        />
+        >
+          <source src="/assets/aistudio/Timeline_1_a1aa5ac5.mov" type="video/quicktime" />
+          <source src="/assets/aistudio/Timeline_1_a1aa5ac5.mov" type="video/mp4" />
+        </video>
 
         {/* Desktop / Tablet Hero Video */}
         <video
@@ -78,7 +82,7 @@ export default function App() {
         </video>
       </section>
 
-      {/* SECTION 2: Exactly as user starts scrolling — Apple iPhone 18 Pro layout */}
+      {/* SECTION 2: Exactly as user starts scrolling — Apple iPhone 18 Pro layout with Blur Scroll Reveal */}
       <section
         ref={heroRef}
         className="relative w-full min-h-screen bg-black text-white pt-16 sm:pt-24 md:pt-36 pb-16 sm:pb-24 px-4 sm:px-8 md:px-16 lg:px-24"
@@ -86,8 +90,8 @@ export default function App() {
         <div className="max-w-7xl mx-auto flex flex-col justify-between min-h-[60vh]">
           {/* Main Hero Header: Left Typography & Right Apple Pill Bar */}
           <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 md:gap-14 pt-4 pb-14 sm:pb-20 border-b border-neutral-900">
-            {/* Left Product Title & Tagline */}
-            <div className="space-y-2 sm:space-y-3 max-w-4xl">
+            {/* Left Product Title & Tagline with Apple Blur Scroll Reveal */}
+            <ScrollReveal delay={0} className="space-y-2 sm:space-y-3 max-w-4xl">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/15 text-[11px] sm:text-xs font-mono uppercase tracking-widest text-neutral-300">
                 <span>Aromax AI</span>
                 <span className="text-white/40">•</span>
@@ -102,10 +106,10 @@ export default function App() {
                   Your Atmosphere.
                 </div>
               </h1>
-            </div>
+            </ScrollReveal>
 
-            {/* Right Apple Pricing Pill Capsule */}
-            <div className="flex-shrink-0 self-start lg:self-end w-full sm:w-auto">
+            {/* Right Apple Pricing Pill Capsule with Blur Scroll Reveal */}
+            <ScrollReveal delay={120} className="flex-shrink-0 self-start lg:self-end w-full sm:w-auto">
               <div className="bg-[#1d1d1f] border border-white/10 rounded-full pl-4 pr-1.5 py-1.5 sm:pl-7 sm:pr-3 sm:py-2.5 flex items-center justify-between sm:justify-start gap-3 sm:gap-6 shadow-2xl backdrop-blur-md max-w-full">
                 <span className="text-[11px] sm:text-xs md:text-sm font-medium text-[#f5f5f7]/90 tracking-normal truncate sm:whitespace-nowrap">
                   From ₹20000.00* or ₹1667.00/mo.‡
@@ -122,7 +126,7 @@ export default function App() {
                   Buy
                 </button>
               </div>
-            </div>
+            </ScrollReveal>
           </div>
 
           {/* Apple-style Showcase & Deep Innovation Details */}
