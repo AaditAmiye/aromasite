@@ -327,22 +327,22 @@ export const ProductFeatures: React.FC<ProductFeaturesProps> = ({ onBuyClick }) 
         </div>
       </div>
 
-      {/* 6. Apple Official Footnotes */}
-      <div className="pt-10 sm:pt-16 border-t border-neutral-800 text-[11px] text-neutral-400 space-y-2.5 font-normal leading-relaxed">
+      {/* 6. Apple Official Footnotes & Legal Info */}
+      <div className="pt-10 sm:pt-16 border-t border-neutral-800 text-xs sm:text-sm text-neutral-400 space-y-3 font-normal leading-relaxed">
         <p>
-          * Maximum Retail Price (MRP) is inclusive of all taxes. In-box items: 1x Aro - 1 Diffuser Unit, 1x Solid Titanium MagSafe Charging Cradle, 1x USB-C Woven Power Cable (2m), 3x 60ml Bespoke Olfactory Pods.
+          Maximum Retail Price (MRP) is inclusive of all applicable taxes.
         </p>
         <p>
-          ‡ No Cost EMI is available on qualifying American Express, Axis Bank, HDFC Bank, ICICI Bank, and SBI credit cards for 3, 6, 9, or 12-month tenures. ₹1,667.00/mo. calculation is based on ₹20,000.00 total order value amortized over 12 months with 0% interest and 0 processing fees. Terms and conditions apply.
+          In the Box: 1 × Aro Diffuser Unit, power supply, diffuser bottles, and scent pouches.
         </p>
         <p>
-          1. Whispering sound floor tests conducted in controlled anechoic chambers in accordance with ISO 3745 acoustic standards. Actual acoustic output may vary based on surface materials and room acoustics.
+          ‡ No-Cost EMI is available on eligible American Express, Axis Bank, HDFC Bank, ICICI Bank, and SBI credit cards for 3-, 6-, 9-, or 12-month tenures. The EMI of ₹1,667/month is calculated on a total order value of ₹20,000 over 12 months, at 0% interest with no processing fees. Terms and conditions apply.
         </p>
         <p>
-          2. Matter compliance requires a compatible Apple Home hub (HomePod mini, HomePod 2nd gen, or Apple TV 4K).
+          Product features, fragrance availability and beta experiences may evolve as development continues.
         </p>
         <div className="pt-6 sm:pt-8 flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4 border-t border-neutral-900 text-neutral-400 text-xs">
-          <p>© 2026 Aromax AI Inc. All rights reserved.</p>
+          <p>©️ 2026 Aromax AI Pvt Ltd. All rights reserved.</p>
           <div className="flex flex-wrap justify-center gap-4 sm:gap-6">
             <span className="hover:text-white transition-colors cursor-pointer">Privacy Policy</span>
             <span className="hover:text-white transition-colors cursor-pointer">Terms of Sale</span>

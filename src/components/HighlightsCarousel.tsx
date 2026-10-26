@@ -15,13 +15,13 @@ const SLIDES: SlideData[] = [
   },
   {
     id: 'on-device-pcb',
-    img: '/assets/aistudio/On-Device_Processing_PCB_Module_edb2944f.png',
-    title: 'On-Device Processing Module',
+    img: '/assets/aistudio/IMG_9472_fcf9d0be.PNG',
+    title: 'On-Device Processing',
   },
   {
-    id: 'type-c-cartridge',
-    img: '/assets/aistudio/Your_Scents__Your_Choice_Cartridge_a580d9de.png',
-    title: 'USB-C Plug-and-Play Cartridge',
+    id: 'aromax-app-showcase',
+    img: '/assets/aistudio/AromaxAI_Dark_App_Showcase_e15d788a.png',
+    title: 'AromaxAI App & Scent Experience',
   },
 ];
 
