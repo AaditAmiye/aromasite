@@ -123,12 +123,14 @@ export const HighlightsCarousel: React.FC = () => {
     <section className="w-full max-w-[1440px] mx-auto select-none px-3 sm:px-6">
       {/* 
         MAIN SLIDESHOW CAROUSEL:
+        - Grey frame with rounded corners and border
+        - Image centered horizontally and vertically
         - Responsive aspect ratio for phone and tablet
         - Mobile swipe gestures enabled
         - Background: rgb(29, 29, 31)
       */}
       <div
-        className="relative group/carousel overflow-hidden rounded-[24px] sm:rounded-[36px] border border-white/10 shadow-2xl"
+        className="relative group/carousel overflow-hidden rounded-[26px] sm:rounded-[38px] md:rounded-[44px] border border-white/10 shadow-2xl w-full aspect-[16/10] sm:aspect-[16/9] min-h-[260px] sm:min-h-[420px] md:min-h-[520px] lg:min-h-[640px]"
         style={{ backgroundColor: 'rgb(29, 29, 31)' }}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
@@ -136,7 +138,7 @@ export const HighlightsCarousel: React.FC = () => {
       >
         {/* Slides Track */}
         <div
-          className="flex transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] aspect-[16/10] sm:aspect-[16/9] min-h-[220px] sm:min-h-[420px] md:min-h-[520px] lg:min-h-[640px]"
+          className="flex w-full h-full transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]"
           style={{
             transform: `translateX(-${currentSlide * 100}%)`,
           }}
@@ -144,15 +146,15 @@ export const HighlightsCarousel: React.FC = () => {
           {SLIDES.map((slide) => (
             <div
               key={slide.id}
-              className="w-full flex-shrink-0 h-full relative overflow-hidden flex items-center justify-center p-3 sm:p-8 md:p-12 lg:p-16"
+              className="w-full h-full flex-shrink-0 flex items-center justify-center p-3 sm:p-5 md:p-7 lg:p-9 relative"
               style={{ backgroundColor: 'rgb(29, 29, 31)' }}
             >
-              {/* Scaled-down centered image resting cleanly inside housing */}
-              <div className="w-full h-full flex items-center justify-center">
+              {/* Inner curved card: smaller than grey box, curved edges, grey container acts as border */}
+              <div className="w-full h-full rounded-[18px] sm:rounded-[26px] md:rounded-[32px] overflow-hidden bg-black border border-white/10 shadow-2xl relative flex items-center justify-center">
                 <img
                   src={slide.img}
                   alt={slide.title}
-                  className="max-w-[96%] sm:max-w-[90%] max-h-[92%] sm:max-h-[86%] object-contain rounded-xl sm:rounded-2xl shadow-2xl transition-transform duration-500"
+                  className="w-full h-full object-contain object-center select-none pointer-events-none"
                 />
               </div>
             </div>
@@ -163,65 +165,60 @@ export const HighlightsCarousel: React.FC = () => {
         <button
           onClick={handlePrev}
           aria-label="Previous Slide"
-          className="hidden sm:flex absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-black/60 hover:bg-black/90 border border-white/20 text-white items-center justify-center backdrop-blur-md transition-all opacity-0 group-hover/carousel:opacity-100 cursor-pointer shadow-xl z-20"
+          className="hidden sm:flex absolute left-4 sm:left-6 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-black/70 hover:bg-black/90 border border-white/20 text-white items-center justify-center backdrop-blur-md transition-all opacity-0 group-hover/carousel:opacity-100 cursor-pointer shadow-xl z-30"
         >
           <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
         </button>
         <button
           onClick={handleNext}
           aria-label="Next Slide"
-          className="hidden sm:flex absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-black/60 hover:bg-black/90 border border-white/20 text-white items-center justify-center backdrop-blur-md transition-all opacity-0 group-hover/carousel:opacity-100 cursor-pointer shadow-xl z-20"
+          className="hidden sm:flex absolute right-4 sm:right-6 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-black/70 hover:bg-black/90 border border-white/20 text-white items-center justify-center backdrop-blur-md transition-all opacity-0 group-hover/carousel:opacity-100 cursor-pointer shadow-xl z-30"
         >
           <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
         </button>
 
         {/* Floating Bottom Control Capsule */}
-        <div className="absolute bottom-3 sm:bottom-6 left-1/2 -translate-x-1/2 z-20 scale-90 sm:scale-100">
-          <div className="bg-black/75 border border-white/20 rounded-full px-4 sm:px-5 py-2 sm:py-2.5 flex items-center gap-3 sm:gap-4 backdrop-blur-2xl shadow-2xl">
-            {/* Progress Pill / Indicators */}
-            <div className="flex items-center gap-2 sm:gap-2.5">
-              {SLIDES.map((_, idx) => {
-                const isCurrent = idx === currentSlide;
-                return (
-                  <button
-                    key={idx}
-                    onClick={() => goToSlide(idx)}
-                    className="cursor-pointer py-1 group flex items-center"
-                    aria-label={`Go to slide ${idx + 1}`}
-                  >
-                    {isCurrent ? (
-                      /* Active expanded pill with filling progress bar */
-                      <div className="w-8 sm:w-12 h-1.5 rounded-full bg-white/25 overflow-hidden relative">
-                        <div
-                          className="h-full bg-white rounded-full transition-[width] duration-75 ease-linear"
-                          style={{ width: `${progress}%` }}
-                        />
-                      </div>
-                    ) : (
-                      /* Inactive dot */
-                      <div className="w-2 h-2 rounded-full bg-white/40 group-hover:bg-white/80 transition-colors" />
-                    )}
-                  </button>
-                );
-              })}
-            </div>
-
-            {/* Divider */}
-            <div className="w-[1px] h-3.5 bg-white/20" />
-
-            {/* Play / Pause Toggle Button */}
-            <button
-              onClick={togglePlay}
-              aria-label={isPlaying ? 'Pause slideshow' : 'Play slideshow'}
-              className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-white/10 hover:bg-white/25 text-white flex items-center justify-center transition-all cursor-pointer shadow-sm active:scale-90"
-            >
-              {isPlaying ? (
-                <Pause className="w-3 h-3 sm:w-3.5 sm:h-3.5 fill-current" />
-              ) : (
-                <Play className="w-3 h-3 sm:w-3.5 sm:h-3.5 fill-current ml-0.5" />
-              )}
-            </button>
+        <div className="absolute bottom-4 sm:bottom-7 md:bottom-9 left-1/2 -translate-x-1/2 z-30 scale-90 sm:scale-100 flex items-center gap-2.5 sm:gap-3">
+          {/* Progress Indicators Pill */}
+          <div className="bg-black/80 border border-white/20 rounded-full px-4 sm:px-5 py-2 sm:py-2.5 flex items-center gap-2 sm:gap-2.5 backdrop-blur-2xl shadow-2xl">
+            {SLIDES.map((_, idx) => {
+              const isCurrent = idx === currentSlide;
+              return (
+                <button
+                  key={idx}
+                  onClick={() => goToSlide(idx)}
+                  className="cursor-pointer py-1 group flex items-center"
+                  aria-label={`Go to slide ${idx + 1}`}
+                >
+                  {isCurrent ? (
+                    /* Active expanded pill with filling progress bar */
+                    <div className="w-8 sm:w-12 h-1.5 rounded-full bg-white/25 overflow-hidden relative">
+                      <div
+                        className="h-full bg-white rounded-full transition-[width] duration-75 ease-linear"
+                        style={{ width: `${progress}%` }}
+                      />
+                    </div>
+                  ) : (
+                    /* Inactive dot */
+                    <div className="w-2 h-2 rounded-full bg-white/40 group-hover:bg-white/80 transition-colors" />
+                  )}
+                </button>
+              );
+            })}
           </div>
+
+          {/* Play / Pause Toggle Button */}
+          <button
+            onClick={togglePlay}
+            aria-label={isPlaying ? 'Pause slideshow' : 'Play slideshow'}
+            className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-black/80 hover:bg-black/95 border border-white/20 text-white flex items-center justify-center backdrop-blur-2xl transition-all cursor-pointer shadow-2xl active:scale-90"
+          >
+            {isPlaying ? (
+              <Pause className="w-3 h-3 sm:w-3.5 sm:h-3.5 fill-current" />
+            ) : (
+              <Play className="w-3 h-3 sm:w-3.5 sm:h-3.5 fill-current ml-0.5" />
+            )}
+          </button>
         </div>
       </div>
     </section>

@@ -193,13 +193,15 @@ export const ProductFeatures: React.FC<ProductFeaturesProps> = ({ onBuyClick }) 
             </div>
           </div>
 
-          {/* Box 5: Pure Visual Showcase Card (Fits fully on any screen, zero overlay text) */}
-          <div className="md:col-span-12 lg:col-span-6 rounded-3xl border border-white/10 bg-black overflow-hidden flex items-center justify-center shadow-2xl aspect-[16/10] sm:aspect-[16/9] min-h-[220px] sm:min-h-[340px]">
-            <img
-              src="/assets/aistudio/a59fe36e-0fba-4e31-a31c-4abb5715c222_76e53402.png"
-              alt="Aromax AI Scent Cartridge"
-              className="w-full h-full object-contain object-center"
-            />
+          {/* Box 5: Visual Showcase Card with grey border frame and curved image */}
+          <div className="md:col-span-12 lg:col-span-6 rounded-3xl border border-white/10 bg-[#161617] p-3 sm:p-5 overflow-hidden flex items-center justify-center shadow-2xl aspect-[16/10] sm:aspect-[16/9] min-h-[220px] sm:min-h-[340px]">
+            <div className="w-full h-full rounded-[18px] sm:rounded-[22px] bg-black border border-white/10 overflow-hidden flex items-center justify-center">
+              <img
+                src="/assets/aistudio/a59fe36e-0fba-4e31-a31c-4abb5715c222_76e53402.png"
+                alt="Aromax AI Scent Cartridge"
+                className="w-full h-full object-contain object-center select-none pointer-events-none"
+              />
+            </div>
           </div>
         </div>
       </div>

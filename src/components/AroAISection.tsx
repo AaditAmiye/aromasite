@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { Sparkles, RotateCcw } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 
 const SCENT_MOMENTS = [
   'A morning coffee.',
@@ -12,7 +12,6 @@ export const AroAISection: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [hasPlayed, setHasPlayed] = useState(false);
-  const [isVideoEnded, setIsVideoEnded] = useState(false);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -36,14 +35,6 @@ export const AroAISection: React.FC = () => {
     return () => observer.disconnect();
   }, [hasPlayed]);
 
-  const handleReplay = () => {
-    if (videoRef.current) {
-      setIsVideoEnded(false);
-      videoRef.current.currentTime = 0;
-      videoRef.current.play().catch(() => {});
-    }
-  };
-
   return (
     <div
       ref={containerRef}
@@ -62,20 +53,8 @@ export const AroAISection: React.FC = () => {
               src="/assets/aistudio/IMG_9423_d65311ef.MP4"
               playsInline
               muted
-              onEnded={() => setIsVideoEnded(true)}
               className="w-full h-full object-cover"
             />
-
-            {/* Replay button when video ends */}
-            {isVideoEnded && (
-              <button
-                onClick={handleReplay}
-                className="absolute bottom-4 right-4 z-20 px-3 py-1.5 rounded-full bg-black/70 hover:bg-black/90 border border-white/20 text-white text-xs font-medium flex items-center gap-1.5 backdrop-blur-md transition-all cursor-pointer shadow-lg"
-              >
-                <RotateCcw className="w-3.5 h-3.5" />
-                <span>Replay</span>
-              </button>
-            )}
 
             {/* Subtle frosted glass badge */}
             <div className="absolute top-4 left-4 z-20 flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/60 border border-white/15 backdrop-blur-md">
