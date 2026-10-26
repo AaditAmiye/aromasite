@@ -19,14 +19,14 @@ export const FINISHES = [
     name: 'Frost Silver',
     desc: 'Precision-milled aerospace aluminum with frosted satin bead blast',
     hex: '#D1D5DB',
-    image: '/assets/aistudio/Titanium_AromaxAI_Scent_Machine_f3d2505a.png',
+    image: '/assets/aistudio/bb053c35-4552-4d37-a81c-2cd5dd2c04fb_df04d57d.png',
   },
   {
     id: 'ivory-white',
     name: 'Ivory White',
     desc: 'Warm satin ceramic finish engineered to reflect ambient room light',
     hex: '#F3F2EC',
-    image: '/assets/aistudio/AromaxAI_Aroma_Dispenser_Render__1__5c3cfe7d.png',
+    image: '/assets/aistudio/AromaxAI_Vial_Array_Machine_ab3b4640.png',
   },
   {
     id: 'wooden-brown',
@@ -120,7 +120,7 @@ export const AppleBuyModal: React.FC<AppleBuyModalProps> = ({ isOpen, onClose })
               Configure
             </h3>
             <p className="text-lg sm:text-xl font-semibold tracking-tight text-white transition-opacity duration-300">
-              Buy Aro
+              Buy Aro - 1
             </p>
           </div>
           <button
@@ -140,7 +140,7 @@ export const AppleBuyModal: React.FC<AppleBuyModalProps> = ({ isOpen, onClose })
               <div className="relative w-32 h-24 sm:w-40 sm:h-28 mx-auto rounded-2xl bg-[#0f0f10] border border-white/10 overflow-hidden p-2 flex items-center justify-center">
                 <img
                   src={currentFinishObj.image}
-                  alt={`Aro in ${currentFinishObj.name}`}
+                  alt={`Aro - 1 in ${currentFinishObj.name}`}
                   className="w-full h-full object-contain"
                 />
               </div>
@@ -151,10 +151,10 @@ export const AppleBuyModal: React.FC<AppleBuyModalProps> = ({ isOpen, onClose })
                   High Demand • Reserved Queue
                 </span>
                 <h4 className="text-2xl sm:text-3xl font-bold tracking-tight text-white pt-1">
-                  Aro is currently out of stock.
+                  Aro - 1 is currently out of stock.
                 </h4>
                 <p className="text-xs sm:text-sm text-neutral-400">
-                  Selected model: <span className="text-white font-medium">Aro in {currentFinishObj.name}</span>
+                  Selected model: <span className="text-white font-medium">Aro - 1 in {currentFinishObj.name}</span>
                 </p>
               </div>
 
@@ -196,7 +196,7 @@ export const AppleBuyModal: React.FC<AppleBuyModalProps> = ({ isOpen, onClose })
                     You're on the priority notification list
                   </h5>
                   <p className="text-xs sm:text-sm text-neutral-300">
-                    We'll email <span className="text-white font-medium underline">{email}</span> the moment Aro in {currentFinishObj.name} is available to ship.
+                    We'll email <span className="text-white font-medium underline">{email}</span> the moment Aro - 1 in {currentFinishObj.name} is available to ship.
                   </p>
                   <p className="text-[11px] text-neutral-500 pt-1">
                     Leave your email, and we’ll let you know as soon as it’s available.
@@ -233,7 +233,7 @@ export const AppleBuyModal: React.FC<AppleBuyModalProps> = ({ isOpen, onClose })
                     <img
                       key={f.id}
                       src={f.image}
-                      alt={`Aro in ${f.name}`}
+                      alt={`Aro - 1 in ${f.name}`}
                       className={`absolute inset-0 w-full h-full object-contain p-2 sm:p-4 transition-opacity duration-700 ease-in-out ${
                         isSelected
                           ? 'opacity-100 z-10 pointer-events-auto'

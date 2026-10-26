@@ -8,7 +8,7 @@ interface AppleUnifiedNavProps {
 
 const NAV_ITEMS = [
   'Store',
-  'Aro',
+  'Aro - 1',
   'For homes',
   'Entertainment',
   'For business',
@@ -23,7 +23,14 @@ export const AppleUnifiedNav: React.FC<AppleUnifiedNavProps> = ({
   onNavClick,
 }) => {
   const [scrollY, setScrollY] = useState(0);
-  const [activeItem, setActiveItem] = useState('Aro');
+  const [activeItem, setActiveItem] = useState('Aro - 1');
+  const [isBuyClicked, setIsBuyClicked] = useState(false);
+
+  const handleBuy = () => {
+    setIsBuyClicked(true);
+    setTimeout(() => setIsBuyClicked(false), 350);
+    onBuyClick();
+  };
 
   // Track scroll position
   useEffect(() => {
@@ -111,8 +118,10 @@ export const AppleUnifiedNav: React.FC<AppleUnifiedNavProps> = ({
             </span>
             <button
               type="button"
-              onClick={onBuyClick}
-              className="bg-[#0071e3] hover:bg-[#0077ed] active:scale-95 text-white font-medium text-xs px-3.5 sm:px-4 py-1.5 rounded-full transition-all cursor-pointer shadow-sm"
+              onClick={handleBuy}
+              className={`relative overflow-hidden bg-[#0071e3] hover:bg-[#0077ed] text-white font-medium text-xs px-3.5 sm:px-4 py-1.5 rounded-full transition-all duration-200 cursor-pointer shadow-sm hover:shadow-blue-500/30 ${
+                isBuyClicked ? 'scale-90 brightness-125 ring-2 ring-white/50' : 'active:scale-95'
+              }`}
             >
               Buy
             </button>

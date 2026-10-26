@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, Sparkles } from 'lucide-react';
 import { HighlightsCarousel } from './HighlightsCarousel';
+import { FragranceSection } from './FragranceSection';
 import { AroAISection } from './AroAISection';
 
 interface ProductFeaturesProps {
@@ -20,14 +21,14 @@ const FINISH_GALLERY = [
     tag: 'Precision-milled aerospace aluminum with frosted satin bead blast',
     bgGrad: 'from-slate-800/40 via-neutral-950 to-black',
     accent: '#D1D5DB',
-    image: '/assets/aistudio/Titanium_AromaxAI_Scent_Machine_f3d2505a.png',
+    image: '/assets/aistudio/bb053c35-4552-4d37-a81c-2cd5dd2c04fb_df04d57d.png',
   },
   {
     name: 'Ivory White',
     tag: 'Warm satin ceramic finish engineered to reflect ambient room light',
     bgGrad: 'from-stone-900/40 via-neutral-950 to-black',
     accent: '#F3F2EC',
-    image: '/assets/aistudio/AromaxAI_Aroma_Dispenser_Render__1__5c3cfe7d.png',
+    image: '/assets/aistudio/AromaxAI_Vial_Array_Machine_ab3b4640.png',
   },
   {
     name: 'Wooden Brown',
@@ -40,8 +41,17 @@ const FINISH_GALLERY = [
 
 export const ProductFeatures: React.FC<ProductFeaturesProps> = ({ onBuyClick }) => {
   const [activeFinishIndex, setActiveFinishIndex] = useState(0);
+  const [clickedBtn, setClickedBtn] = useState<string | null>(null);
 
   const currentFinish = FINISH_GALLERY[activeFinishIndex];
+
+  const handleAnimatedBuy = (btnId: string) => {
+    setClickedBtn(btnId);
+    setTimeout(() => {
+      setClickedBtn(null);
+      onBuyClick();
+    }, 150);
+  };
 
   return (
     <div className="w-full max-w-7xl mx-auto space-y-16 sm:space-y-24 md:space-y-32">
@@ -56,7 +66,7 @@ export const ProductFeatures: React.FC<ProductFeaturesProps> = ({ onBuyClick }) 
             Engineered to shape your atmosphere.
           </h3>
           <p className="text-neutral-400 text-sm sm:text-base md:text-lg leading-relaxed">
-            Precision engineering meets purposeful design. AromaxAI brings multiple scent experiences into one sophisticated home appliance, giving you greater control over how your space feels. Thoughtfully designed around scent delivery, intuitive control, and everyday use, it makes personalizing your environment feel as natural as adjusting the lights.
+            Precision engineering meets purposeful design. Aro - 1 brings multiple scent experiences into one sophisticated home appliance, giving you greater control over how your space feels. Thoughtfully designed around scent delivery, intuitive control, and everyday use, it makes personalizing your environment feel as natural as adjusting the lights.
           </p>
         </div>
 
@@ -89,7 +99,7 @@ export const ProductFeatures: React.FC<ProductFeaturesProps> = ({ onBuyClick }) 
               <img
                 key={f.name}
                 src={f.image}
-                alt={`Aromax AI in ${f.name}`}
+                alt={`Aro - 1 in ${f.name}`}
                 className={`absolute inset-0 w-full h-full object-contain p-2 sm:p-6 transition-opacity duration-700 ease-in-out select-none pointer-events-none ${
                   isActive
                     ? 'opacity-100 z-10'
@@ -113,17 +123,21 @@ export const ProductFeatures: React.FC<ProductFeaturesProps> = ({ onBuyClick }) 
         <div className={`mt-5 sm:mt-6 p-5 sm:p-7 rounded-2xl border border-white/10 bg-gradient-to-tr ${currentFinish.bgGrad} flex flex-col md:flex-row items-start md:items-center justify-between gap-4 sm:gap-6 transition-colors duration-500`}>
           <div>
             <h4 className="text-xl sm:text-2xl font-bold text-white mb-1 transition-opacity duration-500">
-              {currentFinish.name}
+              Aro - 1 in {currentFinish.name}
             </h4>
             <p className="text-xs sm:text-sm text-neutral-300 transition-opacity duration-500">
               {currentFinish.tag}
             </p>
           </div>
           <button
-            onClick={onBuyClick}
-            className="w-full md:w-auto flex-shrink-0 text-center px-6 sm:px-7 py-2.5 sm:py-3 rounded-full bg-[#0071e3] hover:bg-[#0077ed] active:scale-95 text-white text-xs sm:text-sm font-semibold transition-all duration-300 cursor-pointer shadow-md"
+            onClick={() => handleAnimatedBuy(`finish-${currentFinish.name}`)}
+            className={`w-full md:w-auto flex-shrink-0 text-center px-6 sm:px-7 py-2.5 sm:py-3 rounded-full bg-[#0071e3] hover:bg-[#0077ed] text-white text-xs sm:text-sm font-semibold transition-all duration-200 cursor-pointer shadow-md ${
+              clickedBtn === `finish-${currentFinish.name}`
+                ? 'scale-90 brightness-125 ring-4 ring-[#0071e3]/40'
+                : 'active:scale-95'
+            }`}
           >
-            Pre-order {currentFinish.name}
+            Pre-order Aro - 1
           </button>
         </div>
       </div>
@@ -140,9 +154,9 @@ export const ProductFeatures: React.FC<ProductFeaturesProps> = ({ onBuyClick }) 
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-4 sm:gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
           {/* Box 1: Your library. Your rules. */}
-          <div className="md:col-span-12 lg:col-span-6 rounded-3xl border border-white/10 bg-[#161617] p-6 sm:p-8 md:p-10 flex flex-col justify-between shadow-xl">
+          <div className="rounded-3xl border border-white/10 bg-[#161617] p-6 sm:p-8 md:p-10 flex flex-col justify-between shadow-xl">
             <div>
               <h4 className="text-xl sm:text-2xl md:text-3xl font-bold text-white tracking-tight mb-1">
                 Your library. Your rules.
@@ -159,8 +173,8 @@ export const ProductFeatures: React.FC<ProductFeaturesProps> = ({ onBuyClick }) 
             </div>
           </div>
 
-          {/* Box 2: Plug in. Switch up. */}
-          <div className="md:col-span-12 lg:col-span-6 rounded-3xl border border-white/10 bg-[#161617] p-6 sm:p-8 md:p-10 flex flex-col justify-between shadow-xl">
+          {/* Box 2: Plug in. Switch up. (Cartridge photo removed as requested) */}
+          <div className="rounded-3xl border border-white/10 bg-[#161617] p-6 sm:p-8 md:p-10 flex flex-col justify-between shadow-xl">
             <div>
               <h4 className="text-xl sm:text-2xl md:text-3xl font-bold text-white tracking-tight mb-1">
                 Plug in. Switch up.
@@ -178,7 +192,7 @@ export const ProductFeatures: React.FC<ProductFeaturesProps> = ({ onBuyClick }) 
           </div>
 
           {/* Box 3: Designed to be changed. */}
-          <div className="md:col-span-6 lg:col-span-3 rounded-3xl border border-white/10 bg-[#161617] p-6 sm:p-8 flex flex-col justify-between shadow-xl">
+          <div className="rounded-3xl border border-white/10 bg-[#161617] p-6 sm:p-8 flex flex-col justify-between shadow-xl">
             <div>
               <h4 className="text-lg sm:text-xl md:text-2xl font-bold text-white tracking-tight mb-1">
                 Designed to be changed.
@@ -196,7 +210,7 @@ export const ProductFeatures: React.FC<ProductFeaturesProps> = ({ onBuyClick }) 
           </div>
 
           {/* Box 4: Technology you feel. */}
-          <div className="md:col-span-6 lg:col-span-3 rounded-3xl border border-white/10 bg-[#161617] p-6 sm:p-8 flex flex-col justify-between shadow-xl">
+          <div className="rounded-3xl border border-white/10 bg-[#161617] p-6 sm:p-8 flex flex-col justify-between shadow-xl">
             <div>
               <h4 className="text-lg sm:text-xl md:text-2xl font-bold text-white tracking-tight mb-1">
                 Technology you feel.
@@ -212,45 +226,111 @@ export const ProductFeatures: React.FC<ProductFeaturesProps> = ({ onBuyClick }) 
               From a single note to a whole new world — it starts with your imagination.
             </div>
           </div>
+        </div>
 
-          {/* Box 5: Visual Showcase Card with grey border frame and curved image */}
-          <div className="md:col-span-12 lg:col-span-6 rounded-3xl border border-white/10 bg-[#161617] p-3 sm:p-5 overflow-hidden flex items-center justify-center shadow-2xl aspect-[16/10] sm:aspect-[16/9] min-h-[220px] sm:min-h-[340px]">
-            <div className="w-full h-full rounded-[18px] sm:rounded-[22px] bg-black border border-white/10 overflow-hidden flex items-center justify-center">
-              <img
-                src="/assets/aistudio/a59fe36e-0fba-4e31-a31c-4abb5715c222_76e53402.png"
-                alt="Aromax AI Scent Cartridge"
-                className="w-full h-full object-contain object-center select-none pointer-events-none"
-              />
+        {/* 
+          NEW SHOWCASE: Aro - 1 Charcoal Black Edition Poster Card
+          Placed directly after "Make room for your favourites (One device. Thirty choices.)"
+        */}
+        <div className="mt-8 sm:mt-12 rounded-[28px] sm:rounded-[38px] md:rounded-[44px] border border-white/15 bg-gradient-to-b from-[#18181a] via-[#121214] to-black p-4 sm:p-8 md:p-12 overflow-hidden shadow-2xl relative">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+            {/* Left Image Showcase with curved container and border */}
+            <div className="lg:col-span-6 flex items-center justify-center">
+              <div className="relative w-full max-w-[460px] rounded-[22px] sm:rounded-[30px] overflow-hidden bg-black border border-white/15 shadow-[0_20px_50px_rgba(0,0,0,0.9)] group">
+                <img
+                  src="/assets/aistudio/WhatsApp_Image_2026-10-26_at_10.40.37_PM_d5275e11.jpeg"
+                  alt="Aro - 1 Charcoal Black Edition"
+                  className="w-full h-auto object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+                />
+                <div className="absolute top-3 left-3 sm:top-4 sm:left-4 px-3 py-1 rounded-full bg-black/65 backdrop-blur-md border border-white/15 text-[10px] sm:text-xs font-mono text-neutral-300">
+                  Charcoal Black Edition
+                </div>
+              </div>
+            </div>
+
+            {/* Right Details & Specs */}
+            <div className="lg:col-span-6 space-y-4 sm:space-y-6">
+              <div className="space-y-2">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-[11px] sm:text-xs font-mono uppercase tracking-widest text-[#2997ff] border border-white/10">
+                  <Sparkles className="w-3.5 h-3.5" />
+                  <span>New Collection</span>
+                </div>
+                <h3 className="text-3xl sm:text-5xl md:text-6xl font-bold tracking-tight text-white">
+                  Aro - 1
+                </h3>
+                <p className="text-lg sm:text-xl md:text-2xl text-neutral-300 font-medium">
+                  Your AI device that understands scent.
+                </p>
+              </div>
+
+              <p className="text-neutral-400 text-xs sm:text-sm md:text-base leading-relaxed">
+                Engineered with an array of thirty precision micro-vials, dual whisper-quiet acoustic fans, and on-device ambient intelligence. Discover the pinnacle of home atmosphere design in deep matte Charcoal Black.
+              </p>
+
+              <div className="grid grid-cols-2 gap-3 pt-2">
+                <div className="p-3.5 rounded-2xl bg-white/[0.04] border border-white/10">
+                  <div className="text-xs text-neutral-400 mb-0.5">Dispersal</div>
+                  <div className="text-sm sm:text-base font-semibold text-white">30 Micro-Vials</div>
+                </div>
+                <div className="p-3.5 rounded-2xl bg-white/[0.04] border border-white/10">
+                  <div className="text-xs text-neutral-400 mb-0.5">Intelligence</div>
+                  <div className="text-sm sm:text-base font-semibold text-white">Aro AI Scent Engine</div>
+                </div>
+              </div>
+
+              <div className="pt-3 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => handleAnimatedBuy('showcase-aro-1')}
+                  className={`px-7 py-3 rounded-full bg-[#0071e3] hover:bg-[#0077ed] text-white font-semibold text-xs sm:text-sm transition-all duration-200 cursor-pointer shadow-lg shadow-blue-500/25 flex items-center justify-center gap-2 ${
+                    clickedBtn === 'showcase-aro-1'
+                      ? 'scale-90 brightness-125 ring-4 ring-[#0071e3]/40'
+                      : 'active:scale-95'
+                  }`}
+                >
+                  Pre-order Aro - 1 <ChevronRight className="w-4 h-4" />
+                </button>
+                <div className="text-[11px] sm:text-xs text-neutral-400 text-center sm:text-left">
+                  Available in 4 bespoke finishes • Zero EMI available
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* 3. Meet Aro AI Section */}
+      {/* 3. Fragrance Video Section (Placed after Plug/Switch bento & before Aro AI) */}
+      <FragranceSection onExploreClick={onBuyClick} />
+
+      {/* 4. Meet Aro AI Section */}
       <AroAISection />
 
-      {/* 4. Apple Call to Action Banner */}
+      {/* 5. Apple Call to Action Banner */}
       <div className="rounded-3xl border border-white/10 bg-gradient-to-r from-[#1d1d1f] to-[#121214] p-6 sm:p-10 md:p-16 text-center space-y-4 sm:space-y-6">
         <h3 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-white">
-          Experience Aromax AI in your space.
+          Experience Aro - 1 in your space.
         </h3>
         <p className="text-neutral-400 max-w-xl mx-auto text-xs sm:text-sm md:text-base">
           From ₹20000.00* or ₹1667.00/mo. for 12 mo.‡ with zero down payment and free express delivery across India.
         </p>
         <div className="pt-2 flex justify-center">
           <button
-            onClick={onBuyClick}
-            className="w-full sm:w-auto bg-[#0071e3] hover:bg-[#0077ed] active:scale-95 text-white font-semibold text-xs sm:text-sm px-6 sm:px-8 py-3 sm:py-3.5 rounded-full transition-all duration-300 cursor-pointer shadow-lg shadow-blue-500/25 flex items-center justify-center gap-2"
+            onClick={() => handleAnimatedBuy('cta-buy-aro-1')}
+            className={`w-full sm:w-auto bg-[#0071e3] hover:bg-[#0077ed] text-white font-semibold text-xs sm:text-sm px-6 sm:px-8 py-3 sm:py-3.5 rounded-full transition-all duration-200 cursor-pointer shadow-lg shadow-blue-500/25 flex items-center justify-center gap-2 ${
+              clickedBtn === 'cta-buy-aro-1'
+                ? 'scale-90 brightness-125 ring-4 ring-[#0071e3]/40'
+                : 'active:scale-95'
+            }`}
           >
-            Buy Aro <ChevronRight className="w-4 h-4" />
+            Buy Aro - 1 <ChevronRight className="w-4 h-4" />
           </button>
         </div>
       </div>
 
-      {/* 5. Apple Official Footnotes */}
+      {/* 6. Apple Official Footnotes */}
       <div className="pt-10 sm:pt-16 border-t border-neutral-800 text-[11px] text-neutral-400 space-y-2.5 font-normal leading-relaxed">
         <p>
-          * Maximum Retail Price (MRP) is inclusive of all taxes. In-box items: 1x Aromax AI Diffuser Unit, 1x Solid Titanium MagSafe Charging Cradle, 1x USB-C Woven Power Cable (2m), 3x 60ml Bespoke Olfactory Pods.
+          * Maximum Retail Price (MRP) is inclusive of all taxes. In-box items: 1x Aro - 1 Diffuser Unit, 1x Solid Titanium MagSafe Charging Cradle, 1x USB-C Woven Power Cable (2m), 3x 60ml Bespoke Olfactory Pods.
         </p>
         <p>
           ‡ No Cost EMI is available on qualifying American Express, Axis Bank, HDFC Bank, ICICI Bank, and SBI credit cards for 3, 6, 9, or 12-month tenures. ₹1,667.00/mo. calculation is based on ₹20,000.00 total order value amortized over 12 months with 0% interest and 0 processing fees. Terms and conditions apply.

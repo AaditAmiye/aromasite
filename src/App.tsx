@@ -8,6 +8,7 @@ export default function App() {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const heroRef = useRef<HTMLDivElement | null>(null);
   const [isBuyModalOpen, setIsBuyModalOpen] = useState(false);
+  const [isBuyBtnPressed, setIsBuyBtnPressed] = useState(false);
 
   // Guarantee autoplay on mount
   useEffect(() => {
@@ -23,7 +24,13 @@ export default function App() {
     }
   }, []);
 
-  const openBuy = () => setIsBuyModalOpen(true);
+  const openBuy = () => {
+    setIsBuyBtnPressed(true);
+    setTimeout(() => {
+      setIsBuyBtnPressed(false);
+      setIsBuyModalOpen(true);
+    }, 140);
+  };
   const closeBuy = () => setIsBuyModalOpen(false);
 
   return (
@@ -66,9 +73,11 @@ export default function App() {
           <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 md:gap-14 pt-4 pb-14 sm:pb-20 border-b border-neutral-900">
             {/* Left Product Title & Tagline */}
             <div className="space-y-2 sm:space-y-3 max-w-4xl">
-              <p className="text-base sm:text-xl md:text-2xl font-semibold text-white tracking-tight">
-                Aromax AI
-              </p>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/15 text-[11px] sm:text-xs font-mono uppercase tracking-widest text-neutral-300">
+                <span>Aromax AI</span>
+                <span className="text-white/40">•</span>
+                <span className="text-[#2997ff] font-semibold">Aro - 1</span>
+              </div>
               <h1 className="text-2xl sm:text-4xl md:text-6xl lg:text-7xl font-bold text-white tracking-tight leading-[1.14]">
                 <div className="flex items-baseline gap-x-2 sm:gap-x-4 whitespace-nowrap">
                   <span>Your</span>
@@ -89,7 +98,11 @@ export default function App() {
                 <button
                   type="button"
                   onClick={openBuy}
-                  className="bg-[#0071e3] hover:bg-[#0077ed] active:scale-95 text-white font-medium text-xs sm:text-sm px-4 sm:px-6 py-1.5 sm:py-2.5 rounded-full transition-all duration-150 cursor-pointer shadow-sm hover:shadow-blue-500/20 flex-shrink-0"
+                  className={`bg-[#0071e3] hover:bg-[#0077ed] text-white font-medium text-xs sm:text-sm px-4 sm:px-6 py-1.5 sm:py-2.5 rounded-full transition-all duration-200 cursor-pointer shadow-sm hover:shadow-blue-500/25 flex-shrink-0 ${
+                    isBuyBtnPressed
+                      ? 'scale-90 brightness-125 ring-4 ring-[#0071e3]/40'
+                      : 'active:scale-95'
+                  }`}
                 >
                   Buy
                 </button>
