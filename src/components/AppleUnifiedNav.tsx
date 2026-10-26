@@ -81,16 +81,16 @@ export const AppleUnifiedNav: React.FC<AppleUnifiedNavProps> = ({
             : 'bg-transparent border-b border-transparent pointer-events-none'
         }`}
       >
-        <div className="w-full h-full px-6 sm:px-8 flex items-center justify-between relative">
+        <div className="w-full h-full px-4 sm:px-8 flex items-center justify-between relative">
           {/* Left Corner: Spacer matching the docked logo (w-9 h-9) + "Aromax AI" */}
           <div
             onClick={handleScrollToTop}
-            className="flex items-center gap-2.5 cursor-pointer select-none group"
+            className="flex items-center gap-2 cursor-pointer select-none group"
           >
             {/* Transparent spacer so "Aromax AI" sits right beside the docked logo */}
             <div className="w-9 h-9 flex-shrink-0" />
             <span
-              className={`font-semibold text-sm tracking-tight text-white transition-opacity duration-300 group-hover:text-neutral-300 ${
+              className={`font-semibold text-xs sm:text-sm tracking-tight text-white transition-opacity duration-300 group-hover:text-neutral-300 ${
                 isBelowVideo ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
               }`}
             >
@@ -100,19 +100,19 @@ export const AppleUnifiedNav: React.FC<AppleUnifiedNavProps> = ({
 
           {/* Right Corner: Pricing & Buy button */}
           <div
-            className={`flex items-center gap-4 sm:gap-6 flex-shrink-0 transition-all duration-300 ease-out ${
+            className={`flex items-center gap-3 sm:gap-6 flex-shrink-0 transition-all duration-300 ease-out ${
               isBelowVideo
                 ? 'opacity-100 translate-x-0 pointer-events-auto'
                 : 'opacity-0 translate-x-4 pointer-events-none'
             }`}
           >
-            <span className="hidden sm:inline-block text-xs text-neutral-300 font-medium">
+            <span className="hidden md:inline-block text-xs text-neutral-300 font-medium">
               From ₹20000.00* or ₹1667.00/mo. for 12 mo.‡
             </span>
             <button
               type="button"
               onClick={onBuyClick}
-              className="bg-[#0071e3] hover:bg-[#0077ed] active:scale-95 text-white font-medium text-xs px-4 py-1.5 rounded-full transition-all cursor-pointer shadow-sm"
+              className="bg-[#0071e3] hover:bg-[#0077ed] active:scale-95 text-white font-medium text-xs px-3.5 sm:px-4 py-1.5 rounded-full transition-all cursor-pointer shadow-sm"
             >
               Buy
             </button>
@@ -126,11 +126,11 @@ export const AppleUnifiedNav: React.FC<AppleUnifiedNavProps> = ({
       */}
       <nav
         aria-label="Aromax Navigation"
-        className="fixed top-2.5 left-6 sm:left-8 z-50 pointer-events-auto select-none transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
+        className="fixed top-2.5 left-4 sm:left-8 z-50 pointer-events-auto select-none transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
         style={{
           transform: isScrolled
             ? 'translate3d(0, 0, 0)'
-            : 'translate3d(calc(50vw - 24px - 50%), 0, 0)',
+            : 'translate3d(calc(50vw - 16px - 50%), 0, 0)',
         }}
       >
         <div
@@ -141,7 +141,7 @@ export const AppleUnifiedNav: React.FC<AppleUnifiedNavProps> = ({
               ? 'bg-transparent border-transparent shadow-none p-0 cursor-pointer'
               : isScrolled
               ? 'w-9 h-9 rounded-full bg-black/50 border border-white/20 shadow-[0_12px_32px_rgba(0,0,0,0.7),inset_0_1px_1px_rgba(255,255,255,0.35)] backdrop-blur-2xl justify-center cursor-pointer hover:border-white/35 active:scale-95'
-              : 'h-9 rounded-full bg-black/45 border border-white/20 pl-1 pr-2.5 py-1 shadow-[0_16px_40px_rgba(0,0,0,0.7),inset_0_1px_1px_rgba(255,255,255,0.3)] backdrop-blur-2xl max-w-[94vw]'
+              : 'h-9 rounded-full bg-black/45 border border-white/20 pl-1 pr-2 py-1 shadow-[0_16px_40px_rgba(0,0,0,0.7),inset_0_1px_1px_rgba(255,255,255,0.3)] backdrop-blur-2xl max-w-[96vw]'
           }`}
         >
           {/* Subtle depth blur backlight for natural motion */}
@@ -164,10 +164,10 @@ export const AppleUnifiedNav: React.FC<AppleUnifiedNavProps> = ({
             - Expands smoothly when returning to top.
           */}
           <div
-            className={`flex items-center gap-1 sm:gap-1.5 overflow-hidden transition-all duration-400 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+            className={`flex items-center gap-0.5 sm:gap-1.5 overflow-hidden transition-all duration-400 ease-[cubic-bezier(0.22,1,0.36,1)] ${
               isScrolled
                 ? 'max-w-0 opacity-0 pointer-events-none ml-0'
-                : 'max-w-3xl opacity-100 pointer-events-auto ml-1'
+                : 'max-w-3xl opacity-100 pointer-events-auto ml-0.5 sm:ml-1'
             }`}
           >
             {NAV_ITEMS.map((item) => {
@@ -180,7 +180,7 @@ export const AppleUnifiedNav: React.FC<AppleUnifiedNavProps> = ({
                     e.stopPropagation();
                     handleItemClick(item);
                   }}
-                  className={`px-2.5 sm:px-3 py-1 rounded-full text-xs font-medium tracking-tight whitespace-nowrap transition-all duration-150 cursor-pointer ${
+                  className={`px-2 sm:px-3 py-1 rounded-full text-[11px] sm:text-xs font-medium tracking-tight whitespace-nowrap transition-all duration-150 cursor-pointer ${
                     isActive
                       ? 'bg-white text-black font-semibold shadow-sm'
                       : 'text-[#86868b] hover:text-white hover:bg-white/10'

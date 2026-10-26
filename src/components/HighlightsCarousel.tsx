@@ -41,6 +41,30 @@ export const HighlightsCarousel: React.FC = () => {
   const startTimeRef = useRef<number>(Date.now());
   const elapsedBeforePauseRef = useRef<number>(0);
 
+  // Touch swipe support for mobile and tablet
+  const touchStartX = useRef<number | null>(null);
+  const touchEndX = useRef<number | null>(null);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.targetTouches[0].clientX;
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    touchEndX.current = e.targetTouches[0].clientX;
+  };
+
+  const handleTouchEnd = () => {
+    if (touchStartX.current === null || touchEndX.current === null) return;
+    const distance = touchStartX.current - touchEndX.current;
+    if (distance > 45) {
+      handleNext();
+    } else if (distance < -45) {
+      handlePrev();
+    }
+    touchStartX.current = null;
+    touchEndX.current = null;
+  };
+
   // Smooth progress bar update loop
   useEffect(() => {
     if (!isPlaying) return;
@@ -96,20 +120,23 @@ export const HighlightsCarousel: React.FC = () => {
   };
 
   return (
-    <section className="w-full max-w-[1440px] mx-auto select-none px-4 sm:px-6">
+    <section className="w-full max-w-[1440px] mx-auto select-none px-3 sm:px-6">
       {/* 
         MAIN SLIDESHOW CAROUSEL:
-        - Surrounding slide background: rgb(29, 29, 31) / #1d1d1f
-        - Scaled-down centered images with comfortable breathing room
-        - Header ("Get the highlights" & "Watch the film") removed as requested
+        - Responsive aspect ratio for phone and tablet
+        - Mobile swipe gestures enabled
+        - Background: rgb(29, 29, 31)
       */}
       <div
-        className="relative group/carousel overflow-hidden rounded-[28px] sm:rounded-[36px] border border-white/10 shadow-2xl"
+        className="relative group/carousel overflow-hidden rounded-[24px] sm:rounded-[36px] border border-white/10 shadow-2xl"
         style={{ backgroundColor: 'rgb(29, 29, 31)' }}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
       >
         {/* Slides Track */}
         <div
-          className="flex transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] aspect-[16/9] min-h-[420px] sm:min-h-[540px] lg:min-h-[640px]"
+          className="flex transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] aspect-[16/10] sm:aspect-[16/9] min-h-[220px] sm:min-h-[420px] md:min-h-[520px] lg:min-h-[640px]"
           style={{
             transform: `translateX(-${currentSlide * 100}%)`,
           }}
@@ -117,42 +144,42 @@ export const HighlightsCarousel: React.FC = () => {
           {SLIDES.map((slide) => (
             <div
               key={slide.id}
-              className="w-full flex-shrink-0 h-full relative overflow-hidden flex items-center justify-center p-6 sm:p-10 md:p-14 lg:p-16"
+              className="w-full flex-shrink-0 h-full relative overflow-hidden flex items-center justify-center p-3 sm:p-8 md:p-12 lg:p-16"
               style={{ backgroundColor: 'rgb(29, 29, 31)' }}
             >
-              {/* Scaled-down centered image resting cleanly inside rgb(29, 29, 31) housing */}
+              {/* Scaled-down centered image resting cleanly inside housing */}
               <div className="w-full h-full flex items-center justify-center">
                 <img
                   src={slide.img}
                   alt={slide.title}
-                  className="max-w-[90%] max-h-[85%] object-contain rounded-xl sm:rounded-2xl shadow-2xl transition-transform duration-500"
+                  className="max-w-[96%] sm:max-w-[90%] max-h-[92%] sm:max-h-[86%] object-contain rounded-xl sm:rounded-2xl shadow-2xl transition-transform duration-500"
                 />
               </div>
             </div>
           ))}
         </div>
 
-        {/* Hover Arrow Controls */}
+        {/* Desktop/Tablet Hover Arrow Controls */}
         <button
           onClick={handlePrev}
           aria-label="Previous Slide"
-          className="absolute left-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-black/60 hover:bg-black/90 border border-white/20 text-white flex items-center justify-center backdrop-blur-md transition-all opacity-0 group-hover/carousel:opacity-100 cursor-pointer shadow-xl z-20"
+          className="hidden sm:flex absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-black/60 hover:bg-black/90 border border-white/20 text-white items-center justify-center backdrop-blur-md transition-all opacity-0 group-hover/carousel:opacity-100 cursor-pointer shadow-xl z-20"
         >
-          <ChevronLeft className="w-5 h-5" />
+          <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
         </button>
         <button
           onClick={handleNext}
           aria-label="Next Slide"
-          className="absolute right-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-black/60 hover:bg-black/90 border border-white/20 text-white flex items-center justify-center backdrop-blur-md transition-all opacity-0 group-hover/carousel:opacity-100 cursor-pointer shadow-xl z-20"
+          className="hidden sm:flex absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-black/60 hover:bg-black/90 border border-white/20 text-white items-center justify-center backdrop-blur-md transition-all opacity-0 group-hover/carousel:opacity-100 cursor-pointer shadow-xl z-20"
         >
-          <ChevronRight className="w-5 h-5" />
+          <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
         </button>
 
         {/* Floating Bottom Control Capsule */}
-        <div className="absolute bottom-5 sm:bottom-7 left-1/2 -translate-x-1/2 z-20">
-          <div className="bg-black/75 border border-white/20 rounded-full px-5 py-2.5 flex items-center gap-4 backdrop-blur-2xl shadow-2xl">
+        <div className="absolute bottom-3 sm:bottom-6 left-1/2 -translate-x-1/2 z-20 scale-90 sm:scale-100">
+          <div className="bg-black/75 border border-white/20 rounded-full px-4 sm:px-5 py-2 sm:py-2.5 flex items-center gap-3 sm:gap-4 backdrop-blur-2xl shadow-2xl">
             {/* Progress Pill / Indicators */}
-            <div className="flex items-center gap-2.5">
+            <div className="flex items-center gap-2 sm:gap-2.5">
               {SLIDES.map((_, idx) => {
                 const isCurrent = idx === currentSlide;
                 return (
@@ -164,7 +191,7 @@ export const HighlightsCarousel: React.FC = () => {
                   >
                     {isCurrent ? (
                       /* Active expanded pill with filling progress bar */
-                      <div className="w-10 sm:w-12 h-1.5 rounded-full bg-white/25 overflow-hidden relative">
+                      <div className="w-8 sm:w-12 h-1.5 rounded-full bg-white/25 overflow-hidden relative">
                         <div
                           className="h-full bg-white rounded-full transition-[width] duration-75 ease-linear"
                           style={{ width: `${progress}%` }}
@@ -186,12 +213,12 @@ export const HighlightsCarousel: React.FC = () => {
             <button
               onClick={togglePlay}
               aria-label={isPlaying ? 'Pause slideshow' : 'Play slideshow'}
-              className="w-7 h-7 rounded-full bg-white/10 hover:bg-white/25 text-white flex items-center justify-center transition-all cursor-pointer shadow-sm active:scale-90"
+              className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-white/10 hover:bg-white/25 text-white flex items-center justify-center transition-all cursor-pointer shadow-sm active:scale-90"
             >
               {isPlaying ? (
-                <Pause className="w-3.5 h-3.5 fill-current" />
+                <Pause className="w-3 h-3 sm:w-3.5 sm:h-3.5 fill-current" />
               ) : (
-                <Play className="w-3.5 h-3.5 fill-current ml-0.5" />
+                <Play className="w-3 h-3 sm:w-3.5 sm:h-3.5 fill-current ml-0.5" />
               )}
             </button>
           </div>

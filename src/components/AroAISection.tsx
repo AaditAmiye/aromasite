@@ -47,7 +47,7 @@ export const AroAISection: React.FC = () => {
   return (
     <div
       ref={containerRef}
-      className="rounded-[32px] sm:rounded-[44px] border border-white/10 bg-gradient-to-b from-[#18181b] via-[#121214] to-black p-8 sm:p-12 md:p-16 overflow-hidden relative shadow-2xl"
+      className="rounded-[28px] sm:rounded-[36px] md:rounded-[44px] border border-white/10 bg-gradient-to-b from-[#18181b] via-[#121214] to-black p-5 sm:p-10 md:p-16 overflow-hidden relative shadow-2xl"
     >
       {/* Background ambient lighting */}
       <div className="absolute top-0 right-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-[120px] pointer-events-none" />
