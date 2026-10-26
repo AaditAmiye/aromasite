@@ -3,6 +3,8 @@ import { ChevronRight, Sparkles } from 'lucide-react';
 import { HighlightsCarousel } from './HighlightsCarousel';
 import { FragranceSection } from './FragranceSection';
 import { AroAISection } from './AroAISection';
+import { WhyAromaxSection } from './WhyAromaxSection';
+import { TestimonialsSection } from './TestimonialsSection';
 import { ScrollReveal } from './ScrollReveal';
 
 interface ProductFeaturesProps {
@@ -312,6 +314,11 @@ export const ProductFeatures: React.FC<ProductFeaturesProps> = ({ onBuyClick }) 
             </div>
           </div>
         </ScrollReveal>
+
+        {/* 2.5. Why AromaxAI? Card (Placed just below Aro-1 card) */}
+        <div className="mt-8 sm:mt-12">
+          <WhyAromaxSection />
+        </div>
       </div>
 
       {/* 3. Fragrance Video Section (Placed after Plug/Switch bento & before Aro AI) */}
@@ -319,6 +326,9 @@ export const ProductFeatures: React.FC<ProductFeaturesProps> = ({ onBuyClick }) 
 
       {/* 4. Meet Aro AI Section */}
       <AroAISection />
+
+      {/* 4.5. Testimonials Section (Placed after Aro AI) */}
+      <TestimonialsSection />
 
       {/* 5. Apple Call to Action Banner */}
       <ScrollReveal delay={0}>
