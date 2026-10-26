@@ -68,7 +68,7 @@ export const TestimonialsSection: React.FC = () => {
           </div>
 
           {/* Video Container - Curved border, Apple aesthetic, looping seamlessly */}
-          <div className="mt-2 w-full rounded-2xl overflow-hidden border border-white/15 bg-black shadow-inner relative aspect-[16/10] sm:aspect-[16/9]">
+          <div className="mt-2 w-full rounded-2xl overflow-hidden border border-white/15 bg-black shadow-inner relative aspect-[16/9] flex items-center justify-center">
             <video
               ref={videoRef}
               src="/assets/aistudio/A001_10050109_D040__online-video-cutter.com__c6f7c6f7.mp4"
@@ -77,11 +77,8 @@ export const TestimonialsSection: React.FC = () => {
               muted
               playsInline
               controls={false}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-contain"
             />
-            <div className="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-black/70 backdrop-blur-md border border-white/15 text-[10px] sm:text-xs font-mono text-neutral-300">
-              Live Sync Experience
-            </div>
           </div>
         </div>
 
@@ -127,16 +124,13 @@ export const TestimonialsSection: React.FC = () => {
           </div>
 
           {/* Photo Container - The White Wall Photo */}
-          <div className="mt-2 w-full rounded-2xl overflow-hidden border border-white/15 bg-black shadow-inner relative aspect-[16/10] sm:aspect-[16/9]">
+          <div className="mt-2 w-full rounded-2xl overflow-hidden border border-white/15 bg-black shadow-inner relative aspect-[16/9] flex items-center justify-center">
             <img
               src="/assets/aistudio/IMG_8781_87a26e56.png"
               alt="AromaxAI unit in yoga and meditation room by Shlok Pandey"
-              className="w-full h-full object-cover"
+              className="w-full h-full object-contain"
               loading="lazy"
             />
-            <div className="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-black/70 backdrop-blur-md border border-white/15 text-[10px] sm:text-xs font-mono text-neutral-300">
-              Yoga Studio Setup
-            </div>
           </div>
         </div>
       </div>

@@ -113,14 +113,6 @@ export const ProductFeatures: React.FC<ProductFeaturesProps> = ({ onBuyClick }) 
                 />
               );
             })}
-            {/* Subtle Top Spec Tag */}
-            <div className="absolute top-3 left-3 sm:top-4 sm:left-4 z-20 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-[10px] sm:text-xs font-mono text-neutral-400">
-              30 Channels • Precision Dispersal
-            </div>
-            {/* Subtle Finish Floating Tag */}
-            <div className="absolute bottom-3 right-3 sm:bottom-4 sm:right-4 z-20 px-3 py-1 rounded-full bg-black/70 backdrop-blur-md border border-white/15 text-[10px] sm:text-xs font-medium text-neutral-200 transition-opacity duration-500">
-              {currentFinish.name}
-            </div>
           </div>
 
           {/* Selected Finish Card */}
@@ -252,15 +244,12 @@ export const ProductFeatures: React.FC<ProductFeaturesProps> = ({ onBuyClick }) 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
               {/* Left Image Showcase with curved container and border */}
               <div className="lg:col-span-6 flex items-center justify-center">
-                <div className="relative w-full max-w-[460px] rounded-[22px] sm:rounded-[30px] overflow-hidden bg-black border border-white/15 shadow-[0_20px_50px_rgba(0,0,0,0.9)] group">
+                <div className="relative w-full max-w-[460px] rounded-[22px] sm:rounded-[30px] overflow-hidden bg-black border border-white/15 shadow-[0_20px_50px_rgba(0,0,0,0.9)] flex items-center justify-center p-2">
                   <img
                     src="/assets/aistudio/WhatsApp_Image_2026-10-26_at_10.40.37_PM_d5275e11.jpeg"
                     alt="Aro - 1 Charcoal Black Edition"
-                    className="w-full h-auto object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+                    className="w-full h-auto object-contain"
                   />
-                  <div className="absolute top-3 left-3 sm:top-4 sm:left-4 px-3 py-1 rounded-full bg-black/65 backdrop-blur-md border border-white/15 text-[10px] sm:text-xs font-mono text-neutral-300">
-                    Charcoal Black Edition
-                  </div>
                 </div>
               </div>
 

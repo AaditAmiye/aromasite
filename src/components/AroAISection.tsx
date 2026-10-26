@@ -51,7 +51,7 @@ export const AroAISection: React.FC = () => {
         <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
           {/* Left Column: Aro AI Video (Loops continuously, square mascot, no controls) */}
           <div className="lg:col-span-5 flex flex-col items-center justify-center">
-            <div className="relative w-full max-w-[380px] aspect-square rounded-[32px] sm:rounded-[36px] overflow-hidden bg-black border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.9),0_0_40px_rgba(255,255,255,0.06)] group">
+            <div className="relative w-full max-w-[380px] aspect-square rounded-[32px] sm:rounded-[36px] overflow-hidden bg-black border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.9),0_0_40px_rgba(255,255,255,0.06)] flex items-center justify-center">
               <video
                 ref={videoRef}
                 src="/assets/aistudio/___online-video-cutter.com__acbc7330.mp4"
@@ -63,14 +63,8 @@ export const AroAISection: React.FC = () => {
                 controls={false}
                 disablePictureInPicture
                 controlsList="nodownload nofullscreen noremoteplayback"
-                className="w-full h-full object-cover pointer-events-none select-none"
+                className="w-full h-full object-contain pointer-events-none select-none"
               />
-
-              {/* Subtle frosted glass badge */}
-              <div className="absolute top-4 left-4 z-20 flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/60 border border-white/15 backdrop-blur-md">
-                <span className="w-2 h-2 rounded-full bg-[#2997ff] animate-pulse" />
-                <span className="text-[11px] font-mono text-neutral-300 uppercase tracking-wider">Aro AI</span>
-              </div>
             </div>
           </div>
 
