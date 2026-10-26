@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { X, Check, Truck, RefreshCw } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { X, Check, Truck, RefreshCw, Bell } from 'lucide-react';
 
 interface AppleBuyModalProps {
   isOpen: boolean;
@@ -58,8 +58,31 @@ export const AppleBuyModal: React.FC<AppleBuyModalProps> = ({ isOpen, onClose })
   const [selectedBundle, setSelectedBundle] = useState('signature');
   const [paymentOption, setPaymentOption] = useState<'full' | 'emi'>('full');
   const [isOrdered, setIsOrdered] = useState(false);
+  const [email, setEmail] = useState('');
+  const [isEmailSubmitted, setIsEmailSubmitted] = useState(false);
 
-  if (!isOpen) return null;
+  // Smooth entrance & exit animation state
+  const [isMounted, setIsMounted] = useState(isOpen);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      setIsMounted(true);
+      // Small tick for CSS transition to trigger reliably
+      const timer = setTimeout(() => setIsVisible(true), 20);
+      return () => clearTimeout(timer);
+    } else {
+      setIsVisible(false);
+      const timer = setTimeout(() => {
+        setIsMounted(false);
+        setIsOrdered(false);
+        setIsEmailSubmitted(false);
+      }, 350);
+      return () => clearTimeout(timer);
+    }
+  }, [isOpen]);
+
+  if (!isMounted) return null;
 
   const currentFinishObj = FINISHES.find((f) => f.id === selectedFinish) || FINISHES[0];
   const bundleObj = SCENT_BUNDLES.find((b) => b.id === selectedBundle) || SCENT_BUNDLES[0];
@@ -68,22 +91,37 @@ export const AppleBuyModal: React.FC<AppleBuyModalProps> = ({ isOpen, onClose })
 
   const handleOrder = () => {
     setIsOrdered(true);
-    setTimeout(() => {
-      // Kept state for order completion
-    }, 1500);
+  };
+
+  const handleEmailSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (email.trim()) {
+      setIsEmailSubmitted(true);
+    }
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/80 backdrop-blur-xl transition-opacity duration-500 ease-out">
-      <div 
-        className="relative w-full max-w-2xl bg-[#161617] text-white rounded-3xl border border-white/10 shadow-2xl overflow-hidden flex flex-col max-h-[92vh] transition-all duration-500 ease-out"
+    <div
+      onClick={onClose}
+      className={`fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/80 backdrop-blur-xl transition-all duration-400 ease-out ${
+        isVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'
+      }`}
+    >
+      <div
+        className={`relative w-full max-w-2xl bg-[#161617] text-white rounded-3xl border border-white/10 shadow-2xl overflow-hidden flex flex-col max-h-[92vh] transition-all duration-400 ease-out transform ${
+          isVisible ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-95 translate-y-4'
+        }`}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Modal Header */}
         <div className="flex items-center justify-between px-4 sm:px-6 py-4 sm:py-5 border-b border-white/10">
           <div>
-            <h3 className="text-[11px] sm:text-xs uppercase tracking-wider text-neutral-400 font-mono transition-opacity duration-300">Configure</h3>
-            <p className="text-lg sm:text-xl font-semibold tracking-tight text-white transition-opacity duration-300">Buy Aromax AI</p>
+            <h3 className="text-[11px] sm:text-xs uppercase tracking-wider text-neutral-400 font-mono transition-opacity duration-300">
+              Configure
+            </h3>
+            <p className="text-lg sm:text-xl font-semibold tracking-tight text-white transition-opacity duration-300">
+              Buy Aro
+            </p>
           </div>
           <button
             onClick={onClose}
@@ -97,23 +135,93 @@ export const AppleBuyModal: React.FC<AppleBuyModalProps> = ({ isOpen, onClose })
         {/* Modal Content */}
         <div className="overflow-y-auto px-4 sm:px-6 py-4 sm:py-6 space-y-5 sm:space-y-6 custom-scrollbar">
           {isOrdered ? (
-            <div className="py-12 sm:py-16 text-center space-y-4 transition-all duration-700 ease-in-out">
-              <div className="w-14 sm:w-16 h-14 sm:h-16 rounded-full bg-[#0071e3] text-white flex items-center justify-center mx-auto shadow-lg shadow-blue-500/20 animate-scale-up">
-                <Check className="w-7 sm:w-8 h-7 sm:h-8" />
+            <div className="py-10 sm:py-14 text-center space-y-5 transition-all duration-500 ease-out">
+              {/* Product preview thumbnail */}
+              <div className="relative w-32 h-24 sm:w-40 sm:h-28 mx-auto rounded-2xl bg-[#0f0f10] border border-white/10 overflow-hidden p-2 flex items-center justify-center">
+                <img
+                  src={currentFinishObj.image}
+                  alt={`Aro in ${currentFinishObj.name}`}
+                  className="w-full h-full object-contain"
+                />
               </div>
-              <h4 className="text-xl sm:text-2xl font-bold transition-opacity duration-500">Thank you for your order.</h4>
-              <p className="text-neutral-400 text-xs sm:text-sm max-w-md mx-auto transition-opacity duration-500">
-                Your Aromax AI in {currentFinishObj.name} is scheduled for express delivery within 2-3 business days.
-              </p>
-              <button
-                onClick={() => {
-                  setIsOrdered(false);
-                  onClose();
-                }}
-                className="mt-6 px-6 py-2.5 rounded-full bg-white text-black font-semibold text-sm hover:bg-neutral-200 active:scale-95 transition-all duration-300 cursor-pointer"
-              >
-                Done
-              </button>
+
+              {/* Required Header */}
+              <div className="space-y-1.5">
+                <span className="inline-block px-3 py-1 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-300 text-[11px] font-medium tracking-wide">
+                  High Demand • Reserved Queue
+                </span>
+                <h4 className="text-2xl sm:text-3xl font-bold tracking-tight text-white pt-1">
+                  Aro is currently out of stock.
+                </h4>
+                <p className="text-xs sm:text-sm text-neutral-400">
+                  Selected model: <span className="text-white font-medium">Aro in {currentFinishObj.name}</span>
+                </p>
+              </div>
+
+              {/* Interactive Email Form */}
+              {!isEmailSubmitted ? (
+                <form
+                  onSubmit={handleEmailSubmit}
+                  className="w-full max-w-md mx-auto space-y-3 pt-2"
+                >
+                  <div className="relative flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                    <input
+                      type="email"
+                      required
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="Enter your email address"
+                      className="w-full px-4 sm:px-5 py-3 sm:py-3.5 rounded-full bg-[#1f1f22] border border-white/15 text-white placeholder-neutral-500 text-xs sm:text-sm focus:outline-none focus:border-[#0071e3] focus:ring-2 focus:ring-[#0071e3]/30 transition-all duration-300"
+                    />
+                    <button
+                      type="submit"
+                      className="px-6 py-3 rounded-full bg-[#0071e3] hover:bg-[#0077ed] active:scale-95 text-white font-semibold text-xs sm:text-sm transition-all duration-300 shadow-lg shadow-blue-500/25 cursor-pointer whitespace-nowrap flex items-center justify-center gap-1.5"
+                    >
+                      <Bell className="w-3.5 h-3.5" />
+                      Notify Me
+                    </button>
+                  </div>
+
+                  {/* Required Subtitle exactly as specified */}
+                  <p className="text-neutral-400 text-xs sm:text-sm leading-relaxed transition-opacity duration-300">
+                    Leave your email, and we’ll let you know as soon as it’s available.
+                  </p>
+                </form>
+              ) : (
+                <div className="w-full max-w-md mx-auto p-5 rounded-2xl bg-white/5 border border-white/10 space-y-3 transition-all duration-500 animate-fade-in">
+                  <div className="w-10 h-10 rounded-full bg-[#0071e3]/20 text-[#2997ff] flex items-center justify-center mx-auto">
+                    <Check className="w-5 h-5" />
+                  </div>
+                  <h5 className="text-base sm:text-lg font-semibold text-white">
+                    You're on the priority notification list
+                  </h5>
+                  <p className="text-xs sm:text-sm text-neutral-300">
+                    We'll email <span className="text-white font-medium underline">{email}</span> the moment Aro in {currentFinishObj.name} is available to ship.
+                  </p>
+                  <p className="text-[11px] text-neutral-500 pt-1">
+                    Leave your email, and we’ll let you know as soon as it’s available.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={onClose}
+                    className="mt-3 px-6 py-2 rounded-full bg-white text-black text-xs font-semibold hover:bg-neutral-200 active:scale-95 transition-all cursor-pointer"
+                  >
+                    Done
+                  </button>
+                </div>
+              )}
+
+              {!isEmailSubmitted && (
+                <div className="pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setIsOrdered(false)}
+                    className="text-xs text-neutral-400 hover:text-white transition-colors duration-200 underline cursor-pointer"
+                  >
+                    Configure a different finish
+                  </button>
+                </div>
+              )}
             </div>
           ) : (
             <>
@@ -125,7 +233,7 @@ export const AppleBuyModal: React.FC<AppleBuyModalProps> = ({ isOpen, onClose })
                     <img
                       key={f.id}
                       src={f.image}
-                      alt={`Aromax AI in ${f.name}`}
+                      alt={`Aro in ${f.name}`}
                       className={`absolute inset-0 w-full h-full object-contain p-2 sm:p-4 transition-opacity duration-700 ease-in-out ${
                         isSelected
                           ? 'opacity-100 z-10 pointer-events-auto'
@@ -247,7 +355,7 @@ export const AppleBuyModal: React.FC<AppleBuyModalProps> = ({ isOpen, onClose })
                 </div>
               </div>
 
-              {/* Value props without AppleCare */}
+              {/* Value props */}
               <div className="pt-2 border-t border-white/10 grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 text-neutral-400 text-xs transition-opacity duration-300">
                 <div className="flex items-center gap-2">
                   <Truck className="w-4 h-4 text-neutral-300 flex-shrink-0" />
@@ -285,3 +393,4 @@ export const AppleBuyModal: React.FC<AppleBuyModalProps> = ({ isOpen, onClose })
     </div>
   );
 };
+

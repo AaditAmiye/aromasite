@@ -242,7 +242,7 @@ export const ProductFeatures: React.FC<ProductFeaturesProps> = ({ onBuyClick }) 
             onClick={onBuyClick}
             className="w-full sm:w-auto bg-[#0071e3] hover:bg-[#0077ed] active:scale-95 text-white font-semibold text-xs sm:text-sm px-6 sm:px-8 py-3 sm:py-3.5 rounded-full transition-all duration-300 cursor-pointer shadow-lg shadow-blue-500/25 flex items-center justify-center gap-2"
           >
-            Buy Aromax AI <ChevronRight className="w-4 h-4" />
+            Buy Aro <ChevronRight className="w-4 h-4" />
           </button>
         </div>
       </div>
