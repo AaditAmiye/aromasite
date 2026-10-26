@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Sparkles, ChevronRight, Layers, RefreshCw, SlidersHorizontal } from 'lucide-react';
+import React, { useState } from 'react';
+import { ChevronRight } from 'lucide-react';
 import { HighlightsCarousel } from './HighlightsCarousel';
 import { AroAISection } from './AroAISection';
 
@@ -11,33 +11,45 @@ const FINISH_GALLERY = [
   {
     name: 'Charcoal Black',
     tag: 'Deep anodized matte black finish with micro-textured acoustic dampening',
-    bgGrad: 'from-neutral-900 via-neutral-950 to-black',
+    bgGrad: 'from-neutral-900/60 via-neutral-950 to-black',
     accent: '#232325',
+    image: '/assets/aistudio/beed88c1-c1ed-470f-bb86-a15037784fa3_a8ddc23e.png',
+  },
+  {
+    name: 'Frost Silver',
+    tag: 'Precision-milled aerospace aluminum with frosted satin bead blast',
+    bgGrad: 'from-slate-800/40 via-neutral-950 to-black',
+    accent: '#D1D5DB',
+    image: '/assets/aistudio/Titanium_AromaxAI_Scent_Machine_f3d2505a.png',
   },
   {
     name: 'Ivory White',
     tag: 'Warm satin ceramic finish engineered to reflect ambient room light',
     bgGrad: 'from-stone-900/40 via-neutral-950 to-black',
     accent: '#F3F2EC',
+    image: '/assets/aistudio/AromaxAI_Aroma_Dispenser_Render__1__5c3cfe7d.png',
   },
   {
     name: 'Wooden Brown',
     tag: 'Natural warm timber grain with organic satin seal and precision vents',
     bgGrad: 'from-amber-950/30 via-neutral-950 to-black',
     accent: '#8B5A2B',
+    image: '/assets/aistudio/AromaxAI_Aromatherapy_Scent_Diffuser_678d94ee.png',
   },
 ];
 
 export const ProductFeatures: React.FC<ProductFeaturesProps> = ({ onBuyClick }) => {
   const [activeFinishIndex, setActiveFinishIndex] = useState(0);
 
+  const currentFinish = FINISH_GALLERY[activeFinishIndex];
+
   return (
     <div className="w-full max-w-7xl mx-auto space-y-16 sm:space-y-24 md:space-y-32">
-      {/* 0. Apple Highlights Carousel (Replicating iPhone 18 Pro layout) */}
+      {/* 0. Apple Highlights Carousel */}
       <HighlightsCarousel />
 
       {/* 1. Design & Finish Showcase */}
-      <div className="rounded-3xl border border-white/10 bg-gradient-to-b from-[#161617] to-black p-6 sm:p-10 md:p-14 overflow-hidden relative">
+      <div className="rounded-3xl border border-white/10 bg-gradient-to-b from-[#161617] to-black p-5 sm:p-8 md:p-12 overflow-hidden relative shadow-2xl">
         <div className="max-w-3xl">
           <p className="text-xs uppercase tracking-widest text-neutral-400 font-mono mb-2">Design</p>
           <h3 className="text-2xl sm:text-4xl md:text-5xl font-bold tracking-tight text-white mb-3 sm:mb-4">
@@ -48,20 +60,20 @@ export const ProductFeatures: React.FC<ProductFeaturesProps> = ({ onBuyClick }) 
           </p>
         </div>
 
-        {/* Finish Selector */}
-        <div className="mt-8 sm:mt-12 flex flex-wrap gap-2.5 sm:gap-4 items-center">
+        {/* Finish Selector Buttons */}
+        <div className="mt-8 sm:mt-10 flex flex-wrap gap-2 sm:gap-3 items-center">
           {FINISH_GALLERY.map((f, idx) => (
             <button
               key={f.name}
               onClick={() => setActiveFinishIndex(idx)}
-              className={`px-4 sm:px-5 py-2 rounded-full text-xs sm:text-sm font-medium transition-all cursor-pointer flex items-center gap-2 sm:gap-2.5 border ${
+              className={`px-3.5 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-medium transition-all duration-300 cursor-pointer flex items-center gap-2 sm:gap-2.5 border ${
                 activeFinishIndex === idx
-                  ? 'border-white bg-white text-black font-semibold shadow-sm'
-                  : 'border-[#2a2a2c] bg-[#1d1d1f] text-white hover:border-white/25'
+                  ? 'border-white bg-white text-black font-semibold shadow-md'
+                  : 'border-[#2a2a2c] bg-[#1d1d1f] text-neutral-300 hover:text-white hover:border-white/30 hover:bg-[#252528]'
               }`}
             >
               <span
-                className="w-3 h-3 sm:w-3.5 sm:h-3.5 rounded-full border border-black/20"
+                className="w-3 h-3 sm:w-3.5 sm:h-3.5 rounded-full border border-black/25 flex-shrink-0"
                 style={{ backgroundColor: f.accent }}
               />
               {f.name}
@@ -69,21 +81,49 @@ export const ProductFeatures: React.FC<ProductFeaturesProps> = ({ onBuyClick }) 
           ))}
         </div>
 
+        {/* Dynamic Image Display with Smooth Cross-Fade Transition */}
+        <div className="mt-6 sm:mt-8 relative w-full aspect-[4/3] sm:aspect-[16/10] md:aspect-[16/9] max-h-[380px] sm:max-h-[480px] md:max-h-[520px] rounded-2xl bg-[#0d0d0e] border border-white/10 overflow-hidden flex items-center justify-center p-3 sm:p-6 shadow-inner">
+          {FINISH_GALLERY.map((f, idx) => {
+            const isActive = activeFinishIndex === idx;
+            return (
+              <img
+                key={f.name}
+                src={f.image}
+                alt={`Aromax AI in ${f.name}`}
+                className={`absolute inset-0 w-full h-full object-contain p-2 sm:p-6 transition-opacity duration-700 ease-in-out select-none pointer-events-none ${
+                  isActive
+                    ? 'opacity-100 z-10'
+                    : 'opacity-0 z-0'
+                }`}
+                loading="eager"
+              />
+            );
+          })}
+          {/* Subtle Top Spec Tag */}
+          <div className="absolute top-3 left-3 sm:top-4 sm:left-4 z-20 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-[10px] sm:text-xs font-mono text-neutral-400">
+            30 Channels • Precision Dispersal
+          </div>
+          {/* Subtle Finish Floating Tag */}
+          <div className="absolute bottom-3 right-3 sm:bottom-4 sm:right-4 z-20 px-3 py-1 rounded-full bg-black/70 backdrop-blur-md border border-white/15 text-[10px] sm:text-xs font-medium text-neutral-200 transition-opacity duration-500">
+            {currentFinish.name}
+          </div>
+        </div>
+
         {/* Selected Finish Card */}
-        <div className={`mt-6 sm:mt-8 p-5 sm:p-8 rounded-2xl border border-white/10 bg-gradient-to-tr ${FINISH_GALLERY[activeFinishIndex].bgGrad} flex flex-col md:flex-row items-start md:items-center justify-between gap-4 sm:gap-6`}>
+        <div className={`mt-5 sm:mt-6 p-5 sm:p-7 rounded-2xl border border-white/10 bg-gradient-to-tr ${currentFinish.bgGrad} flex flex-col md:flex-row items-start md:items-center justify-between gap-4 sm:gap-6 transition-colors duration-500`}>
           <div>
-            <h4 className="text-xl sm:text-2xl font-bold text-white mb-1">
-              {FINISH_GALLERY[activeFinishIndex].name}
+            <h4 className="text-xl sm:text-2xl font-bold text-white mb-1 transition-opacity duration-500">
+              {currentFinish.name}
             </h4>
-            <p className="text-xs sm:text-sm text-neutral-300">
-              {FINISH_GALLERY[activeFinishIndex].tag}
+            <p className="text-xs sm:text-sm text-neutral-300 transition-opacity duration-500">
+              {currentFinish.tag}
             </p>
           </div>
           <button
             onClick={onBuyClick}
-            className="w-full md:w-auto flex-shrink-0 text-center px-6 py-2.5 rounded-full bg-[#0071e3] hover:bg-[#0077ed] text-white text-xs sm:text-sm font-semibold transition-all cursor-pointer shadow-md"
+            className="w-full md:w-auto flex-shrink-0 text-center px-6 sm:px-7 py-2.5 sm:py-3 rounded-full bg-[#0071e3] hover:bg-[#0077ed] active:scale-95 text-white text-xs sm:text-sm font-semibold transition-all duration-300 cursor-pointer shadow-md"
           >
-            Pre-order {FINISH_GALLERY[activeFinishIndex].name}
+            Pre-order {currentFinish.name}
           </button>
         </div>
       </div>
@@ -104,9 +144,6 @@ export const ProductFeatures: React.FC<ProductFeaturesProps> = ({ onBuyClick }) 
           {/* Box 1: Your library. Your rules. */}
           <div className="md:col-span-12 lg:col-span-6 rounded-3xl border border-white/10 bg-[#161617] p-6 sm:p-8 md:p-10 flex flex-col justify-between shadow-xl">
             <div>
-              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white mb-4 sm:mb-6">
-                <Layers className="w-5 h-5 sm:w-6 sm:h-6 text-[#2997ff]" />
-              </div>
               <h4 className="text-xl sm:text-2xl md:text-3xl font-bold text-white tracking-tight mb-1">
                 Your library. Your rules.
               </h4>
@@ -120,18 +157,11 @@ export const ProductFeatures: React.FC<ProductFeaturesProps> = ({ onBuyClick }) 
                 Your environment should smell like you.
               </p>
             </div>
-            <div className="mt-6 sm:mt-8 pt-5 sm:pt-6 border-t border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 sm:gap-2 text-[11px] sm:text-xs text-neutral-400 font-mono">
-              <span className="text-neutral-500 uppercase tracking-wider">Architecture</span>
-              <span className="text-white font-medium">30 × individually addressable channels. USB-C style cartridges.</span>
-            </div>
           </div>
 
           {/* Box 2: Plug in. Switch up. */}
           <div className="md:col-span-12 lg:col-span-6 rounded-3xl border border-white/10 bg-[#161617] p-6 sm:p-8 md:p-10 flex flex-col justify-between shadow-xl">
             <div>
-              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white mb-4 sm:mb-6">
-                <RefreshCw className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-400" />
-              </div>
               <h4 className="text-xl sm:text-2xl md:text-3xl font-bold text-white tracking-tight mb-1">
                 Plug in. Switch up.
               </h4>
@@ -145,18 +175,11 @@ export const ProductFeatures: React.FC<ProductFeaturesProps> = ({ onBuyClick }) 
                 Less effort. More possibilities.
               </p>
             </div>
-            <div className="mt-6 sm:mt-8 pt-5 sm:pt-6 border-t border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 sm:gap-2 text-[11px] sm:text-xs text-neutral-400 font-mono">
-              <span className="text-neutral-500 uppercase tracking-wider">Hot-Swap</span>
-              <span className="text-white font-medium">Hot-swappable. No calibration needed.</span>
-            </div>
           </div>
 
           {/* Box 3: Designed to be changed. */}
           <div className="md:col-span-6 lg:col-span-3 rounded-3xl border border-white/10 bg-[#161617] p-6 sm:p-8 flex flex-col justify-between shadow-xl">
             <div>
-              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white mb-4 sm:mb-6">
-                <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 text-amber-400" />
-              </div>
               <h4 className="text-lg sm:text-xl md:text-2xl font-bold text-white tracking-tight mb-1">
                 Designed to be changed.
               </h4>
@@ -175,9 +198,6 @@ export const ProductFeatures: React.FC<ProductFeaturesProps> = ({ onBuyClick }) 
           {/* Box 4: Technology you feel. */}
           <div className="md:col-span-6 lg:col-span-3 rounded-3xl border border-white/10 bg-[#161617] p-6 sm:p-8 flex flex-col justify-between shadow-xl">
             <div>
-              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white mb-4 sm:mb-6">
-                <SlidersHorizontal className="w-5 h-5 sm:w-6 sm:h-6 text-purple-400" />
-              </div>
               <h4 className="text-lg sm:text-xl md:text-2xl font-bold text-white tracking-tight mb-1">
                 Technology you feel.
               </h4>
@@ -220,7 +240,7 @@ export const ProductFeatures: React.FC<ProductFeaturesProps> = ({ onBuyClick }) 
         <div className="pt-2 flex justify-center">
           <button
             onClick={onBuyClick}
-            className="w-full sm:w-auto bg-[#0071e3] hover:bg-[#0077ed] active:scale-95 text-white font-semibold text-xs sm:text-sm px-6 sm:px-8 py-3 sm:py-3.5 rounded-full transition-all cursor-pointer shadow-lg shadow-blue-500/25 flex items-center justify-center gap-2"
+            className="w-full sm:w-auto bg-[#0071e3] hover:bg-[#0077ed] active:scale-95 text-white font-semibold text-xs sm:text-sm px-6 sm:px-8 py-3 sm:py-3.5 rounded-full transition-all duration-300 cursor-pointer shadow-lg shadow-blue-500/25 flex items-center justify-center gap-2"
           >
             Buy Aromax AI <ChevronRight className="w-4 h-4" />
           </button>

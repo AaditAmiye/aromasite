@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { Sparkles } from 'lucide-react';
 
 const SCENT_MOMENTS = [
@@ -11,29 +11,31 @@ const SCENT_MOMENTS = [
 export const AroAISection: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const [hasPlayed, setHasPlayed] = useState(false);
 
   useEffect(() => {
     const video = videoRef.current;
-    const container = containerRef.current;
-    if (!video || !container) return;
+    if (!video) return;
 
-    // Play once when user scrolls into view
+    video.muted = true;
+    video.play().catch(() => {});
+
+    // Ensure it keeps playing seamlessly when in viewport
     const observer = new IntersectionObserver(
       (entries) => {
         const [entry] = entries;
-        if (entry.isIntersecting && !hasPlayed) {
-          video.currentTime = 0;
+        if (entry.isIntersecting) {
           video.play().catch(() => {});
-          setHasPlayed(true);
         }
       },
-      { threshold: 0.25 }
+      { threshold: 0.1 }
     );
 
-    observer.observe(container);
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
+
     return () => observer.disconnect();
-  }, [hasPlayed]);
+  }, []);
 
   return (
     <div
@@ -45,15 +47,21 @@ export const AroAISection: React.FC = () => {
       <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-[120px] pointer-events-none" />
 
       <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
-        {/* Left Column: Aro AI Video (Plays once, square 720x720 mascot) */}
+        {/* Left Column: Aro AI Video (Loops continuously, square mascot, no controls) */}
         <div className="lg:col-span-5 flex flex-col items-center justify-center">
           <div className="relative w-full max-w-[380px] aspect-square rounded-[32px] sm:rounded-[36px] overflow-hidden bg-black border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.9),0_0_40px_rgba(255,255,255,0.06)] group">
             <video
               ref={videoRef}
               src="/assets/aistudio/IMG_9423_d65311ef.MP4"
-              playsInline
+              autoPlay
+              loop
               muted
-              className="w-full h-full object-cover"
+              playsInline
+              preload="auto"
+              controls={false}
+              disablePictureInPicture
+              controlsList="nodownload nofullscreen noremoteplayback"
+              className="w-full h-full object-cover pointer-events-none select-none"
             />
 
             {/* Subtle frosted glass badge */}
