@@ -145,30 +145,26 @@ export const FragranceSection: React.FC<FragranceSectionProps> = ({ onExploreCli
               )}
             </button>
           </div>
+        </div>
 
-          {/* 
-            Center Interactive "Explore More" Button
-            - Only "Explore More"
-            - Appears and highlights smoothly on hover
-          */}
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20 p-4">
-            <div
-              className={`pointer-events-auto transform transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-                isHovered
-                  ? 'scale-100 opacity-100 translate-y-0'
-                  : 'scale-90 opacity-90 sm:opacity-0 sm:translate-y-3'
-              }`}
-            >
-              <button
-                type="button"
-                onClick={() => setShowNotesModal(true)}
-                className="group/btn relative px-6 sm:px-8 py-3 sm:py-3.5 rounded-full bg-black/75 hover:bg-black/95 active:scale-95 border border-white/30 hover:border-white/70 text-white backdrop-blur-2xl shadow-[0_20px_50px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.4)] flex items-center gap-2.5 transition-all duration-300 cursor-pointer font-medium text-sm sm:text-base tracking-wide"
-              >
-                <span>Explore More</span>
-                <ArrowUpRight className="w-4 h-4 text-white/80 group-hover/btn:text-white transition-transform duration-300 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5" />
-              </button>
-            </div>
+        {/* Action bar below the video: Explore More button and fragrance formulation note */}
+        <div className="mt-4 sm:mt-5 pt-1 sm:pt-2 flex flex-col sm:flex-row items-center justify-between gap-4 px-2 sm:px-3">
+          <div className="text-center sm:text-left space-y-0.5">
+            <p className="text-white text-sm sm:text-base font-semibold">
+              Hydrosol-based scent formulations
+            </p>
+            <p className="text-neutral-400 text-xs sm:text-sm">
+              Cold ultrasonic vapor preserving the delicate natural architecture of every botanical note.
+            </p>
           </div>
+          <button
+            type="button"
+            onClick={() => setShowNotesModal(true)}
+            className="group/btn relative px-7 sm:px-8 py-2.5 sm:py-3 rounded-full bg-white text-black hover:bg-neutral-200 active:scale-95 border border-white/20 flex items-center gap-2.5 transition-all duration-300 cursor-pointer font-medium text-xs sm:text-sm tracking-wide shadow-lg flex-shrink-0"
+          >
+            <span>Explore More</span>
+            <ArrowUpRight className="w-4 h-4 text-black/75 group-hover/btn:text-black transition-transform duration-300 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5" />
+          </button>
         </div>
       </div>
 
