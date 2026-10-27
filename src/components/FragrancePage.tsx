@@ -370,7 +370,7 @@ export const FragrancePage: React.FC<FragrancePageProps> = ({
               <thead>
                 <tr className="border-b border-white/15 text-neutral-400 font-mono text-[11px] uppercase tracking-wider">
                   <th className="py-3 px-4">Pack Size</th>
-                  <th className="py-3 px-4">Customer Pays</th>
+                  <th className="py-3 px-4">MRP</th>
                   <th className="py-3 px-4">Price / Cartridge</th>
                   <th className="py-3 px-4 text-right">Cartridge Savings</th>
                 </tr>

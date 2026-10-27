@@ -50,7 +50,7 @@ export const TeamModal: React.FC<TeamModalProps> = ({ isOpen, onClose, onNavigat
               <div className="flex items-center gap-3.5">
                 <div className="w-16 h-16 rounded-2xl overflow-hidden border-2 border-white/20 ring-1 ring-white/10 flex-shrink-0 bg-neutral-900">
                   <img
-                    src="/assets/aistudio/aaditya_maheshwari_opt.jpg"
+                    src="/assets/aistudio/aaditya_maheshwari_opt.jpg?v=3"
                     alt="Aaditya Maheshwari"
                     className="w-full h-full object-cover"
                     loading="eager"
@@ -59,6 +59,9 @@ export const TeamModal: React.FC<TeamModalProps> = ({ isOpen, onClose, onNavigat
                 <div>
                   <h4 className="font-bold text-lg text-white">Aaditya Maheshwari</h4>
                   <p className="text-xs font-semibold text-[#2997ff]">CEO @ AromaxAI</p>
+                  <p className="text-[11px] text-neutral-300 font-medium mt-1">
+                    Electrical Engineering, National Institute of Technology Raipur (NIT Raipur)
+                  </p>
                   <div className="flex items-center gap-2 mt-1">
                     <img src="/assets/aistudio/nit_jsr_logo.png" alt="NIT Jamshedpur" className="w-4 h-4 object-contain" />
                     <span className="text-[10px] text-neutral-400 font-mono">NIT Jamshedpur</span>
@@ -72,6 +75,7 @@ export const TeamModal: React.FC<TeamModalProps> = ({ isOpen, onClose, onNavigat
             </div>
 
             <div className="pt-2 border-t border-white/10 text-[11px] text-neutral-400 space-y-1">
+              <div>• Electrical Engineering, National Institute of Technology Raipur (NIT Raipur)</div>
               <div>• Metallurgical and Materials Engineering, NIT Jamshedpur (dropped out)</div>
               <div>• Co-founder, BIOH • Executive Director, HelpMate NGO</div>
               <div>• Scholar @ Tata Cummins, Reliance, Colgate and Aditya Birla Capital</div>
@@ -84,7 +88,7 @@ export const TeamModal: React.FC<TeamModalProps> = ({ isOpen, onClose, onNavigat
               <div className="flex items-center gap-3.5">
                 <div className="w-16 h-16 rounded-2xl overflow-hidden border-2 border-white/20 ring-1 ring-white/10 flex-shrink-0 bg-neutral-900">
                   <img
-                    src="/assets/aistudio/aadit_amiye_opt.jpg"
+                    src="/assets/aistudio/aadit_amiye_opt.jpg?v=3"
                     alt="Aadit Amiye"
                     className="w-full h-full object-cover"
                     loading="eager"

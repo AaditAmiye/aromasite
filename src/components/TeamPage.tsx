@@ -77,24 +77,12 @@ export const TeamPage: React.FC<TeamPageProps> = ({ onBackToHome, onExploreFragr
               <div className="lg:col-span-5 space-y-6">
                 <div className="w-full aspect-[4/5] rounded-3xl overflow-hidden border-2 border-white/25 ring-1 ring-white/10 bg-neutral-900 shadow-2xl relative group">
                   <img
-                    src="/assets/aistudio/aaditya_maheshwari_opt.jpg"
+                    src="/assets/aistudio/aaditya_maheshwari_opt.jpg?v=4"
                     alt="Aaditya Maheshwari, CEO at AromaxAI"
                     className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-700"
                     loading="eager"
                     decoding="async"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none" />
-                  
-                  {/* Floating Tag */}
-                  <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between">
-                    <span className="px-3 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/20 text-xs font-mono text-white">
-                      Co-Founder &amp; CEO
-                    </span>
-                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/20 backdrop-blur-md border border-emerald-500/30 text-[11px] font-mono text-emerald-400">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                      AromaxAI
-                    </div>
-                  </div>
                 </div>
               </div>
 
@@ -111,10 +99,25 @@ export const TeamPage: React.FC<TeamPageProps> = ({ onBackToHome, onExploreFragr
                   <p className="text-lg sm:text-xl font-medium text-[#2997ff] mt-1">
                     CEO @ AromaxAI
                   </p>
+                  <p className="text-sm sm:text-base text-neutral-200 mt-2 font-medium flex items-center gap-2">
+                    <span className="w-5 h-5 rounded bg-white/10 p-0.5 inline-flex items-center justify-center border border-white/20 flex-shrink-0">
+                      <img src="/assets/aistudio/nit_rr_logo.png" alt="NIT Raipur" className="w-full h-full object-contain" />
+                    </span>
+                    <span>Electrical Engineering, National Institute of Technology Raipur (NIT Raipur)</span>
+                  </p>
                 </div>
 
                 {/* Credentials List with Small College Logo */}
                 <div className="space-y-3.5 border-t border-b border-white/10 py-6">
+                  <div className="flex items-start gap-3 text-xs sm:text-sm text-neutral-200">
+                    <div className="w-6 h-6 rounded-md bg-white/10 p-0.5 flex items-center justify-center border border-white/20 flex-shrink-0 mt-0.5">
+                      <img src="/assets/aistudio/nit_rr_logo.png" alt="NIT Raipur" className="w-full h-full object-contain" />
+                    </div>
+                    <span>
+                      <strong className="text-white">Electrical Engineering</strong>, National Institute of Technology Raipur (NIT Raipur)
+                    </span>
+                  </div>
+
                   <div className="flex items-start gap-3 text-xs sm:text-sm text-neutral-200">
                     <div className="w-6 h-6 rounded-md bg-white/10 p-0.5 flex items-center justify-center border border-white/20 flex-shrink-0 mt-0.5">
                       <img src="/assets/aistudio/nit_jsr_logo.png" alt="NIT Jamshedpur" className="w-full h-full object-contain" />
@@ -175,24 +178,12 @@ export const TeamPage: React.FC<TeamPageProps> = ({ onBackToHome, onExploreFragr
               <div className="lg:col-span-5 space-y-6">
                 <div className="w-full aspect-[4/5] rounded-3xl overflow-hidden border-2 border-white/25 ring-1 ring-white/10 bg-neutral-900 shadow-2xl relative group">
                   <img
-                    src="/assets/aistudio/aadit_amiye_opt.jpg"
+                    src="/assets/aistudio/aadit_amiye_opt.jpg?v=4"
                     alt="Aadit Amiye, CTO at AromaxAI"
                     className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-700"
                     loading="eager"
                     decoding="async"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none" />
-                  
-                  {/* Floating Tag */}
-                  <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between">
-                    <span className="px-3 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/20 text-xs font-mono text-white">
-                      Co-Founder &amp; CTO
-                    </span>
-                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-purple-500/20 backdrop-blur-md border border-purple-500/30 text-[11px] font-mono text-purple-300">
-                      <span className="w-1.5 h-1.5 rounded-full bg-purple-400 animate-pulse" />
-                      Hardware &amp; Systems
-                    </div>
-                  </div>
                 </div>
               </div>
 
