@@ -140,7 +140,7 @@ export const FragranceSection: React.FC<FragranceSectionProps> = ({ onExploreCli
             </div>
             <button
               type="button"
-              onClick={() => setShowNotesModal(true)}
+              onClick={() => (onExploreClick ? onExploreClick() : setShowNotesModal(true))}
               className="group/btn relative px-7 sm:px-8 py-2.5 sm:py-3 rounded-full bg-white text-black hover:bg-neutral-200 active:scale-95 border border-white/20 flex items-center gap-2.5 transition-all duration-300 cursor-pointer font-medium text-xs sm:text-sm tracking-wide shadow-lg flex-shrink-0"
             >
               <span>Explore More</span>

@@ -9,6 +9,7 @@ import { ScrollReveal } from './ScrollReveal';
 
 interface ProductFeaturesProps {
   onBuyClick: () => void;
+  onExploreFragrance?: () => void;
 }
 
 const FINISH_GALLERY = [
@@ -42,7 +43,7 @@ const FINISH_GALLERY = [
   },
 ];
 
-export const ProductFeatures: React.FC<ProductFeaturesProps> = ({ onBuyClick }) => {
+export const ProductFeatures: React.FC<ProductFeaturesProps> = ({ onBuyClick, onExploreFragrance }) => {
   const [activeFinishIndex, setActiveFinishIndex] = useState(0);
   const [clickedBtn, setClickedBtn] = useState<string | null>(null);
 
@@ -311,7 +312,7 @@ export const ProductFeatures: React.FC<ProductFeaturesProps> = ({ onBuyClick }) 
       </div>
 
       {/* 3. Fragrance Video Section (Placed after Plug/Switch bento & before Aro AI) */}
-      <FragranceSection onExploreClick={onBuyClick} />
+      <FragranceSection onExploreClick={onExploreFragrance} />
 
       {/* 4. Meet Aro AI Section */}
       <AroAISection />
