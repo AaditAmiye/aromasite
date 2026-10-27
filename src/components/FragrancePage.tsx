@@ -13,7 +13,6 @@ import {
   Flame,
   Wind,
   CheckCircle2,
-  ChevronDown,
 } from 'lucide-react';
 import { FRAGRANCES_DATA, CURATED_COLLECTIONS, FragranceNote } from '../data/fragrances';
 
@@ -27,7 +26,6 @@ export const FragrancePage: React.FC<FragrancePageProps> = ({
   onOpenBuyModal,
 }) => {
   const fullscreenVideoRef = useRef<HTMLVideoElement | null>(null);
-  const [selectedMood, setSelectedMood] = useState<string | null>(null);
   const [selectedFamily, setSelectedFamily] = useState<string>('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedFragrance, setSelectedFragrance] = useState<FragranceNote | null>(null);
@@ -53,25 +51,19 @@ export const FragrancePage: React.FC<FragrancePageProps> = ({
     );
   };
 
-  const handleSelectMood = (mood: string) => {
-    setSelectedMood((prev) => (prev === mood ? null : mood));
-    const section = document.getElementById('scents-grid');
-    if (section) {
-      section.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
   // Filtered Fragrances
   const filteredFragrances = FRAGRANCES_DATA.filter((item) => {
-    const matchesFamily = selectedFamily === 'All' || item.family.toLowerCase().includes(selectedFamily.toLowerCase()) || (selectedFamily === 'Woods & Earth' && item.family === 'Woods & Earth');
-    const matchesMood = !selectedMood || item.mood.toLowerCase() === selectedMood.toLowerCase();
+    const matchesFamily =
+      selectedFamily === 'All' ||
+      item.family.toLowerCase().includes(selectedFamily.toLowerCase()) ||
+      (selectedFamily === 'Woods & Earth' && item.family === 'Woods & Earth');
     const matchesSearch =
       !searchQuery ||
       item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.alias.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.character.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.inspiration.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesFamily && matchesMood && matchesSearch;
+    return matchesFamily && matchesSearch;
   });
 
   // Notes organized for the Interactive Scent Finder
@@ -190,19 +182,12 @@ export const FragrancePage: React.FC<FragrancePageProps> = ({
           <source src="/assets/aistudio/IMG_9423_d65311ef.MP4" type="video/mp4" />
         </video>
 
-        {/* Floating Scroll Cue */}
-        <div className="absolute bottom-6 sm:bottom-10 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2 pointer-events-none opacity-80 hover:opacity-100 transition-opacity">
-          <span className="text-[11px] font-mono tracking-widest uppercase text-white/70">
-            Scroll to explore atmosphere
-          </span>
-          <ChevronDown className="w-4 h-4 text-white animate-bounce" />
-        </div>
       </section>
 
       {/* 
         MAIN FRAGRANCE CONTENT CONTAINER
       */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-8 md:px-12 py-16 sm:py-24 space-y-20 sm:space-y-32">
+      <main className="max-w-7xl mx-auto px-4 sm:px-8 md:px-12 py-16 sm:py-24 space-y-16 sm:space-y-24">
         {/* 
           HERO HEADLINE:
           "Discover your atmosphere.
@@ -235,120 +220,16 @@ export const FragrancePage: React.FC<FragrancePageProps> = ({
         </section>
 
         {/* 
-          2. MOOD EXPERIENCE:
-          "How do you want your space to feel?"
-          Calm (Lavender, soft florals)
-          Fresh (Citrus, green notes)
-          Grounded (Sandalwood, woods)
-          Comfort (Cardamom, warm spices)
+          SHOWCASE IMAGE: Library of Scents Handheld Vials
+          Added right after Discover your atmosphere, with rounded corners and distinct border
         */}
-        <section className="space-y-6">
-          <div className="space-y-2">
-            <p className="text-xs font-mono uppercase tracking-widest text-[#2997ff]">Olfactory Intent</p>
-            <h2 className="text-2xl sm:text-4xl font-bold tracking-tight text-white">
-              How do you want your space to feel?
-            </h2>
-            <p className="text-xs sm:text-sm text-neutral-400">
-              Select an atmosphere state to reveal harmonized note formulations.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-            {/* Calm */}
-            <div
-              onClick={() => handleSelectMood('Calm')}
-              className={`p-6 sm:p-7 rounded-2xl sm:rounded-3xl border-2 transition-all duration-300 cursor-pointer shadow-xl relative overflow-hidden group ${
-                selectedMood === 'Calm'
-                  ? 'border-purple-400 bg-purple-950/30 ring-2 ring-purple-400/40'
-                  : 'border-white/20 ring-1 ring-white/10 bg-[#161618] hover:border-white/35 hover:bg-[#1a1a1d]'
-              }`}
-            >
-              <div className="w-10 h-10 rounded-xl bg-purple-500/20 border border-purple-500/30 text-purple-300 flex items-center justify-center mb-4">
-                <Droplets className="w-5 h-5" />
-              </div>
-              <h3 className="text-xl font-bold text-white mb-1 group-hover:text-purple-300 transition-colors">
-                Calm
-              </h3>
-              <p className="text-sm text-neutral-400">
-                Lavender, soft florals
-              </p>
-              <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-xs text-neutral-400">
-                <span>Tranquil sanctuary</span>
-                <span className="text-purple-400 group-hover:translate-x-1 transition-transform">Filter ↗</span>
-              </div>
-            </div>
-
-            {/* Fresh */}
-            <div
-              onClick={() => handleSelectMood('Fresh')}
-              className={`p-6 sm:p-7 rounded-2xl sm:rounded-3xl border-2 transition-all duration-300 cursor-pointer shadow-xl relative overflow-hidden group ${
-                selectedMood === 'Fresh'
-                  ? 'border-emerald-400 bg-emerald-950/30 ring-2 ring-emerald-400/40'
-                  : 'border-white/20 ring-1 ring-white/10 bg-[#161618] hover:border-white/35 hover:bg-[#1a1a1d]'
-              }`}
-            >
-              <div className="w-10 h-10 rounded-xl bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 flex items-center justify-center mb-4">
-                <Wind className="w-5 h-5" />
-              </div>
-              <h3 className="text-xl font-bold text-white mb-1 group-hover:text-emerald-300 transition-colors">
-                Fresh
-              </h3>
-              <p className="text-sm text-neutral-400">
-                Citrus, green notes
-              </p>
-              <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-xs text-neutral-400">
-                <span>Clarity &amp; focus</span>
-                <span className="text-emerald-400 group-hover:translate-x-1 transition-transform">Filter ↗</span>
-              </div>
-            </div>
-
-            {/* Grounded */}
-            <div
-              onClick={() => handleSelectMood('Grounded')}
-              className={`p-6 sm:p-7 rounded-2xl sm:rounded-3xl border-2 transition-all duration-300 cursor-pointer shadow-xl relative overflow-hidden group ${
-                selectedMood === 'Grounded'
-                  ? 'border-amber-400 bg-amber-950/30 ring-2 ring-amber-400/40'
-                  : 'border-white/20 ring-1 ring-white/10 bg-[#161618] hover:border-white/35 hover:bg-[#1a1a1d]'
-              }`}
-            >
-              <div className="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-500/30 text-amber-300 flex items-center justify-center mb-4">
-                <Flame className="w-5 h-5" />
-              </div>
-              <h3 className="text-xl font-bold text-white mb-1 group-hover:text-amber-300 transition-colors">
-                Grounded
-              </h3>
-              <p className="text-sm text-neutral-400">
-                Sandalwood, woods
-              </p>
-              <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-xs text-neutral-400">
-                <span>Earthy roots</span>
-                <span className="text-amber-400 group-hover:translate-x-1 transition-transform">Filter ↗</span>
-              </div>
-            </div>
-
-            {/* Comfort */}
-            <div
-              onClick={() => handleSelectMood('Comfort')}
-              className={`p-6 sm:p-7 rounded-2xl sm:rounded-3xl border-2 transition-all duration-300 cursor-pointer shadow-xl relative overflow-hidden group ${
-                selectedMood === 'Comfort'
-                  ? 'border-orange-400 bg-orange-950/30 ring-2 ring-orange-400/40'
-                  : 'border-white/20 ring-1 ring-white/10 bg-[#161618] hover:border-white/35 hover:bg-[#1a1a1d]'
-              }`}
-            >
-              <div className="w-10 h-10 rounded-xl bg-orange-500/20 border border-orange-500/30 text-orange-300 flex items-center justify-center mb-4">
-                <Sparkles className="w-5 h-5" />
-              </div>
-              <h3 className="text-xl font-bold text-white mb-1 group-hover:text-orange-300 transition-colors">
-                Comfort
-              </h3>
-              <p className="text-sm text-neutral-400">
-                Cardamom, warm spices
-              </p>
-              <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-xs text-neutral-400">
-                <span>Warm familiar hearth</span>
-                <span className="text-orange-400 group-hover:translate-x-1 transition-transform">Filter ↗</span>
-              </div>
-            </div>
+        <section className="w-full">
+          <div className="w-full rounded-2xl sm:rounded-3xl md:rounded-[36px] overflow-hidden border-2 border-white/25 ring-1 ring-white/10 shadow-[0_24px_60px_rgba(0,0,0,0.95)] bg-black">
+            <img
+              src="/assets/aistudio/Library_of_Scents_with_Handheld_Vials_fd03d189.png"
+              alt="Library of Scents - Nature-inspired hydrosol formulations"
+              className="w-full h-auto object-cover block"
+            />
           </div>
         </section>
 
@@ -412,16 +293,6 @@ export const FragrancePage: React.FC<FragrancePageProps> = ({
                 {fam}
               </button>
             ))}
-
-            {selectedMood && (
-              <button
-                onClick={() => setSelectedMood(null)}
-                className="px-3 py-1.5 rounded-full text-xs font-mono bg-blue-500/20 text-[#2997ff] border border-blue-500/40 flex items-center gap-1.5 hover:bg-blue-500/30 cursor-pointer"
-              >
-                <span>Mood: {selectedMood}</span>
-                <X className="w-3 h-3" />
-              </button>
-            )}
           </div>
 
           {/* Scent Cards Grid */}
@@ -507,7 +378,6 @@ export const FragrancePage: React.FC<FragrancePageProps> = ({
               <button
                 onClick={() => {
                   setSelectedFamily('All');
-                  setSelectedMood(null);
                   setSearchQuery('');
                 }}
                 className="mt-2 px-5 py-2 rounded-full bg-white text-black text-xs font-semibold hover:bg-neutral-200 transition-all cursor-pointer"
