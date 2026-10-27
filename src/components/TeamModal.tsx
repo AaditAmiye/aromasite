@@ -59,9 +59,6 @@ export const TeamModal: React.FC<TeamModalProps> = ({ isOpen, onClose, onNavigat
                 <div>
                   <h4 className="font-bold text-lg text-white">Aaditya Maheshwari</h4>
                   <p className="text-xs font-semibold text-[#2997ff]">CEO @ AromaxAI</p>
-                  <p className="text-[11px] text-neutral-300 font-medium mt-1">
-                    Electrical Engineering, National Institute of Technology Raipur (NIT Raipur)
-                  </p>
                   <div className="flex items-center gap-2 mt-1">
                     <img src="/assets/aistudio/nit_jsr_logo.png" alt="NIT Jamshedpur" className="w-4 h-4 object-contain" />
                     <span className="text-[10px] text-neutral-400 font-mono">NIT Jamshedpur</span>

@@ -168,7 +168,7 @@ export const FragrancePage: React.FC<FragrancePageProps> = ({
       <section className="relative w-full h-[100dvh] min-h-[100dvh] bg-black overflow-hidden flex items-center justify-center p-0 m-0">
         <video
           ref={fullscreenVideoRef}
-          src="/assets/aistudio/IMG_9423_d65311ef.MP4"
+          src="/assets/aistudio/IMG_9419__online-video-cutter.com__b31cd971.mp4"
           autoPlay
           loop
           muted
@@ -179,7 +179,7 @@ export const FragrancePage: React.FC<FragrancePageProps> = ({
           controlsList="nodownload nofullscreen noremoteplayback"
           className="w-full h-full object-cover bg-black"
         >
-          <source src="/assets/aistudio/IMG_9423_d65311ef.MP4" type="video/mp4" />
+          <source src="/assets/aistudio/IMG_9419__online-video-cutter.com__b31cd971.mp4" type="video/mp4" />
         </video>
 
       </section>

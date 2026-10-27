@@ -99,12 +99,6 @@ export const TeamPage: React.FC<TeamPageProps> = ({ onBackToHome, onExploreFragr
                   <p className="text-lg sm:text-xl font-medium text-[#2997ff] mt-1">
                     CEO @ AromaxAI
                   </p>
-                  <p className="text-sm sm:text-base text-neutral-200 mt-2 font-medium flex items-center gap-2">
-                    <span className="w-5 h-5 rounded bg-white/10 p-0.5 inline-flex items-center justify-center border border-white/20 flex-shrink-0">
-                      <img src="/assets/aistudio/nit_rr_logo.png" alt="NIT Raipur" className="w-full h-full object-contain" />
-                    </span>
-                    <span>Electrical Engineering, National Institute of Technology Raipur (NIT Raipur)</span>
-                  </p>
                 </div>
 
                 {/* Credentials List with Small College Logo */}
