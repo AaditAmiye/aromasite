@@ -4,7 +4,7 @@ import { AromaxLogo } from './AromaxLogo';
 interface AppleUnifiedNavProps {
   onBuyClick: () => void;
   onNavClick?: (item: string) => void;
-  currentPage?: 'home' | 'fragrance';
+  currentPage?: 'home' | 'fragrance' | 'team';
 }
 
 const NAV_ITEMS = [
@@ -20,7 +20,7 @@ export const AppleUnifiedNav: React.FC<AppleUnifiedNavProps> = ({
   currentPage = 'home',
 }) => {
   const [scrollY, setScrollY] = useState(0);
-  const activeItem = currentPage === 'fragrance' ? 'Fragrance' : 'Aro - 1';
+  const activeItem = currentPage === 'fragrance' ? 'Fragrance' : currentPage === 'team' ? 'Team' : 'Aro - 1';
   const [isBuyClicked, setIsBuyClicked] = useState(false);
 
   const handleBuy = () => {

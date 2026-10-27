@@ -40,16 +40,24 @@ export const FINISHES = [
 const SCENT_BUNDLES = [
   {
     id: 'signature',
-    name: 'Signature Collection',
-    items: 'Bergamot Dawn • White Tea Santal • Midnight Rain',
+    name: 'Included 3-Pack Starter Suite',
+    items: 'Mysore Sandalwood • Soft Indian Rose • First Rain',
     included: true,
+    addPrice: 0,
   },
   {
-    id: 'zen',
-    name: 'Kyoto Sanctuary Pack',
-    items: 'Hinoki Smoke • Bamboo Mist • Green Yuzu',
+    id: 'pack-5',
+    name: '5-Pack Atmosphere Suite',
+    items: 'Sandalwood • Indian Rose • First Rain • Zesty Citrus • Warm Cardamom',
     included: false,
-    addPrice: 3500,
+    addPrice: 499,
+  },
+  {
+    id: 'pack-10',
+    name: '10-Pack Master Studio Collection',
+    items: 'Complete 10-Cartridge Spectrum (Save 46% per cartridge)',
+    included: false,
+    addPrice: 799,
   },
 ];
 

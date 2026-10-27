@@ -5,12 +5,13 @@ import { ProductFeatures } from './components/ProductFeatures';
 import { RollingWord } from './components/RollingWord';
 import { ScrollReveal } from './components/ScrollReveal';
 import { FragrancePage } from './components/FragrancePage';
+import { TeamPage } from './components/TeamPage';
 import { TeamModal } from './components/TeamModal';
 import { ContactModal } from './components/ContactModal';
 
 export default function App() {
-  const [currentPage, setCurrentPage] = useState<'home' | 'fragrance'>('home');
-  const [displayPage, setDisplayPage] = useState<'home' | 'fragrance'>('home');
+  const [currentPage, setCurrentPage] = useState<'home' | 'fragrance' | 'team'>('home');
+  const [displayPage, setDisplayPage] = useState<'home' | 'fragrance' | 'team'>('home');
   const [isTransitioning, setIsTransitioning] = useState(false);
 
   const [isTeamModalOpen, setIsTeamModalOpen] = useState(false);
@@ -36,7 +37,7 @@ export default function App() {
   }, [displayPage]);
 
   // Settle animation on page switching: fade off old page, switch DOM & scroll, fade in new page
-  const transitionToPage = (newPage: 'home' | 'fragrance') => {
+  const transitionToPage = (newPage: 'home' | 'fragrance' | 'team') => {
     if (newPage === displayPage && !isTransitioning) {
       window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
@@ -69,7 +70,7 @@ export default function App() {
     } else if (item === 'Fragrance') {
       transitionToPage('fragrance');
     } else if (item === 'Team') {
-      setIsTeamModalOpen(true);
+      transitionToPage('team');
     } else if (item === 'Contact us') {
       setIsContactModalOpen(true);
     }
@@ -92,7 +93,11 @@ export default function App() {
       <AppleBuyModal isOpen={isBuyModalOpen} onClose={closeBuy} />
 
       {/* Dedicated Team Showcase Modal */}
-      <TeamModal isOpen={isTeamModalOpen} onClose={() => setIsTeamModalOpen(false)} />
+      <TeamModal
+        isOpen={isTeamModalOpen}
+        onClose={() => setIsTeamModalOpen(false)}
+        onNavigateToTeamPage={() => transitionToPage('team')}
+      />
 
       {/* Dedicated Contact Us Modal */}
       <ContactModal isOpen={isContactModalOpen} onClose={() => setIsContactModalOpen(false)} />
@@ -105,7 +110,18 @@ export default function App() {
             : 'opacity-100 scale-100 filter blur-0 pointer-events-auto'
         }`}
       >
-        {displayPage === 'fragrance' ? (
+        {displayPage === 'team' ? (
+          /* 
+            DEDICATED TEAM PAGE:
+            - Aaditya Maheshwari (CEO) & Aadit Amiye (CTO)
+            - NIT Raipur & NIT Jamshedpur logos
+            - Scroll-appearing text animations
+          */
+          <TeamPage
+            onBackToHome={() => transitionToPage('home')}
+            onExploreFragrance={() => transitionToPage('fragrance')}
+          />
+        ) : displayPage === 'fragrance' ? (
           /* 
             FRAGRANCE PAGE:
             - Fullscreen loop video at top without text overlays

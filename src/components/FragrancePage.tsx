@@ -222,14 +222,186 @@ export const FragrancePage: React.FC<FragrancePageProps> = ({
         {/* 
           SHOWCASE IMAGE: Library of Scents Handheld Vials
           Added right after Discover your atmosphere, with rounded corners and distinct border
+        {/* 
+          SHOWCASE IMAGE: "This Is Not A Perfume — Reinventing Scent"
+          Added right after Discover your atmosphere, with rounded corners and distinct border
         */}
         <section className="w-full">
           <div className="w-full rounded-2xl sm:rounded-3xl md:rounded-[36px] overflow-hidden border-2 border-white/25 ring-1 ring-white/10 shadow-[0_24px_60px_rgba(0,0,0,0.95)] bg-black">
             <img
-              src="/assets/aistudio/Library_of_Scents_with_Handheld_Vials_fd03d189.png"
-              alt="Library of Scents - Nature-inspired hydrosol formulations"
+              src="/assets/aistudio/reinventing_scent_opt.jpg"
+              alt="Reinventing Scent - Botanical Hydrosols & Cold Dispersion"
               className="w-full h-auto object-cover block"
+              loading="eager"
+              decoding="async"
             />
+          </div>
+        </section>
+
+        {/* 
+          NOTE ARCHITECTURES & VISUAL CATEGORIES (4 Distinct Worlds)
+          Featuring the exact bottle on black background with characteristic natural element
+        */}
+        <section className="space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-white/10 pb-5">
+            <div>
+              <p className="text-xs font-mono uppercase tracking-widest text-[#2997ff]">Olfactory Design</p>
+              <h2 className="text-2xl sm:text-4xl font-bold tracking-tight text-white mt-1">
+                Fragrance Note Worlds
+              </h2>
+              <p className="text-xs sm:text-sm text-neutral-400 mt-1">
+                Each world isolates pure botanicals, smoked woods, and cold-extracted resins for instant switching with zero lingering oils.
+              </p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {/* World 1: Woods & Earth */}
+            <div
+              onClick={() => setSelectedFamily('Woods & Earth')}
+              className="rounded-2xl sm:rounded-3xl border-2 border-white/20 ring-1 ring-white/10 bg-[#161618] p-4 space-y-3 cursor-pointer group hover:border-white/40 transition-all duration-300 shadow-xl"
+            >
+              <div className="w-full aspect-square rounded-2xl overflow-hidden border-2 border-white/25 ring-1 ring-white/10 bg-black shadow-md">
+                <img
+                  src="/assets/aistudio/category_woods_ref.jpg"
+                  alt="Wood & Earth Notes - Mysore Sandalwood & Smoked Embers"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  loading="eager"
+                  decoding="async"
+                />
+              </div>
+              <div>
+                <span className="text-[10px] font-mono uppercase tracking-widest text-[#d97706]">Woods &amp; Earth</span>
+                <h4 className="font-bold text-base text-white mt-0.5">Sandalwood &amp; Smoked Wood</h4>
+                <p className="text-xs text-neutral-400 mt-1 leading-snug">
+                  Charred campfire wood, sacred sandalwood, and baked rain earth.
+                </p>
+              </div>
+            </div>
+
+            {/* World 2: Floral & Botanical */}
+            <div
+              onClick={() => setSelectedFamily('Floral & Botanical')}
+              className="rounded-2xl sm:rounded-3xl border-2 border-white/20 ring-1 ring-white/10 bg-[#161618] p-4 space-y-3 cursor-pointer group hover:border-white/40 transition-all duration-300 shadow-xl"
+            >
+              <div className="w-full aspect-square rounded-2xl overflow-hidden border-2 border-white/25 ring-1 ring-white/10 bg-black shadow-md">
+                <img
+                  src="/assets/aistudio/category_floral_ref.jpg"
+                  alt="Floral & Botanical Notes - Blue Lotus & Damascus Rose"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  loading="eager"
+                  decoding="async"
+                />
+              </div>
+              <div>
+                <span className="text-[10px] font-mono uppercase tracking-widest text-[#f43f5e]">Floral &amp; Botanical</span>
+                <h4 className="font-bold text-base text-white mt-0.5">Lotus &amp; Indian Rose</h4>
+                <p className="text-xs text-neutral-400 mt-1 leading-snug">
+                  French lavender, blue lotus, Kannauj rose, and succulent aloe nectar.
+                </p>
+              </div>
+            </div>
+
+            {/* World 3: Citrus, Fruit & Mint */}
+            <div
+              onClick={() => setSelectedFamily('Citrus, Fruit & Mint')}
+              className="rounded-2xl sm:rounded-3xl border-2 border-white/20 ring-1 ring-white/10 bg-[#161618] p-4 space-y-3 cursor-pointer group hover:border-white/40 transition-all duration-300 shadow-xl"
+            >
+              <div className="w-full aspect-square rounded-2xl overflow-hidden border-2 border-white/25 ring-1 ring-white/10 bg-black shadow-md">
+                <img
+                  src="/assets/aistudio/category_citrus_ref.jpg"
+                  alt="Citrus & Mint Notes - Valencia Orange & Frosty Peppermint"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  loading="eager"
+                  decoding="async"
+                />
+              </div>
+              <div>
+                <span className="text-[10px] font-mono uppercase tracking-widest text-[#eab308]">Citrus &amp; Mint</span>
+                <h4 className="font-bold text-base text-white mt-0.5">Zesty Bergamot &amp; Mint</h4>
+                <p className="text-xs text-neutral-400 mt-1 leading-snug">
+                  Valencia orange, cold bergamot aldehyde, and frosty peppermint.
+                </p>
+              </div>
+            </div>
+
+            {/* World 4: Spices, Teas & Resins */}
+            <div
+              onClick={() => setSelectedFamily('Spices, Teas & Resins')}
+              className="rounded-2xl sm:rounded-3xl border-2 border-white/20 ring-1 ring-white/10 bg-[#161618] p-4 space-y-3 cursor-pointer group hover:border-white/40 transition-all duration-300 shadow-xl"
+            >
+              <div className="w-full aspect-square rounded-2xl overflow-hidden border-2 border-white/25 ring-1 ring-white/10 bg-black shadow-md">
+                <img
+                  src="/assets/aistudio/category_spices_ref.jpg"
+                  alt="Spices & Resins - Kashmiri Saffron & Green Cardamom"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  loading="eager"
+                  decoding="async"
+                />
+              </div>
+              <div>
+                <span className="text-[10px] font-mono uppercase tracking-widest text-[#ea580c]">Spices &amp; Resins</span>
+                <h4 className="font-bold text-base text-white mt-0.5">Saffron &amp; Cardamom</h4>
+                <p className="text-xs text-neutral-400 mt-1 leading-snug">
+                  Kashmiri royal saffron, Ceylon cinnamon, and toasted green cardamom.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* 
+          OFFICIAL REFILL PRICING TABLE (ACCORDING TO USER'S TABLE)
+        */}
+        <section className="rounded-2xl sm:rounded-3xl border-2 border-white/20 ring-1 ring-white/10 bg-gradient-to-b from-[#18181b] to-black p-6 sm:p-8 shadow-2xl space-y-5">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 pb-4">
+            <div>
+              <span className="text-[11px] font-mono uppercase tracking-widest text-[#2997ff]">Volume Pricing</span>
+              <h3 className="text-xl sm:text-2xl font-bold text-white mt-0.5">Cartridge Refill Pricing Matrix</h3>
+            </div>
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-mono">
+              <CheckCircle2 className="w-3.5 h-3.5" />
+              <span>Multi-Cartridge Volume Discount</span>
+            </div>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs sm:text-sm">
+              <thead>
+                <tr className="border-b border-white/15 text-neutral-400 font-mono text-[11px] uppercase tracking-wider">
+                  <th className="py-3 px-4">Pack Size</th>
+                  <th className="py-3 px-4">Customer Pays</th>
+                  <th className="py-3 px-4">Price / Cartridge</th>
+                  <th className="py-3 px-4 text-right">Cartridge Savings</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-white/5 font-mono">
+                <tr className="hover:bg-white/[0.02] transition-colors">
+                  <td className="py-3 px-4 font-semibold text-white">1-Pack</td>
+                  <td className="py-3 px-4 text-white font-bold">₹149.00</td>
+                  <td className="py-3 px-4 text-neutral-300">₹149.00</td>
+                  <td className="py-3 px-4 text-right text-neutral-500">Standard</td>
+                </tr>
+                <tr className="hover:bg-white/[0.02] transition-colors bg-white/[0.01]">
+                  <td className="py-3 px-4 font-semibold text-white">3-Pack</td>
+                  <td className="py-3 px-4 text-white font-bold">₹349.00</td>
+                  <td className="py-3 px-4 text-emerald-400 font-semibold">₹116.33</td>
+                  <td className="py-3 px-4 text-right text-emerald-400">Save 22%</td>
+                </tr>
+                <tr className="hover:bg-white/[0.02] transition-colors">
+                  <td className="py-3 px-4 font-semibold text-white">5-Pack</td>
+                  <td className="py-3 px-4 text-white font-bold">₹499.00</td>
+                  <td className="py-3 px-4 text-emerald-400 font-semibold">₹99.80</td>
+                  <td className="py-3 px-4 text-right text-emerald-400">Save 33%</td>
+                </tr>
+                <tr className="hover:bg-white/[0.02] transition-colors bg-blue-500/5">
+                  <td className="py-3 px-4 font-semibold text-[#2997ff]">10-Pack (Best Value)</td>
+                  <td className="py-3 px-4 text-white font-bold">₹799.00</td>
+                  <td className="py-3 px-4 text-emerald-400 font-semibold">₹79.90</td>
+                  <td className="py-3 px-4 text-right text-emerald-400 font-bold">Save 46%</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </section>
 

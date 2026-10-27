@@ -126,10 +126,11 @@ export const TestimonialsSection: React.FC = () => {
           {/* Photo Container - The White Wall Photo */}
           <div className="mt-2 w-full rounded-2xl sm:rounded-3xl overflow-hidden border-2 border-white/25 ring-1 ring-white/10 bg-black shadow-[0_16px_40px_rgba(0,0,0,0.9)] relative aspect-[16/9] sm:aspect-[16/10] flex items-center justify-center">
             <img
-              src="/assets/aistudio/IMG_8781_87a26e56.png"
+              src="/assets/aistudio/shlok_pandey_opt.jpg"
               alt="AromaxAI unit in yoga and meditation room by Shlok Pandey"
               className="w-full h-full object-cover"
-              loading="lazy"
+              loading="eager"
+              decoding="async"
             />
           </div>
         </div>
