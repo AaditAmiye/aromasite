@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { Sparkles, ArrowLeft, Cpu, Brain } from 'lucide-react';
+import { Sparkles, ArrowLeft, Cpu, Brain, Mail, Phone, MapPin } from 'lucide-react';
 
 interface TeamPageProps {
   onBackToHome: () => void;
@@ -96,44 +96,6 @@ export const TeamPage: React.FC<TeamPageProps> = ({ onBackToHome, onExploreFragr
                     </div>
                   </div>
                 </div>
-
-                {/* College Badges Row */}
-                <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/10 space-y-3">
-                  <p className="text-[11px] font-mono uppercase tracking-widest text-neutral-400">
-                    Academic Heritage &amp; Institutions
-                  </p>
-                  <div className="flex flex-col gap-2.5">
-                    <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-xl bg-white/10 p-1 flex items-center justify-center border border-white/20 flex-shrink-0">
-                        <img
-                          src="/assets/aistudio/nit_rr_logo.png"
-                          alt="NIT Raipur Seal"
-                          className="w-full h-full object-contain"
-                          loading="eager"
-                        />
-                      </div>
-                      <div>
-                        <p className="text-xs font-semibold text-white">NIT Raipur</p>
-                        <p className="text-[11px] text-neutral-400">Electrical Engineering</p>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-xl bg-white/10 p-1 flex items-center justify-center border border-white/20 flex-shrink-0">
-                        <img
-                          src="/assets/aistudio/nit_jsr_logo.png"
-                          alt="NIT Jamshedpur Seal"
-                          className="w-full h-full object-contain"
-                          loading="eager"
-                        />
-                      </div>
-                      <div>
-                        <p className="text-xs font-semibold text-white">NIT Jamshedpur</p>
-                        <p className="text-[11px] text-neutral-400">Metallurgical &amp; Materials (dropped out)</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
               </div>
 
               {/* Right Column: Bio, Creds, Vision */}
@@ -151,20 +113,11 @@ export const TeamPage: React.FC<TeamPageProps> = ({ onBackToHome, onExploreFragr
                   </p>
                 </div>
 
-                {/* Credentials List with Small College Logos */}
+                {/* Credentials List with Small College Logo */}
                 <div className="space-y-3.5 border-t border-b border-white/10 py-6">
                   <div className="flex items-start gap-3 text-xs sm:text-sm text-neutral-200">
                     <div className="w-6 h-6 rounded-md bg-white/10 p-0.5 flex items-center justify-center border border-white/20 flex-shrink-0 mt-0.5">
-                      <img src="/assets/aistudio/nit_rr_logo.png" alt="NITRR" className="w-full h-full object-contain" />
-                    </div>
-                    <span>
-                      <strong className="text-white">Electrical Engineering</strong>, National Institute of Technology Raipur
-                    </span>
-                  </div>
-
-                  <div className="flex items-start gap-3 text-xs sm:text-sm text-neutral-200">
-                    <div className="w-6 h-6 rounded-md bg-white/10 p-0.5 flex items-center justify-center border border-white/20 flex-shrink-0 mt-0.5">
-                      <img src="/assets/aistudio/nit_jsr_logo.png" alt="NITJSR" className="w-full h-full object-contain" />
+                      <img src="/assets/aistudio/nit_jsr_logo.png" alt="NIT Jamshedpur" className="w-full h-full object-contain" />
                     </div>
                     <span>
                       <strong className="text-white">Metallurgical and Materials Engineering</strong>, NIT Jamshedpur <span className="text-neutral-400">(dropped out)</span>
@@ -194,7 +147,7 @@ export const TeamPage: React.FC<TeamPageProps> = ({ onBackToHome, onExploreFragr
                       ★
                     </span>
                     <span>
-                      <strong className="text-white">Scholar associated with</strong> Tata Cummins, Reliance, Colgate and Aditya Birla Capital
+                      <strong className="text-white">Scholar @</strong> Tata Cummins, Reliance, Colgate and Aditya Birla Capital
                     </span>
                   </div>
                 </div>
@@ -241,27 +194,6 @@ export const TeamPage: React.FC<TeamPageProps> = ({ onBackToHome, onExploreFragr
                     </div>
                   </div>
                 </div>
-
-                {/* College Badge Row */}
-                <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/10 space-y-3">
-                  <p className="text-[11px] font-mono uppercase tracking-widest text-neutral-400">
-                    Engineering Heritage &amp; Institution
-                  </p>
-                  <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-xl bg-white/10 p-1 flex items-center justify-center border border-white/20 flex-shrink-0">
-                      <img
-                        src="/assets/aistudio/nit_rr_logo.png"
-                        alt="NIT Raipur Seal"
-                        className="w-full h-full object-contain"
-                        loading="eager"
-                      />
-                    </div>
-                    <div>
-                      <p className="text-xs font-semibold text-white">NIT Raipur</p>
-                      <p className="text-[11px] text-neutral-400">National Institute of Technology Raipur</p>
-                    </div>
-                  </div>
-                </div>
               </div>
 
               {/* Right Column: Bio, Creds, Vision */}
@@ -283,10 +215,10 @@ export const TeamPage: React.FC<TeamPageProps> = ({ onBackToHome, onExploreFragr
                 <div className="space-y-3.5 border-t border-b border-white/10 py-6">
                   <div className="flex items-start gap-3 text-xs sm:text-sm text-neutral-200">
                     <div className="w-6 h-6 rounded-md bg-white/10 p-0.5 flex items-center justify-center border border-white/20 flex-shrink-0 mt-0.5">
-                      <img src="/assets/aistudio/nit_rr_logo.png" alt="NITRR" className="w-full h-full object-contain" />
+                      <img src="/assets/aistudio/nit_rr_logo.png" alt="NIT Raipur" className="w-full h-full object-contain" />
                     </div>
                     <span>
-                      <strong className="text-white">National Institute of Technology Raipur</strong> (NIT Raipur)
+                      <strong className="text-white">Electrical Engineering</strong>, National Institute of Technology Raipur (NIT Raipur)
                     </span>
                   </div>
 
@@ -336,6 +268,44 @@ export const TeamPage: React.FC<TeamPageProps> = ({ onBackToHome, onExploreFragr
                     At AromaxAI, he leads the technical development of the platform, bringing its electronics, physical design and software together into one working system.
                   </p>
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Contact us Direct Box */}
+        <div className="mt-16 p-6 sm:p-8 rounded-3xl bg-[#141416] border-2 border-white/15 ring-1 ring-white/10 team-scroll-item opacity-0 translate-y-8 blur-sm transition-all duration-700 ease-out">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div>
+              <p className="text-[11px] font-mono uppercase tracking-widest text-[#2997ff] mb-1">
+                Direct Communication
+              </p>
+              <h3 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">Contact us</h3>
+              <p className="text-xs sm:text-sm text-neutral-400 mt-1">
+                For partnerships, enterprise scent architecture, investment, or inquiries.
+              </p>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-3">
+              <a
+                href="mailto:aaditya@aromaxai.com"
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-white/[0.05] hover:bg-white/[0.12] border border-white/15 text-xs text-white font-medium transition-all group"
+              >
+                <Mail className="w-3.5 h-3.5 text-[#2997ff]" />
+                <span className="group-hover:text-[#2997ff] transition-colors">aaditya@aromaxai.com</span>
+              </a>
+
+              <a
+                href="tel:+918827722507"
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-white/[0.05] hover:bg-white/[0.12] border border-white/15 text-xs text-white font-medium transition-all group"
+              >
+                <Phone className="w-3.5 h-3.5 text-emerald-400" />
+                <span className="group-hover:text-emerald-400 transition-colors">+91 8827722507</span>
+              </a>
+
+              <div className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-white/[0.03] border border-white/10 text-xs text-neutral-300 font-mono">
+                <MapPin className="w-3.5 h-3.5 text-purple-400" />
+                <span>Raipur • India</span>
               </div>
             </div>
           </div>

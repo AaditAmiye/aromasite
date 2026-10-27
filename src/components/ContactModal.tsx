@@ -135,19 +135,38 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) =
               <span>Send Message</span>
             </button>
 
-            {/* Quick contact direct links */}
-            <div className="pt-4 border-t border-white/10 grid grid-cols-1 sm:grid-cols-3 gap-2 text-center text-[11px] text-neutral-400">
-              <div className="p-2.5 rounded-xl bg-white/[0.02] border border-white/5 flex items-center justify-center gap-1.5">
-                <Mail className="w-3.5 h-3.5 text-[#2997ff]" />
-                <span>concierge@aromaxai.com</span>
-              </div>
-              <div className="p-2.5 rounded-xl bg-white/[0.02] border border-white/5 flex items-center justify-center gap-1.5">
-                <Phone className="w-3.5 h-3.5 text-emerald-400" />
-                <span>+91 (80) 4128-AROMA</span>
-              </div>
-              <div className="p-2.5 rounded-xl bg-white/[0.02] border border-white/5 flex items-center justify-center gap-1.5">
-                <MapPin className="w-3.5 h-3.5 text-purple-400" />
-                <span>Bangalore • India</span>
+            {/* Contact us Direct Details Box */}
+            <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/10 space-y-3">
+              <p className="text-[11px] font-mono uppercase tracking-widest text-neutral-400">
+                Contact us
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs">
+                <a
+                  href="mailto:aaditya@aromaxai.com"
+                  className="p-3 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] border border-white/10 hover:border-[#2997ff]/50 transition-all flex items-center gap-2.5 group cursor-pointer"
+                >
+                  <Mail className="w-4 h-4 text-[#2997ff] flex-shrink-0" />
+                  <span className="text-white font-medium text-[12px] truncate group-hover:text-[#2997ff]">
+                    aaditya@aromaxai.com
+                  </span>
+                </a>
+
+                <a
+                  href="tel:+918827722507"
+                  className="p-3 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] border border-white/10 hover:border-emerald-400/50 transition-all flex items-center gap-2.5 group cursor-pointer"
+                >
+                  <Phone className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                  <span className="text-white font-medium text-[12px] truncate group-hover:text-emerald-400">
+                    +91 8827722507
+                  </span>
+                </a>
+
+                <div className="p-3 rounded-xl bg-white/[0.03] border border-white/10 flex items-center gap-2.5">
+                  <MapPin className="w-4 h-4 text-purple-400 flex-shrink-0" />
+                  <span className="text-white font-medium text-[12px]">
+                    Raipur • India
+                  </span>
+                </div>
               </div>
             </div>
           </form>

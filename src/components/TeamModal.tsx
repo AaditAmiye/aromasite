@@ -60,9 +60,8 @@ export const TeamModal: React.FC<TeamModalProps> = ({ isOpen, onClose, onNavigat
                   <h4 className="font-bold text-lg text-white">Aaditya Maheshwari</h4>
                   <p className="text-xs font-semibold text-[#2997ff]">CEO @ AromaxAI</p>
                   <div className="flex items-center gap-2 mt-1">
-                    <img src="/assets/aistudio/nit_rr_logo.png" alt="NIT Raipur" className="w-4 h-4 object-contain" />
                     <img src="/assets/aistudio/nit_jsr_logo.png" alt="NIT Jamshedpur" className="w-4 h-4 object-contain" />
-                    <span className="text-[10px] text-neutral-400 font-mono">NIT RR &amp; NIT JSR</span>
+                    <span className="text-[10px] text-neutral-400 font-mono">NIT Jamshedpur</span>
                   </div>
                 </div>
               </div>
@@ -73,9 +72,9 @@ export const TeamModal: React.FC<TeamModalProps> = ({ isOpen, onClose, onNavigat
             </div>
 
             <div className="pt-2 border-t border-white/10 text-[11px] text-neutral-400 space-y-1">
-              <div>• Co-founder, BIOH</div>
-              <div>• Executive Director, HelpMate NGO</div>
-              <div>• Scholar: Tata Cummins, Reliance, Colgate</div>
+              <div>• Metallurgical and Materials Engineering, NIT Jamshedpur (dropped out)</div>
+              <div>• Co-founder, BIOH • Executive Director, HelpMate NGO</div>
+              <div>• Scholar @ Tata Cummins, Reliance, Colgate and Aditya Birla Capital</div>
             </div>
           </div>
 
@@ -107,16 +106,16 @@ export const TeamModal: React.FC<TeamModalProps> = ({ isOpen, onClose, onNavigat
             </div>
 
             <div className="pt-2 border-t border-white/10 text-[11px] text-neutral-400 space-y-1">
+              <div>• Electrical Engineering, NIT Raipur</div>
               <div>• SOF IMO &amp; NSO Zonal Gold Medalist 2024</div>
-              <div>• Hardware engineering &amp; PCB design</div>
-              <div>• CAD, 3D modelling &amp; Full-stack</div>
+              <div>• Hardware engineering, PCB design &amp; Full-stack</div>
             </div>
           </div>
         </div>
 
         {/* Lab Footer Note */}
         <div className="p-4 rounded-2xl bg-neutral-900/90 border border-white/10 text-xs text-neutral-400 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <span>Headquartered in Bangalore, India • Olfactory Synthesis Lab in Grasse, France</span>
+          <span>Raipur • India • Olfactory Synthesis Lab in Grasse, France</span>
           <div className="flex items-center gap-2">
             {onNavigateToTeamPage && (
               <button
