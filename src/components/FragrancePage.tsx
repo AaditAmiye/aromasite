@@ -25,7 +25,8 @@ export const FragrancePage: React.FC<FragrancePageProps> = ({
   onBackToHome,
   onOpenBuyModal,
 }) => {
-  const fullscreenVideoRef = useRef<HTMLVideoElement | null>(null);
+  const desktopVideoRef = useRef<HTMLVideoElement | null>(null);
+  const mobileVideoRef = useRef<HTMLVideoElement | null>(null);
   const [selectedFamily, setSelectedFamily] = useState<string>('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedFragrance, setSelectedFragrance] = useState<FragranceNote | null>(null);
@@ -36,12 +37,15 @@ export const FragrancePage: React.FC<FragrancePageProps> = ({
   ]);
   const [blendCreatedNotification, setBlendCreatedNotification] = useState(false);
 
-  // Guarantee autoplay for fullscreen video on mount
+  // Guarantee autoplay for fullscreen videos on mount
   useEffect(() => {
-    const v = fullscreenVideoRef.current;
-    if (!v) return;
-    v.muted = true;
-    v.play().catch(() => {});
+    const play = (v: HTMLVideoElement | null) => {
+      if (!v) return;
+      v.muted = true;
+      v.play().catch(() => {});
+    };
+    play(desktopVideoRef.current);
+    play(mobileVideoRef.current);
   }, []);
 
   const handleToggleRefill = (id: string, e?: React.MouseEvent) => {
@@ -163,12 +167,15 @@ export const FragrancePage: React.FC<FragrancePageProps> = ({
     <div className="w-full bg-black text-white min-h-screen selection:bg-neutral-800 selection:text-white">
       {/* 
         1. THE FRAGRANCE LANDING PAGE FULLSCREEN VIDEO ON LOOP
-        Plays full screen edge-to-edge just like the home page does
+        Plays full screen edge-to-edge:
+        - Mobile Phone: smell__online-video-cutter.com__a3fe16c1.mp4 (vertical 9:16)
+        - Desktop: IMG_9419__online-video-cutter.com__b31cd971.mp4 (horizontal 16:9)
       */}
       <section className="relative w-full h-[100dvh] min-h-[100dvh] bg-black overflow-hidden flex items-center justify-center p-0 m-0">
+        {/* Mobile Phone Fullscreen Video */}
         <video
-          ref={fullscreenVideoRef}
-          src="/assets/aistudio/IMG_9419__online-video-cutter.com__b31cd971.mp4"
+          ref={mobileVideoRef}
+          className="block md:hidden w-full h-full object-cover bg-black"
           autoPlay
           loop
           muted
@@ -177,11 +184,25 @@ export const FragrancePage: React.FC<FragrancePageProps> = ({
           controls={false}
           disablePictureInPicture
           controlsList="nodownload nofullscreen noremoteplayback"
-          className="w-full h-full object-cover bg-black"
+        >
+          <source src="/assets/aistudio/smell__online-video-cutter.com__a3fe16c1.mp4" type="video/mp4" />
+        </video>
+
+        {/* Desktop / Tablet Fullscreen Video */}
+        <video
+          ref={desktopVideoRef}
+          className="hidden md:block w-full h-full object-cover bg-black"
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="auto"
+          controls={false}
+          disablePictureInPicture
+          controlsList="nodownload nofullscreen noremoteplayback"
         >
           <source src="/assets/aistudio/IMG_9419__online-video-cutter.com__b31cd971.mp4" type="video/mp4" />
         </video>
-
       </section>
 
       {/* 

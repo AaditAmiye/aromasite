@@ -50,10 +50,11 @@ export const TeamModal: React.FC<TeamModalProps> = ({ isOpen, onClose, onNavigat
               <div className="flex items-center gap-3.5">
                 <div className="w-16 h-16 rounded-2xl overflow-hidden border-2 border-white/20 ring-1 ring-white/10 flex-shrink-0 bg-neutral-900">
                   <img
-                    src="/assets/aistudio/aaditya_maheshwari_opt.jpg?v=3"
+                    src="/assets/aistudio/aaditya_maheshwari_opt.jpg"
                     alt="Aaditya Maheshwari"
                     className="w-full h-full object-cover"
                     loading="eager"
+                    decoding="async"
                   />
                 </div>
                 <div>
@@ -85,10 +86,11 @@ export const TeamModal: React.FC<TeamModalProps> = ({ isOpen, onClose, onNavigat
               <div className="flex items-center gap-3.5">
                 <div className="w-16 h-16 rounded-2xl overflow-hidden border-2 border-white/20 ring-1 ring-white/10 flex-shrink-0 bg-neutral-900">
                   <img
-                    src="/assets/aistudio/aadit_amiye_opt.jpg?v=3"
+                    src="/assets/aistudio/aadit_amiye_opt.jpg"
                     alt="Aadit Amiye"
                     className="w-full h-full object-cover"
                     loading="eager"
+                    decoding="async"
                   />
                 </div>
                 <div>

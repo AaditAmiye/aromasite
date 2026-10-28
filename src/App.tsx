@@ -145,7 +145,6 @@ export default function App() {
               {/* Mobile Phone Hero Video */}
               <video
                 ref={mobileVideoRef}
-                src="/assets/aistudio/Timeline_1_a1aa5ac5.mov"
                 className="block md:hidden w-full h-full object-cover bg-black"
                 autoPlay
                 playsInline
@@ -156,8 +155,8 @@ export default function App() {
                 disablePictureInPicture
                 controlsList="nodownload nofullscreen noremoteplayback"
               >
+                <source src="/assets/aistudio/aromax_mob__online-video-cutter.com__2cd2fff9.mp4" type="video/mp4" />
                 <source src="/assets/aistudio/Timeline_1_a1aa5ac5.mov" type="video/quicktime" />
-                <source src="/assets/aistudio/Timeline_1_a1aa5ac5.mov" type="video/mp4" />
               </video>
 
               {/* Desktop / Tablet Hero Video */}
@@ -173,11 +172,10 @@ export default function App() {
                 disablePictureInPicture
                 controlsList="nodownload nofullscreen noremoteplayback"
               >
+                <source src="/assets/aistudio/___online-video-cutter.com__acbc7330.mp4" type="video/mp4" />
                 <source src="/assets/aistudio/armoax2_2ef98b78.mov" type="video/quicktime" />
-                <source src="/assets/aistudio/armoax2_2ef98b78.mov" type="video/mp4" />
                 <source src="/armoax2_web.mp4" type="video/mp4" />
                 <source src="/armoax2.mp4" type="video/mp4" />
-                <source src="/armoax2.mov" type="video/quicktime" />
               </video>
             </section>
 

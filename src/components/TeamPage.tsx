@@ -77,7 +77,7 @@ export const TeamPage: React.FC<TeamPageProps> = ({ onBackToHome, onExploreFragr
               <div className="lg:col-span-5 space-y-6">
                 <div className="w-full aspect-[4/5] rounded-3xl overflow-hidden border-2 border-white/25 ring-1 ring-white/10 bg-neutral-900 shadow-2xl relative group">
                   <img
-                    src="/assets/aistudio/aaditya_maheshwari_opt.jpg?v=4"
+                    src="/assets/aistudio/aaditya_maheshwari_opt.jpg"
                     alt="Aaditya Maheshwari, CEO at AromaxAI"
                     className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-700"
                     loading="eager"
@@ -172,7 +172,7 @@ export const TeamPage: React.FC<TeamPageProps> = ({ onBackToHome, onExploreFragr
               <div className="lg:col-span-5 space-y-6">
                 <div className="w-full aspect-[4/5] rounded-3xl overflow-hidden border-2 border-white/25 ring-1 ring-white/10 bg-neutral-900 shadow-2xl relative group">
                   <img
-                    src="/assets/aistudio/aadit_amiye_opt.jpg?v=4"
+                    src="/assets/aistudio/aadit_amiye_opt.jpg"
                     alt="Aadit Amiye, CTO at AromaxAI"
                     className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-700"
                     loading="eager"
