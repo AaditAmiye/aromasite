@@ -23,6 +23,7 @@ const CRITICAL_IMAGES = [
 ];
 
 const CRITICAL_VIDEOS = [
+  '/assets/aistudio/armoax2__online-video-cutter.com__b6ebf638.mp4',
   '/assets/aistudio/smell__online-video-cutter.com__a3fe16c1.mp4',
   '/assets/aistudio/IMG_9419__online-video-cutter.com__b31cd971.mp4',
   '/assets/aistudio/aromax_mob__online-video-cutter.com__2cd2fff9.mp4',
